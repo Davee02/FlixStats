@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using NetflixStatizier;
 using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Models;
+using NetflixStatizier.Stats;
 
 namespace NetflixStatizier.Controllers
 {
@@ -12,6 +13,8 @@ namespace NetflixStatizier.Controllers
     {
         public IActionResult Index()
         {
+            var stats = new NetflixStats();
+            stats.GetAllNetflixPlays();
             return View();
         }
 
