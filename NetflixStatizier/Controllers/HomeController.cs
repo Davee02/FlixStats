@@ -15,6 +15,8 @@ namespace NetflixStatizier.Controllers
 {
     public class HomeController : Controller
     {
+        private const decimal SECONDS_PER_HOUR = 60 * 60;
+
         public IActionResult Index()
         {
             return View();
@@ -49,17 +51,29 @@ namespace NetflixStatizier.Controllers
             return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
         }
 
-        private static NetflixStatsModel CalculateNetflixStats(ICollection<NetflixViewingHistoryPart> viewingHistory)
+        private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixViewingHistoryPart> viewingHistory)
         {
             var allViewedElements = viewingHistory
                 .SelectMany(x => x.ViewedItems)
                 .ToList();
 
-            var statsModel = new NetflixStatsModel();
-            statsModel.TotalViewedHours = (decimal)(allViewedElements.Sum(x => x.Bookmark) / 60.0 / 60.0);
-            statsModel.FirstWatchedItemDateTime = allViewedElements.OrderBy(x => x.Date).First().Date;
-            statsModel.LastWatchedItemDateTime = allViewedElements.OrderByDescending(x => x.Date).First().Date;
-            statsModel.MoviesViewedItemsCount = allViewedElements.Count(x => x.Series == 0);
+            var allMovies = allViewedElements
+                .Where(x => x.SeriesId == 0)
+                .ToList();
+            var allSeriesEpisodes = allViewedElements
+                .Where(x => x.SeriesId != 0)
+                .ToList();
+
+            var statsModel = new NetflixStatsModel
+            {
+                TotalViewedHours = allViewedElements.Sum(x => x.PlaybackBookmark) / SECONDS_PER_HOUR,
+                MoviesViewedHours = allMovies.Sum(x => x.PlaybackBookmark) / SECONDS_PER_HOUR,
+                SeriesViewedHours = allSeriesEpisodes.Sum(x => x.PlaybackBookmark) / SECONDS_PER_HOUR,
+                FirstWatchedItemDateTime = allViewedElements.OrderBy(x => x.PlaybackDateTime).First().PlaybackDateTime,
+                LastWatchedItemDateTime = allViewedElements.OrderByDescending(x => x.PlaybackDateTime).First().PlaybackDateTime,
+                MoviesViewedCount = allMovies.Count,
+                SeriesEpisodesViewedItemsCount = allSeriesEpisodes.Count
+            };
 
             return statsModel;
         }

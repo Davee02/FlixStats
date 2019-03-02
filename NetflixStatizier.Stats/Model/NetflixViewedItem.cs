@@ -15,20 +15,20 @@ namespace NetflixStatizier.Stats.Model
         public int MovieId { get; set; }
 
         [JsonProperty("country")]
-        public string Country { get; set; }
+        public string CountryCode { get; set; }
 
         [JsonProperty("bookmark")]
-        public int Bookmark { get; set; }
+        public int PlaybackBookmark { get; set; }
 
         [JsonProperty("duration")]
         public int Duration { get; set; }
 
         [JsonProperty("date")]
         [JsonConverter(typeof(Helper.MillisecondsUnixTimeConverter))]
-        public DateTime Date { get; set; }
+        public DateTime PlaybackDateTime { get; set; }
 
         [JsonProperty("deviceType")]
-        public int DeviceType { get; set; }
+        public Enums.DeviceType DeviceType { get; set; }
 
         [JsonProperty("index")]
         public int Index { get; set; }
@@ -37,7 +37,7 @@ namespace NetflixStatizier.Stats.Model
         public string TopNodeId { get; set; }
 
         [JsonProperty("series")]
-        public int Series { get; set; }
+        public int SeriesId { get; set; }
 
         [JsonProperty("seriesTitle")]
         public string SeriesTitle { get; set; }
@@ -49,6 +49,6 @@ namespace NetflixStatizier.Stats.Model
         public string EpisodeTitle { get; set; }
 
         [JsonProperty("estRating")]
-        public string EstRating { get; set; }
+        public int EstRating { get; set; }
     }
 }
