@@ -1,4 +1,7 @@
-﻿namespace NetflixStatizier.Stats.Model
+﻿using System;
+using Newtonsoft.Json;
+
+namespace NetflixStatizier.Stats.Model
 {
     public class NetflixViewedItem
     {
@@ -8,7 +11,8 @@
         public string Country { get; set; }
         public int Bookmark { get; set; }
         public int Duration { get; set; }
-        public object Date { get; set; }
+        [JsonConverter(typeof(Helper.MillisecondsUnixTimeConverter))]
+        public DateTime Date { get; set; }
         public int DeviceType { get; set; }
         public string DateStr { get; set; }
         public int Index { get; set; }

@@ -24,7 +24,7 @@ namespace NetflixStatizier.Controllers
             {
                 //var stats = new NetflixStats("kiumo777@gmail.com", "s-INF17a+");
                 var stats = new NetflixStats(model.NetflixEmail, model.NetflixPassword);
-                var history = await stats.GetAllNetflixPlays("dave", driver);
+                var history = await stats.GetNetflixViewingHistory("dave", driver);
                 return Ok(history);
             }
         }

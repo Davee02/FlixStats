@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NetflixStatizier.Stats.Model
 {
-    public class NetflixViewingHistory
+    public class NetflixViewingHistoryPart
     {
         public string CodeName { get; set; }
         public List<NetflixViewedItem> ViewedItems { get; set; }

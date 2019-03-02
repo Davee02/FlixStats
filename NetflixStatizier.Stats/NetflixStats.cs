@@ -25,7 +25,7 @@ namespace NetflixStatizier.Stats
             NetflixPassword = netflixPassword;
         }
 
-        public async Task<ICollection<NetflixViewingHistory>> GetAllNetflixPlays(string netflixProfileName, IWebDriver driver)
+        public async Task<ICollection<NetflixViewingHistoryPart>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
         {
             driver.Navigate().GoToUrl(NETFLIX_LOGINPAGE_URL);
 
@@ -45,9 +45,7 @@ namespace NetflixStatizier.Stats
 
             profileButton.Click();
 
-            var cookies = driver.Manage().Cookies.AllCookies
-                //.Where(x => string.Equals(x.Name, "NetflixId") || string.Equals(x.Name, "SecureNetflixId"))
-                .ToList();
+            var cookies = driver.Manage().Cookies.AllCookies;
 
             var historyJson = await GetViewingHistoryJson();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
@@ -79,24 +77,24 @@ namespace NetflixStatizier.Stats
                     .Replace(@"\x2F", "/");
         }
 
-        private static async Task<ICollection<NetflixViewingHistory>> GetAllViewedElements(string apiBaseUrl, ICollection<Cookie> cookies)
+        private static async Task<ICollection<NetflixViewingHistoryPart>> GetAllViewedElements(string apiBaseUrl, ICollection<Cookie> cookies)
         {
             var counter = 0;
-            var viewingHistory = new List<NetflixViewingHistory>();
+            var viewingHistory = new List<NetflixViewingHistoryPart>();
 
             using (var client = new WebClient())
             {
                 client.Headers.Add(HttpRequestHeader.Cookie, Utilities.GetKeyValueStringOutOfCookieCollection(cookies));
 
-                NetflixViewingHistory currentViewingHistoryElement;
+                NetflixViewingHistoryPart currentViewingHistoryPartElement;
                 do
                 {
                     var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}");
-                    currentViewingHistoryElement = JsonConvert.DeserializeObject<NetflixViewingHistory>(jsonString);
+                    currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
                     counter++;
 
-                    viewingHistory.Add(currentViewingHistoryElement);
-                } while (currentViewingHistoryElement.ViewedItems.Count > 0);
+                    viewingHistory.Add(currentViewingHistoryPartElement);
+                } while (currentViewingHistoryPartElement.ViewedItems.Count > 0);
             }
 
             return viewingHistory;
