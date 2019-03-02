@@ -1,20 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using NetflixStatizier;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Models;
 using NetflixStatizier.Stats;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 
 namespace NetflixStatizier.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var stats = new NetflixStats();
-            stats.GetAllNetflixPlays();
+            //using (var driver = GetWebDriver())
+            //{
+            //    var stats = new NetflixStats("kiumo777@gmail.com", "s-INF17a+");
+            //    var history = await stats.GetAllNetflixPlays("dave", driver);
+            //    return Ok(history);
+            //}
             return View();
         }
 
@@ -41,6 +46,15 @@ namespace NetflixStatizier.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private static IWebDriver GetWebDriver()
+        {
+            var options = new ChromeOptions();
+            options.AddArgument("headless");
+            options.AddArgument("blink-settings=imagesEnabled=false");
+            options.AddArgument("disable-gpu");
+            return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
         }
     }
 }
