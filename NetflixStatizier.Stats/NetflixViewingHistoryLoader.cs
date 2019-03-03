@@ -11,7 +11,7 @@ using Cookie = OpenQA.Selenium.Cookie;
 
 namespace NetflixStatizier.Stats
 {
-    public class NetflixStats
+    public class NetflixViewingHistoryLoader
     {
         private const string NETFLIX_VIEWINGACTIVITY_URL = "https://www.netflix.com/viewingactivity";
         private const string NETFLIX_LOGINPAGE_URL = "https://www.netflix.com/login";
@@ -19,13 +19,23 @@ namespace NetflixStatizier.Stats
         public string NetflixPassword { get; set; }
         public string NetflixEmail { get; set; }
 
-        public NetflixStats(string netflixEmail, string netflixPassword)
+        public NetflixViewingHistoryLoader(string netflixEmail, string netflixPassword)
         {
             NetflixEmail = netflixEmail;
             NetflixPassword = netflixPassword;
         }
 
         public async Task<ICollection<NetflixViewingHistoryPart>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
+        {
+            var cookies = LogInToNetflixAndGetCookies(netflixProfileName, driver);
+
+            var historyJson = await GetViewingHistoryJson();
+            var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
+
+            return await GetAllViewedElements(apiBaseUrl, cookies);
+        }
+
+        private ICollection<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
         {
             driver.Navigate().GoToUrl(NETFLIX_LOGINPAGE_URL);
 
@@ -39,18 +49,13 @@ namespace NetflixStatizier.Stats
 
             var profileButton = driver.FindElements(By.CssSelector("span[class='profile-name']"))
                 .FirstOrDefault(x => string.Equals(x.Text, netflixProfileName, StringComparison.InvariantCultureIgnoreCase));
-            if(profileButton == null)
+            if (profileButton == null)
                 throw new ArgumentException($"There is no profile with the name {netflixProfileName} in this account",
                     nameof(netflixProfileName));
-
+            var text = profileButton.Text;
             profileButton.Click();
 
-            var cookies = driver.Manage().Cookies.AllCookies;
-
-            var historyJson = await GetViewingHistoryJson();
-            var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
-
-            return await GetAllViewedElements(apiBaseUrl, cookies);
+            return driver.Manage().Cookies.AllCookies;
         }
 
         private static async Task<string> GetViewingHistoryJson()
@@ -91,7 +96,7 @@ namespace NetflixStatizier.Stats
                 {
                     var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}");
                     currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
-                    counter++;
+                     counter++;
 
                     viewingHistory.Add(currentViewingHistoryPartElement);
                 } while (currentViewingHistoryPartElement.ViewedItems.Count > 0);

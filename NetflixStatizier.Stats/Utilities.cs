@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using OpenQA.Selenium;
@@ -9,7 +8,7 @@ namespace NetflixStatizier.Stats
 {
     public static class Utilities
     {
-        public static bool IsValidJson(this string json)
+        internal static bool IsValidJson(this string json)
         {
             try
             {
@@ -22,7 +21,7 @@ namespace NetflixStatizier.Stats
             }
         }
 
-        public static string GetKeyValueStringOutOfCookieCollection(ICollection<Cookie> cookies)
+        internal static string GetKeyValueStringOutOfCookieCollection(ICollection<Cookie> cookies)
         {
             var sb = new StringBuilder();
             foreach (var cookie in cookies)

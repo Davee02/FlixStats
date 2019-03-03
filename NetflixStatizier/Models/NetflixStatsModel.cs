@@ -1,4 +1,5 @@
 ﻿using System;
+using NetflixStatizier.Stats.Model;
 
 namespace NetflixStatizier.Models
 {
@@ -14,8 +15,8 @@ namespace NetflixStatizier.Models
 
         public decimal MoviesViewedCount { get; set; }
 
-        public DateTime FirstWatchedItemDateTime { get; set; }
+        public NetflixViewedItem FirstWatchedMovie { get; set; }
 
-        public DateTime LastWatchedItemDateTime { get; set; }
+        public NetflixViewedItem FirstWatchedSeriesEpisode { get; set; }
     }
 }
