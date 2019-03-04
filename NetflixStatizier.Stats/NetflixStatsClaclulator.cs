@@ -7,16 +7,13 @@ namespace NetflixStatizier.Stats
     public class NetflixStatsClaclulator
     {
         private const decimal SECONDS_PER_HOUR = 60 * 60;
-        private readonly List<NetflixViewedItem> m_AllViewedElements;
-        private readonly List<NetflixViewedItem> m_AllViewedMovies;
-        private readonly List<NetflixViewedItem> m_AllViewedSeriesEpisodes;
+        private readonly List<NetflixPlayback> m_AllViewedElements;
+        private readonly List<NetflixPlayback> m_AllViewedMovies;
+        private readonly List<NetflixPlayback> m_AllViewedSeriesEpisodes;
 
-        public NetflixStatsClaclulator(IEnumerable<NetflixViewingHistoryPart> viewingHistory)
+        public NetflixStatsClaclulator(IEnumerable<NetflixPlayback> netflixPlaybacks)
         {
-            m_AllViewedElements = viewingHistory
-                .SelectMany(x => x.ViewedItems)
-                .ToList();
-
+            m_AllViewedElements = netflixPlaybacks.ToList();
             m_AllViewedMovies = GetAllMoviesFromViewedElements(m_AllViewedElements);
             m_AllViewedSeriesEpisodes = GetAllSeriesEpisodesFromViewedElements(m_AllViewedElements);
         }
@@ -36,10 +33,10 @@ namespace NetflixStatizier.Stats
         public int GetSeriesEpisodesViewedCount() => m_AllViewedSeriesEpisodes.Count;
 
 
-        private static List<NetflixViewedItem> GetAllMoviesFromViewedElements(IEnumerable<NetflixViewedItem> allViewedItems) =>
-            allViewedItems.Where(x => x.SeriesId == 0).ToList();
+        private static List<NetflixViewedItem> GetAllMoviesFromViewedElements(IEnumerable<NetflixPlayback> allViewedItems) =>
+            allViewedItems.Where(x => x.).ToList();
 
-        private static List<NetflixViewedItem> GetAllSeriesEpisodesFromViewedElements(IEnumerable<NetflixViewedItem> allViewedItems) =>
+        private static List<NetflixViewedItem> GetAllSeriesEpisodesFromViewedElements(IEnumerable<NetflixPlayback> allViewedItems) =>
             allViewedItems.Where(x => x.SeriesId != 0).ToList();
     }
 }

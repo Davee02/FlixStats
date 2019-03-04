@@ -15,5 +15,11 @@
             H = 1816,
             C = 2407
         }
+
+        public enum EpisodeType
+        {
+            RegularEpisode = 0,
+            Movie = 1
+        }
     }
 }

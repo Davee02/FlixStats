@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using OpenQA.Selenium;
 
@@ -21,7 +22,7 @@ namespace NetflixStatizier.Stats
             }
         }
 
-        internal static string GetKeyValueStringOutOfCookieCollection(ICollection<Cookie> cookies)
+        internal static string GetKeyValueStringOutOfCookieCollection(IEnumerable<Cookie> cookies)
         {
             var sb = new StringBuilder();
             foreach (var cookie in cookies)
@@ -31,6 +32,11 @@ namespace NetflixStatizier.Stats
 
             sb.Remove(sb.Length - 1, 1);
             return sb.ToString();
+        }
+
+        internal static RegionInfo GetRegionInfoFromTwoLetterIsoName(string twoLetterIsoName)
+        {
+            return new RegionInfo(twoLetterIsoName);
         }
     }
 }

@@ -25,17 +25,19 @@ namespace NetflixStatizier.Stats
             NetflixPassword = netflixPassword;
         }
 
-        public async Task<ICollection<NetflixViewingHistoryPart>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
+        public async Task<IEnumerable<NetflixPlayback>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
         {
             var cookies = LogInToNetflixAndGetCookies(netflixProfileName, driver);
 
             var historyJson = await GetViewingHistoryJson();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
 
-            return await GetAllViewedElements(apiBaseUrl, cookies);
+            var viewedElements = await GetAllViewedElements(apiBaseUrl, cookies);
+
+            return GetNetflixPlaybacksFromViewingActivity(viewedElements);
         }
 
-        private ICollection<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
+        private IEnumerable<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
         {
             driver.Navigate().GoToUrl(NETFLIX_LOGINPAGE_URL);
 
@@ -82,7 +84,7 @@ namespace NetflixStatizier.Stats
                     .Replace(@"\x2F", "/");
         }
 
-        private static async Task<ICollection<NetflixViewingHistoryPart>> GetAllViewedElements(string apiBaseUrl, ICollection<Cookie> cookies)
+        private static async Task<IEnumerable<NetflixViewingHistoryPart>> GetAllViewedElements(string apiBaseUrl, IEnumerable<Cookie> cookies)
         {
             var counter = 0;
             var viewingHistory = new List<NetflixViewingHistoryPart>();
@@ -96,13 +98,31 @@ namespace NetflixStatizier.Stats
                 {
                     var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}");
                     currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
-                     counter++;
+                    counter++;
 
                     viewingHistory.Add(currentViewingHistoryPartElement);
                 } while (currentViewingHistoryPartElement.ViewedItems.Count > 0);
             }
 
             return viewingHistory;
+        }
+
+        private IEnumerable<NetflixPlayback> GetNetflixPlaybacksFromViewingActivity(
+            IEnumerable<NetflixViewingHistoryPart> history)
+        {
+            foreach (var netflixViewingHistoryPart in history)
+            {
+                foreach (var netflixViewedItem in netflixViewingHistoryPart.ViewedItems)
+                {
+                    yield return new NetflixPlayback
+                    {
+                        PlaybackDateTime = netflixViewedItem.PlaybackDateTime,
+                        PlaybackCountry = Utilities.GetRegionInfoFromTwoLetterIsoName(netflixViewedItem.CountryCode),
+                        PlaybackDevice = netflixViewedItem.DeviceType,
+                        PlaybackDuration = netflixViewedItem.PlaybackBookmark
+                    };
+                }
+            }
         }
     }
 }

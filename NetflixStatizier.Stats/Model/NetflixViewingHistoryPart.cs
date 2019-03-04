@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace NetflixStatizier.Stats.Model
 {
-    public class NetflixViewingHistoryPart
+    internal class NetflixViewingHistoryPart
     {
         [JsonProperty("codeName")]
         public string CodeName { get; set; }
