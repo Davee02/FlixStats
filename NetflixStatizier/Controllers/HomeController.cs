@@ -24,8 +24,8 @@ namespace NetflixStatizier.Controllers
         {
             using (var driver = GetWebDriver())
             {
-                //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
-                var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
+                var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.co", "s-INF17a+");
+                //var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
                 var history = await stats.GetNetflixViewingHistory("fabio", driver);
 
                 var calculatedStats = CalculateNetflixStats(history);
@@ -42,9 +42,9 @@ namespace NetflixStatizier.Controllers
         private static IWebDriver GetWebDriver()
         {
             var options = new ChromeOptions();
-            options.AddArgument("headless");
+            //options.AddArgument("headless");
             options.AddArgument("blink-settings=imagesEnabled=false");
-            options.AddArgument("disable-gpu");
+            //options.AddArgument("disable-gpu");
             return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
         }
 

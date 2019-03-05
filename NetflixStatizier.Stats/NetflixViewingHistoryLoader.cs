@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using NetflixStatizier.Stats.Exceptions;
 using Cookie = OpenQA.Selenium.Cookie;
 
 namespace NetflixStatizier.Stats
@@ -32,7 +33,8 @@ namespace NetflixStatizier.Stats
 
         public async Task<IEnumerable<NetflixPlayback>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
         {
-            var cookies = LogInToNetflixAndGetCookies(netflixProfileName, driver);
+            var cookies = await LogInToNetflixAndGetCookies(netflixProfileName, driver);
+
 
             var historyJson = await GetViewingHistoryJson();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
@@ -42,7 +44,7 @@ namespace NetflixStatizier.Stats
             return GetNetflixPlaybacksFromViewingActivity(viewedElements);
         }
 
-        private IEnumerable<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
+        private async Task<IEnumerable<Cookie>> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
         {
             driver.Navigate().GoToUrl(NETFLIX_LOGINPAGE_URL);
 
@@ -54,15 +56,32 @@ namespace NetflixStatizier.Stats
             passwordAdressTextBox.SendKeys(NetflixPassword);
             logInButton.Click();
 
+            SearchForErrorBoxesAndThrowIfNecessary(driver);
+
             var profileButton = driver.FindElements(By.CssSelector("span[class='profile-name']"))
                 .FirstOrDefault(x => string.Equals(x.Text, netflixProfileName, StringComparison.InvariantCultureIgnoreCase));
             if (profileButton == null)
                 throw new ArgumentException($"There is no profile with the name {netflixProfileName} in this account",
                     nameof(netflixProfileName));
-            var text = profileButton.Text;
+
+            var text = profileButton.Enabled;
+            var text2 = profileButton.Displayed;
+            var text3 = profileButton.Selected;
+            var text4 = profileButton.TagName;
             profileButton.Click();
 
             return driver.Manage().Cookies.AllCookies;
+        }
+
+        private static void SearchForErrorBoxesAndThrowIfNecessary(ISearchContext webDriver)
+        {
+            var errorBox = webDriver.FindElement(By.CssSelector("div[data-uia='error-message-container']"));
+            
+            if(errorBox == null)
+                return;
+
+            var errorMessage = errorBox.Text;
+            throw new NetflixLoginException(errorMessage);
         }
 
         private static async Task<string> GetViewingHistoryJson()
