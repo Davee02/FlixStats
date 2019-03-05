@@ -21,6 +21,11 @@ namespace NetflixStatizier.Stats
 
         public NetflixViewingHistoryLoader(string netflixEmail, string netflixPassword)
         {
+            if(string.IsNullOrEmpty(netflixEmail))
+                throw new ArgumentException("The netflix profile email must not be empty", nameof(netflixEmail));
+            if (string.IsNullOrEmpty(netflixPassword))
+                throw new ArgumentException("The netflix profile password must not be empty", nameof(netflixEmail));
+
             NetflixEmail = netflixEmail;
             NetflixPassword = netflixPassword;
         }
@@ -96,7 +101,7 @@ namespace NetflixStatizier.Stats
                 NetflixViewingHistoryPart currentViewingHistoryPartElement;
                 do
                 {
-                    var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}");
+                    var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}&pgsize=1000");
                     currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
                     counter++;
 

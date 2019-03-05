@@ -26,7 +26,7 @@ namespace NetflixStatizier.Controllers
             {
                 //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
                 var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
-                var history = await stats.GetNetflixViewingHistory("dave", driver);
+                var history = await stats.GetNetflixViewingHistory("fabio", driver);
 
                 var calculatedStats = CalculateNetflixStats(history);
                 return Ok(calculatedStats);
