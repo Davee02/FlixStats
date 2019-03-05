@@ -7,10 +7,16 @@
     <label asp-for="NetflixEmail"></label>
     <input asp-for="NetflixEmail" />
     <span asp-validation-for="NetflixEmail"></span>
-
+    <br />
     <label asp-for="NetflixPassword"></label>
     <input asp-for="NetflixPassword" />
     <span asp-validation-for="NetflixPassword"></span>
-
+    <br />
+    <label asp-for="NetflixProfileName"></label>
+    <input asp-for="NetflixProfileName" />
+    <span asp-validation-for="NetflixProfileName"></span>
+    <br />
     <input type="submit" />
 </form>
+
+<div asp-validation-summary="All"></div>

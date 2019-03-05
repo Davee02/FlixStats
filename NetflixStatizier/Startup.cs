@@ -28,7 +28,7 @@ namespace NetflixStatizier
             });
 
 
-            services.AddMvc()
+            services.AddMvc(options => options.AllowValidatingTopLevelNodes = true)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddMvcOptions(x => x.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
         }

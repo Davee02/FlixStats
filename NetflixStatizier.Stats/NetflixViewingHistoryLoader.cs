@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using OpenQA.Selenium.Support;
 using NetflixStatizier.Stats.Exceptions;
+using OpenQA.Selenium.Support.UI;
 using Cookie = OpenQA.Selenium.Cookie;
 
 namespace NetflixStatizier.Stats
@@ -64,24 +66,25 @@ namespace NetflixStatizier.Stats
                 throw new ArgumentException($"There is no profile with the name {netflixProfileName} in this account",
                     nameof(netflixProfileName));
 
-            var text = profileButton.Enabled;
-            var text2 = profileButton.Displayed;
-            var text3 = profileButton.Selected;
-            var text4 = profileButton.TagName;
             profileButton.Click();
+
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            var test = driver.FindElement(By.CssSelector("h2[class='rowHeader']"));
+
 
             return driver.Manage().Cookies.AllCookies;
         }
 
         private static void SearchForErrorBoxesAndThrowIfNecessary(ISearchContext webDriver)
         {
-            var errorBox = webDriver.FindElement(By.CssSelector("div[data-uia='error-message-container']"));
-            
-            if(errorBox == null)
+            var errorBox = webDriver.FindElements(By.CssSelector("div[data-uia='error-message-container']"));
+
+            if (!errorBox.Any())
                 return;
 
-            var errorMessage = errorBox.Text;
+            var errorMessage = errorBox[0].Text;
             throw new NetflixLoginException(errorMessage);
+
         }
 
         private static async Task<string> GetViewingHistoryJson()
