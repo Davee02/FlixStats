@@ -15,8 +15,8 @@ namespace NetflixStatizier.Models
 
         public decimal MoviesViewedCount { get; set; }
 
-        public NetflixViewedItem FirstWatchedMovie { get; set; }
+        public NetflixPlayback FirstWatchedMovie { get; set; }
 
-        public NetflixViewedItem FirstWatchedSeriesEpisode { get; set; }
+        public NetflixPlayback FirstWatchedSeriesEpisode { get; set; }
     }
 }

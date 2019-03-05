@@ -1,19 +1,27 @@
-﻿using System.Globalization;
-using NetflixStatizier.Stats.Model.BaseTypes;
+﻿using System;
+using System.Globalization;
+using NetflixStatizier.Stats.Interface;
 
 namespace NetflixStatizier.Stats.Model
 {
-    public class NetflixPlayback : BasePlayback<NetflixEpisode, NetflixSerie>
+    public class NetflixPlayback : IPlayback<NetflixEpisode, NetflixSerie>
     {
-        public void wef()
-        {
-            BaseSerie wqdf = new NetflixSerie();
-            var t = new NetflixEpisode();
-            t.Serie.
-        }
-
         public Enums.DeviceType PlaybackDevice { get; set; }
 
         public RegionInfo PlaybackCountry { get; set; }
+
+        public NetflixEpisode Episode { get; set; }
+
+        public DateTime PlaybackDateTime { get; set; }
+
+        public int Sort { get; set; }
+
+        public int PlaybackDuration { get; set; }
+
+
+        public int CompareTo(IPlayback<IEpisode<ISerie>, ISerie> other)
+        {
+            return other.Sort.CompareTo(this.Sort);
+        }
     }
 }

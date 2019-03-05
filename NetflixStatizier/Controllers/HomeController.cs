@@ -48,9 +48,9 @@ namespace NetflixStatizier.Controllers
             return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
         }
 
-        private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixViewingHistoryPart> viewingHistory)
+        private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
         {
-            var statsCalculator = new NetflixStatsClaclulator(viewingHistory);
+            var statsCalculator = new NetflixStatsCalculator(viewingHistory);
 
             var statsModel = new NetflixStatsModel
             {

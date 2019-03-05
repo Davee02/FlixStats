@@ -119,10 +119,30 @@ namespace NetflixStatizier.Stats
                         PlaybackDateTime = netflixViewedItem.PlaybackDateTime,
                         PlaybackCountry = Utilities.GetRegionInfoFromTwoLetterIsoName(netflixViewedItem.CountryCode),
                         PlaybackDevice = netflixViewedItem.DeviceType,
-                        PlaybackDuration = netflixViewedItem.PlaybackBookmark
+                        PlaybackDuration = netflixViewedItem.PlaybackBookmark,
+                        Sort = netflixViewedItem.Index,
+                        Episode = new NetflixEpisode
+                        {
+                            Duration = netflixViewedItem.Duration,
+                            SeasonDescriptor = netflixViewedItem.SeasonDescriptor,
+                            Title = netflixViewedItem.EpisodeTitle,
+                            EpisodeType = GetEpisodeTypeFromViewedItem(netflixViewedItem),
+                            Serie = new NetflixSerie
+                            {
+                                Title = netflixViewedItem.SeriesTitle,
+                                IdentificationNumber = netflixViewedItem.SeriesId
+                            }
+                        }
                     };
                 }
             }
+        }
+
+        private Enums.EpisodeType GetEpisodeTypeFromViewedItem(NetflixViewedItem item)
+        {
+            return item.SeriesId == 0
+                ? Enums.EpisodeType.Movie
+                : Enums.EpisodeType.RegularEpisode;
         }
     }
 }
