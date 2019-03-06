@@ -45,7 +45,7 @@ namespace NetflixStatizier.Controllers
             options.AddArgument("headless");
             options.AddArgument("blink-settings=imagesEnabled=false");
             options.AddArgument("disable-gpu");
-            return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
+            return new ChromeDriver(/*Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),*/ options);
         }
 
         private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)

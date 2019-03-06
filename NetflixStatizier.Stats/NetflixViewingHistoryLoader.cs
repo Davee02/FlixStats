@@ -7,9 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using OpenQA.Selenium.Support;
 using NetflixStatizier.Stats.Exceptions;
-using OpenQA.Selenium.Support.UI;
 using Cookie = OpenQA.Selenium.Cookie;
 
 namespace NetflixStatizier.Stats
@@ -18,6 +16,9 @@ namespace NetflixStatizier.Stats
     {
         private const string NETFLIX_VIEWINGACTIVITY_URL = "https://www.netflix.com/viewingactivity";
         private const string NETFLIX_LOGINPAGE_URL = "https://www.netflix.com/login";
+        private const string MAILADRESS_TEXTBOX_ID = "#id_userLoginId";
+        private const string PASSWORD_TEXTBOX_ID = "#id_password";
+        private const string LOGIN_BUTTON_ID = "button[type='submit']";
 
         public string NetflixPassword { get; set; }
         public string NetflixEmail { get; set; }
@@ -35,8 +36,7 @@ namespace NetflixStatizier.Stats
 
         public async Task<IEnumerable<NetflixPlayback>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
         {
-            var cookies = await LogInToNetflixAndGetCookies(netflixProfileName, driver);
-
+            var cookies = LogInToNetflixAndGetCookies(netflixProfileName, driver);
 
             var historyJson = await GetViewingHistoryJson();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
@@ -46,13 +46,13 @@ namespace NetflixStatizier.Stats
             return GetNetflixPlaybacksFromViewingActivity(viewedElements);
         }
 
-        private async Task<IEnumerable<Cookie>> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
+        private IEnumerable<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
         {
             driver.Navigate().GoToUrl(NETFLIX_LOGINPAGE_URL);
 
-            var mailAdressTextBox = driver.FindElement(By.CssSelector("#id_userLoginId"));
-            var passwordAdressTextBox = driver.FindElement(By.CssSelector("#id_password"));
-            var logInButton = driver.FindElement(By.CssSelector("button[type='submit']"));
+            var mailAdressTextBox = driver.FindElement(By.CssSelector(MAILADRESS_TEXTBOX_ID));
+            var passwordAdressTextBox = driver.FindElement(By.CssSelector(PASSWORD_TEXTBOX_ID));
+            var logInButton = driver.FindElement(By.CssSelector(LOGIN_BUTTON_ID));
 
             mailAdressTextBox.SendKeys(NetflixEmail);
             passwordAdressTextBox.SendKeys(NetflixPassword);
@@ -165,7 +165,7 @@ namespace NetflixStatizier.Stats
             }
         }
 
-        private Enums.EpisodeType GetEpisodeTypeFromViewedItem(NetflixViewedItem item)
+        private static Enums.EpisodeType GetEpisodeTypeFromViewedItem(NetflixViewedItem item)
         {
             return item.SeriesId == 0
                 ? Enums.EpisodeType.Movie
