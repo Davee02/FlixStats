@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Models;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Model;
@@ -22,6 +20,9 @@ namespace NetflixStatizier.Controllers
         [HttpPost]
         public async Task<IActionResult> GetStats(NetflixAccountModel model)
         {
+            if (!ModelState.IsValid)
+                return View("Index", model);
+
             using (var driver = GetWebDriver())
             {
                 //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
@@ -45,7 +46,7 @@ namespace NetflixStatizier.Controllers
             options.AddArgument("headless");
             options.AddArgument("blink-settings=imagesEnabled=false");
             options.AddArgument("disable-gpu");
-            return new ChromeDriver(/*Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),*/ options);
+            return new ChromeDriver(options);
         }
 
         private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
