@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using NetflixStatizier.Helper;
 using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Model;
 using OpenQA.Selenium;
@@ -33,7 +34,8 @@ namespace NetflixStatizier.Controllers
                 var history = await stats.GetNetflixViewingHistory(model.NetflixProfileName, driver);
 
                 var calculatedStats = CalculateNetflixStats(history);
-                return Ok(calculatedStats);
+
+                return RedirectToAction("Index", "Results", calculatedStats);
             }
         }
 
@@ -58,17 +60,16 @@ namespace NetflixStatizier.Controllers
 
             var statsModel = new NetflixStatsModel
             {
-                TotalViewedHours = statsCalculator.GetTotalViewedMinutes(),
-                MoviesViewedHours = statsCalculator.GetMoviesViewedMinutes(),
-                SeriesViewedHours = statsCalculator.GetSeriesEpisodesViewedMinutes(),
+                TotalViewedTime = Time.FromMinutes((double)statsCalculator.GetTotalViewedMinutes()),
+                MoviesViewedTime = Time.FromMinutes((double)statsCalculator.GetMoviesViewedMinutes()),
+                SeriesViewedTime = Time.FromMinutes((double)statsCalculator.GetSeriesEpisodesViewedMinutes()),
                 MoviesViewedCount = statsCalculator.GetMoviesViewedCount(),
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
-                FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode()
+                FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
+                ViewedTimePerSerie = statsCalculator.GetViewedMinutesPerSerie().ToDictionary(serieTime => serieTime.Key, serieTime => Time.FromMinutes((double)serieTime.Value))
             };
 
-            var lol = statsCalculator.GetPlaybacksPerSerie().ToList();
-            var lol2 = statsCalculator.GetViewedMinutesPerSerie().OrderByDescending(x => x.Value);
 
             return statsModel;
         }

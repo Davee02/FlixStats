@@ -18,11 +18,11 @@ namespace NetflixStatizier.Stats
             m_AllViewedSeriesEpisodes = GetAllSeriesEpisodesFromViewedElements(m_AllViewedElements);
         }
 
-        public decimal GetTotalViewedMinutes() => m_AllViewedElements.Sum(x => x.PlaybackDuration);
+        public decimal GetTotalViewedMinutes() => m_AllViewedElements.Sum(x => x.PlaybackDuration) / 60m;
 
-        public decimal GetMoviesViewedMinutes() => m_AllViewedMovies.Sum(x => x.PlaybackDuration);
+        public decimal GetMoviesViewedMinutes() => m_AllViewedMovies.Sum(x => x.PlaybackDuration) / 60m;
 
-        public decimal GetSeriesEpisodesViewedMinutes() => m_AllViewedSeriesEpisodes.Sum(x => x.PlaybackDuration);
+        public decimal GetSeriesEpisodesViewedMinutes() => m_AllViewedSeriesEpisodes.Sum(x => x.PlaybackDuration) / 60m;
 
         public NetflixPlayback GetFirstWatchedMovie() => m_AllViewedMovies.OrderBy(x => x.PlaybackDateTime).First();
 
@@ -39,7 +39,7 @@ namespace NetflixStatizier.Stats
             IDictionary<NetflixSerie, decimal> dict = new Dictionary<NetflixSerie, decimal>();
             foreach (var grouping in GetPlaybacksPerSerie())
             {
-                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration));
+                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
             }
 
             return dict;

@@ -1,15 +1,16 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using NetflixStatizier.Helper;
 using NetflixStatizier.Stats.Model;
 
 namespace NetflixStatizier.Models
 {
     public class NetflixStatsModel
     {
-        public decimal TotalViewedHours { get; set; }
+        public Time TotalViewedTime { get; set; }
 
-        public decimal SeriesViewedHours { get; set; }
+        public Time SeriesViewedTime { get; set; }
 
-        public decimal MoviesViewedHours { get; set; }
+        public Time MoviesViewedTime { get; set; }
 
         public decimal SeriesEpisodesViewedItemsCount { get; set; }
 
@@ -18,5 +19,7 @@ namespace NetflixStatizier.Models
         public NetflixPlayback FirstWatchedMovie { get; set; }
 
         public NetflixPlayback FirstWatchedSeriesEpisode { get; set; }
+
+        public Dictionary<NetflixSerie, Time> ViewedTimePerSerie { get; set; }
     }
 }
