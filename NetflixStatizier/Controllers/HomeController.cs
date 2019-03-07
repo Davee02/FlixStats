@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Models;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Model;
@@ -46,7 +49,7 @@ namespace NetflixStatizier.Controllers
             options.AddArgument("headless");
             options.AddArgument("blink-settings=imagesEnabled=false");
             options.AddArgument("disable-gpu");
-            return new ChromeDriver(options);
+            return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
         }
 
         private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
@@ -55,14 +58,17 @@ namespace NetflixStatizier.Controllers
 
             var statsModel = new NetflixStatsModel
             {
-                TotalViewedHours = statsCalculator.GetTotalViewedHours(),
-                MoviesViewedHours = statsCalculator.GetMoviesViewedHours(),
-                SeriesViewedHours = statsCalculator.GetSeriesEpisodesViewedHours(),
+                TotalViewedHours = statsCalculator.GetTotalViewedMinutes(),
+                MoviesViewedHours = statsCalculator.GetMoviesViewedMinutes(),
+                SeriesViewedHours = statsCalculator.GetSeriesEpisodesViewedMinutes(),
                 MoviesViewedCount = statsCalculator.GetMoviesViewedCount(),
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode()
             };
+
+            var lol = statsCalculator.GetPlaybacksPerSerie().ToList();
+            var lol2 = statsCalculator.GetViewedMinutesPerSerie().OrderByDescending(x => x.Value);
 
             return statsModel;
         }

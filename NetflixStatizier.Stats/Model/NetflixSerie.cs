@@ -1,8 +1,9 @@
-﻿using NetflixStatizier.Stats.Interface;
+﻿using System;
+using NetflixStatizier.Stats.Interface;
 
 namespace NetflixStatizier.Stats.Model
 {
-    public class NetflixSerie : ISerie
+    public class NetflixSerie : ISerie, IEquatable<NetflixSerie>
     {
         public int IdentificationNumber { get; set; }
 
@@ -17,8 +18,16 @@ namespace NetflixStatizier.Stats.Model
         {
             unchecked
             {
-                return Title != null ? Title.GetHashCode() : 0;
+                return (IdentificationNumber * 397) ^ (Title != null ? Title.GetHashCode() : 0);
             }
+        }
+
+        public bool Equals(NetflixSerie other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return IdentificationNumber == other.IdentificationNumber
+                   && string.Equals(Title, other.Title);
         }
     }
 }

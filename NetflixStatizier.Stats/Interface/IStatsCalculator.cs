@@ -1,14 +1,18 @@
-﻿namespace NetflixStatizier.Stats.Interface
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace NetflixStatizier.Stats.Interface
 {
     public interface IStatsCalculator<TPlayback, TSerie, TEpisode> 
         where TSerie : ISerie 
         where TEpisode : IEpisode<TSerie>
+        where TPlayback : IPlayback<TEpisode, TSerie>
     {
-        decimal GetTotalViewedHours();
+        decimal GetTotalViewedMinutes();
 
-        decimal GetMoviesViewedHours();
+        decimal GetMoviesViewedMinutes();
 
-        decimal GetSeriesEpisodesViewedHours();
+        decimal GetSeriesEpisodesViewedMinutes();
 
         TPlayback GetFirstWatchedMovie();
 
@@ -17,6 +21,10 @@
         int GetMoviesViewedCount();
 
         int GetSeriesEpisodesViewedCount();
+
+        IEnumerable<IGrouping<TSerie, TPlayback>> GetPlaybacksPerSerie();
+
+        IDictionary<TSerie, decimal> GetViewedMinutesPerSerie();
 
     }
 }

@@ -7,7 +7,6 @@ namespace NetflixStatizier.Stats
 {
     public class NetflixStatsCalculator : IStatsCalculator<NetflixPlayback, NetflixSerie, NetflixEpisode>
     {
-        private const decimal SECONDS_PER_HOUR = 60 * 60;
         private readonly List<NetflixPlayback> m_AllViewedElements;
         private readonly List<NetflixPlayback> m_AllViewedMovies;
         private readonly List<NetflixPlayback> m_AllViewedSeriesEpisodes;
@@ -19,11 +18,11 @@ namespace NetflixStatizier.Stats
             m_AllViewedSeriesEpisodes = GetAllSeriesEpisodesFromViewedElements(m_AllViewedElements);
         }
 
-        public decimal GetTotalViewedHours() => m_AllViewedElements.Sum(x => x.PlaybackDuration) / SECONDS_PER_HOUR;
+        public decimal GetTotalViewedMinutes() => m_AllViewedElements.Sum(x => x.PlaybackDuration);
 
-        public decimal GetMoviesViewedHours() => m_AllViewedMovies.Sum(x => x.PlaybackDuration) / SECONDS_PER_HOUR;
+        public decimal GetMoviesViewedMinutes() => m_AllViewedMovies.Sum(x => x.PlaybackDuration);
 
-        public decimal GetSeriesEpisodesViewedHours() => m_AllViewedSeriesEpisodes.Sum(x => x.PlaybackDuration) / SECONDS_PER_HOUR;
+        public decimal GetSeriesEpisodesViewedMinutes() => m_AllViewedSeriesEpisodes.Sum(x => x.PlaybackDuration);
 
         public NetflixPlayback GetFirstWatchedMovie() => m_AllViewedMovies.OrderBy(x => x.PlaybackDateTime).First();
 
@@ -32,6 +31,19 @@ namespace NetflixStatizier.Stats
         public int GetMoviesViewedCount() => m_AllViewedMovies.Count;
 
         public int GetSeriesEpisodesViewedCount() => m_AllViewedSeriesEpisodes.Count;
+
+        public IEnumerable<IGrouping<NetflixSerie, NetflixPlayback>> GetPlaybacksPerSerie() => m_AllViewedElements.GroupBy(x => x.Episode.Serie);
+
+        public IDictionary<NetflixSerie, decimal> GetViewedMinutesPerSerie()
+        {
+            IDictionary<NetflixSerie, decimal> dict = new Dictionary<NetflixSerie, decimal>();
+            foreach (var grouping in GetPlaybacksPerSerie())
+            {
+                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration));
+            }
+
+            return dict;
+        }
 
 
         private static List<NetflixPlayback> GetAllMoviesFromViewedElements(IEnumerable<NetflixPlayback> allViewedItems) =>
