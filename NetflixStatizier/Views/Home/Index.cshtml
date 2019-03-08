@@ -2,7 +2,7 @@
 
 
 <h2>Netflix Account</h2>
-<form asp-action="GetStats" asp-controller="Home">
+<form asp-action="GetStats" asp-controller="Results">
 
     <label asp-for="NetflixEmail"></label>
     <input asp-for="NetflixEmail" />
@@ -16,7 +16,7 @@
     <input asp-for="NetflixProfileName" />
     <span asp-validation-for="NetflixProfileName"></span>
     <br />
-    <input type="submit" />
+    <input type="submit" value="Calculate Stats"/>
 </form>
 
 <div asp-validation-summary="All"></div>

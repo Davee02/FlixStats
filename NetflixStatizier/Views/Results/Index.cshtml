@@ -1,1 +1,23 @@
 ﻿@model NetflixStatsModel
+
+<div class="container">
+    <div id="overviewTimeChart"></div>
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="text/javascript">
+        google.charts.load('current', { packages: ['corechart'] });
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            jsonString = @Newtonsoft.Json.JsonConvert.SerializeObject(Model.ViewedHoursPerSerie.OrderByDescending(x => x.Value));
+            data = google.visualization.arrayToDataTable(jsonString);
+
+            chart = new google.visualization.BarChart(document.getElementById("overviewTimeChart"));
+            chart.draw(data, options);
+        }
+    </script>
+}

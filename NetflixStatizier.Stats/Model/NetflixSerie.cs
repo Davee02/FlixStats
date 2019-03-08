@@ -29,5 +29,7 @@ namespace NetflixStatizier.Stats.Model
             return IdentificationNumber == other.IdentificationNumber
                    && string.Equals(Title, other.Title);
         }
+
+        public override string ToString() => Title;
     }
 }
