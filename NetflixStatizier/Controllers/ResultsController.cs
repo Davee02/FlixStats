@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -54,7 +55,7 @@ namespace NetflixStatizier.Controllers
 
             var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
                 .OrderByDescending(x => x.Value)
-                .ToDictionary(serieTime => serieTime.Key, serieTime => serieTime.Value / 60);
+                .ToDictionary(x => $"{x.Key} - {Math.Round(x.Value / 60, 2)}h", x => x.Value / 60);
 
             var statsModel = new NetflixStatsModel
             {

@@ -1,6 +1,6 @@
 ﻿@model NetflixStatsModel
 
-<h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m series and movies on Netflix.</h2>
+<h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m watching TV shows and movies on Netflix.</h2>
 
 <div class="container">
     <div id="overviewTimeChart"></div>
@@ -20,8 +20,20 @@
 
             var options = {
                 title: "Overview",
-                width: 800,
-                height: 1000
+                width: 850,
+                height: 1100,
+                vAxis: { 
+                    textStyle : {
+                        fontSize: 11
+                    }
+
+                },
+                chartArea: {
+                    left: "35%"
+                },
+                explorer: {
+                    keepInBounds: true
+                }
             };
 
             var chart = new google.visualization.BarChart(document.getElementById("overviewTimeChart"));
