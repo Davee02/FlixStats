@@ -53,6 +53,7 @@ namespace NetflixStatizier.Controllers
             var statsCalculator = new NetflixStatsCalculator(viewingHistory);
 
             var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
+                .OrderByDescending(x => x.Value)
                 .ToDictionary(serieTime => serieTime.Key, serieTime => serieTime.Value / 60);
 
             var statsModel = new NetflixStatsModel
@@ -64,7 +65,7 @@ namespace NetflixStatizier.Controllers
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
-                ViewedHoursPerSerieJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerSerie, "Serie","Time watched")
+                ViewedHoursPerSerieJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerSerie, "Serie","Time watched in hours")
             };
 
 
