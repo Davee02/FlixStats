@@ -34,6 +34,36 @@ namespace NetflixStatizier.Stats
             NetflixPassword = netflixPassword;
         }
 
+        public async Task<IEnumerable<NetflixPlayback>> GetNetflixViewingHistory(string netflixProfileName)
+        {
+            var jsonPayload = @"{
+                'url': 'https://www.netflix.com/login',
+            'renderType': 'plaintext',
+            'scripts': {
+                'domReady': [
+                'https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js',
+                'if(location.pathname.indexOf('login')>0){let validatingForm=document.getElementsByClassName('login-form')[0];let nonValidatingForm=document.getElementsByClassName('login-form')[0].cloneNode(!0);validatingForm.parentNode.replaceChild(nonValidatingForm,validatingForm);document.getElementById('id_userLoginId').value='kiumo777@gmail.com';document.getElementById('id_password').value='s-INF17a+';document.getElementsByClassName('login-button')[0].click();}'
+                    ]
+    }
+}";
+
+            using (var client = new System.Net.Http.HttpClient())
+            {
+                client.DefaultRequestHeaders.ExpectContinue = false; //REQUIRED! or you will get 502 Bad Gateway errors
+                //you should look at the HTTP Endpoint docs, section about "userRequest" and "pageRequest" 
+                //for a listing of all the parameters you can pass via the "pageRequestJson" variable.
+                var pageRequestJson = new System.Net.Http.StringContent(@"{'url':'http://example.com','renderType':'plainText','outputAsJson':false }");
+                var response = await client.PostAsync("https://PhantomJScloud.com/api/browser/v2/a-demo-key-with-low-quota-per-ip-address/", pageRequestJson);
+                var responseString = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("*** HTTP Request Finish ***");
+                Console.WriteLine(responseString);
+            }
+
+
+            return null;
+        }
+
+
         public async Task<IEnumerable<NetflixPlayback>> GetNetflixViewingHistory(string netflixProfileName, IWebDriver driver)
         {
             var cookies = LogInToNetflixAndGetCookies(netflixProfileName, driver);

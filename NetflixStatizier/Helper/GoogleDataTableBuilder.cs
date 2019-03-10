@@ -19,13 +19,14 @@ namespace NetflixStatizier.Helper
 
         private static ColumnType GetColumnTypeFromType(Type type)
         {
-            switch (type.)
-            {
-                case Int32.:
-                case double:
-                case float:
-                    return ColumnType.Number;
-            }
+            throw new NotImplementedException();
+            //switch (type.)
+            //{
+            //    case Int32.:
+            //    case double:
+            //    case float:
+            //        return ColumnType.Number;
+            //}
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.271
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28705.295
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixStatizier", "NetflixStatizier\NetflixStatizier.csproj", "{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetflixStatizier", "NetflixStatizier\NetflixStatizier.csproj", "{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixStatizier.Stats", "NetflixStatizier.Stats\NetflixStatizier.Stats.csproj", "{26772ECE-6737-4231-B39F-507C5F7B3EAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetflixStatizier.Stats", "NetflixStatizier.Stats\NetflixStatizier.Stats.csproj", "{26772ECE-6737-4231-B39F-507C5F7B3EAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixStatizier.Utilities", "NetflixStatizier.Utilities\NetflixStatizier.Utilities.csproj", "{221D2057-ED3E-4AF8-932D-DFCF14E492A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
