@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetflixStatizier.Helper;
 using NetflixStatizier.Models;
+using NetflixStatizier.Services;
 
 namespace NetflixStatizier
 {
@@ -37,6 +38,7 @@ namespace NetflixStatizier
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<StatsContext>()
+                .AddDefaultUI()
                 .AddDefaultTokenProviders();
 
             services.AddMvc(options => options.AllowValidatingTopLevelNodes = true)
@@ -50,7 +52,9 @@ namespace NetflixStatizier
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
             });
 
-            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>();
+
+            services.Configure<EmailSenderOptions>(Configuration);
 
             services.Configure<IdentityOptions>(options =>
             {
