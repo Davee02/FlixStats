@@ -17,10 +17,7 @@ namespace NetflixStatizier.Areas.Identity
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<StatsContext>(options =>
                     options.UseSqlServer(
-                        context.Configuration.GetConnectionString("StatsContextConnection")));
-
-                services.AddDefaultIdentity<IdentityUser>()
-                    .AddEntityFrameworkStores<StatsContext>();
+                        context.Configuration.GetConnectionString("DefaultConnection")));
             });
         }
     }

@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetflixStatizier.Helper;
+using NetflixStatizier.Models;
 
 namespace NetflixStatizier
 {
@@ -28,10 +31,26 @@ namespace NetflixStatizier
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<StatsContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<StatsContext>()
+                .AddDefaultTokenProviders();
 
             services.AddMvc(options => options.AllowValidatingTopLevelNodes = true)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddMvcOptions(x => x.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddMvcOptions(options => options.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/Identity/Account/Login";
+                options.LogoutPath = "/Identity/Account/Logout";
+                options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+            });
+
+            services.AddSingleton<IEmailSender, EmailSender>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
