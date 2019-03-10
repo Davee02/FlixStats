@@ -1,32 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Google.DataTable.Net.Wrapper;
-using Microsoft.AspNetCore.Identity.UI.Pages.Internal.Account;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NetflixStatizier.Utilities;
 
 namespace NetflixStatizier.Helper
 {
     public static class GoogleDataTableBuilder
     {
-        public static string GetDataTableJsonFromDictionnary<TKey, TValue>(IDictionary<TKey, TValue> data)
+        public static string GetDataTableJsonFromDictionnary<TKey, TValue>(IDictionary<TKey, TValue> data, string columnName1, string columnName2)
         {
             var dataTable = new DataTable();
-            dataTable.AddColumn(new Column(GetColumnTypeFromType(data.Keys.First().GetType())));
+            dataTable.AddColumn(new Column(GetColumnTypeFromType(typeof(TKey)), columnName1, columnName1));
+            dataTable.AddColumn(new Column(GetColumnTypeFromType(typeof(TValue)), columnName2, columnName2));
+
+            foreach (var (key, value) in data)
+            {
+                var row = dataTable.NewRow();
+                row.AddCellRange(new[]
+                    {
+                        new Cell(key),
+                        new Cell(value)
+                    });
+                dataTable.AddRow(row);
+            }
 
             return dataTable.GetJson();
         }
 
         private static ColumnType GetColumnTypeFromType(Type type)
         {
-            throw new NotImplementedException();
-            //switch (type.)
-            //{
-            //    case Int32.:
-            //    case double:
-            //    case float:
-            //        return ColumnType.Number;
-            //}
+            if (TypeUtilities.IsNumericType(type))
+                return ColumnType.Number;
+
+            if (type == typeof(bool) || type == typeof(bool?))
+                return ColumnType.Boolean;
+
+            if (type == typeof(DateTime) || type == typeof(DateTime?))
+                return ColumnType.Datetime;
+
+            return ColumnType.String;
         }
     }
 }

@@ -13,8 +13,15 @@
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            jsonString = @Newtonsoft.Json.JsonConvert.SerializeObject(Model.ViewedHoursPerSerie.OrderByDescending(x => x.Value));
-            data = google.visualization.arrayToDataTable(jsonString);
+            jsonString = @Html.Raw(Model.ViewedHoursPerSerieJson);
+            data = new google.visualization.DataTable(jsonString);
+
+            var options = {
+                title: "Overview time / series",
+                width: 600,
+                height: 400,
+                bar: {groupWidth: "95%"}
+            };
 
             chart = new google.visualization.BarChart(document.getElementById("overviewTimeChart"));
             chart.draw(data, options);

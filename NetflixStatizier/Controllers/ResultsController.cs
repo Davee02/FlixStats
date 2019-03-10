@@ -30,7 +30,7 @@ namespace NetflixStatizier.Controllers
             {
                 //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
                 var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
-                var history = await stats.GetNetflixViewingHistory(model.NetflixProfileName);
+                var history = await stats.GetNetflixViewingHistory(model.NetflixProfileName, driver);
 
                 var calculatedStats = CalculateNetflixStats(history);
 
@@ -52,6 +52,9 @@ namespace NetflixStatizier.Controllers
         {
             var statsCalculator = new NetflixStatsCalculator(viewingHistory);
 
+            var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
+                .ToDictionary(serieTime => serieTime.Key, serieTime => serieTime.Value / 60);
+
             var statsModel = new NetflixStatsModel
             {
                 TotalViewedTime = Time.FromMinutes((double)statsCalculator.GetTotalViewedMinutes()),
@@ -61,8 +64,7 @@ namespace NetflixStatizier.Controllers
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
-                //ViewedTimePerSerie = statsCalculator.GetViewedMinutesPerSerie().ToDictionary(serieTime => serieTime.Key, serieTime => Time.FromMinutes((double)serieTime.Value))
-                ViewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie().ToDictionary(serieTime => serieTime.Key, serieTime => serieTime.Value / 60)
+                ViewedHoursPerSerieJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerSerie, "Serie","Time watched")
             };
 
 

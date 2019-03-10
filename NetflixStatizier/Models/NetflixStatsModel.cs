@@ -20,6 +20,6 @@ namespace NetflixStatizier.Models
 
         public NetflixPlayback FirstWatchedSeriesEpisode { get; set; }
 
-        public Dictionary<NetflixSerie, decimal> ViewedHoursPerSerie { get; set; }
+        public string ViewedHoursPerSerieJson { get; set; }
     }
 }
