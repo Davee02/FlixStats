@@ -21,5 +21,7 @@ namespace NetflixStatizier.Models
         public NetflixPlayback FirstWatchedSeriesEpisode { get; set; }
 
         public string ViewedHoursPerSerieJson { get; set; }
+
+        public string ViewedHoursPerDayJson { get; set; }
     }
 }

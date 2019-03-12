@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NetflixStatizier.Stats.Interface;
 using NetflixStatizier.Stats.Model;
@@ -34,6 +35,19 @@ namespace NetflixStatizier.Stats
 
         public IEnumerable<IGrouping<NetflixSerie, NetflixPlayback>> GetPlaybacksPerSerie() => m_AllViewedElements.GroupBy(x => x.Episode.Serie);
 
+        public IEnumerable<IGrouping<DateTime, NetflixPlayback>> GetPlaybacksPerDay() => m_AllViewedElements.GroupBy(x => x.PlaybackDateTime.Date);
+
+        public IDictionary<DateTime, decimal> GetViewedMinutesPerDay()
+        {
+            IDictionary<DateTime, decimal> dict = new Dictionary<DateTime, decimal>();
+            foreach (var grouping in GetPlaybacksPerDay())
+            {
+                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
+            }
+
+            return dict;
+        }
+
         public IDictionary<NetflixSerie, decimal> GetViewedMinutesPerSerie()
         {
             IDictionary<NetflixSerie, decimal> dict = new Dictionary<NetflixSerie, decimal>();
@@ -44,6 +58,7 @@ namespace NetflixStatizier.Stats
 
             return dict;
         }
+
 
 
         private static List<NetflixPlayback> GetAllMoviesFromViewedElements(IEnumerable<NetflixPlayback> allViewedItems) =>

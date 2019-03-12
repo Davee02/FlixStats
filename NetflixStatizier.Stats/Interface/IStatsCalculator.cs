@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NetflixStatizier.Stats.Interface
 {
-    public interface IStatsCalculator<TPlayback, TSerie, TEpisode> 
+    public interface IStatsCalculator<out TPlayback, TSerie, TEpisode> 
         where TSerie : ISerie 
         where TEpisode : IEpisode<TSerie>
         where TPlayback : IPlayback<TEpisode, TSerie>
@@ -24,7 +25,11 @@ namespace NetflixStatizier.Stats.Interface
 
         IEnumerable<IGrouping<TSerie, TPlayback>> GetPlaybacksPerSerie();
 
+        IEnumerable<IGrouping<DateTime, TPlayback>> GetPlaybacksPerDay();
+
         IDictionary<TSerie, decimal> GetViewedMinutesPerSerie();
+
+        IDictionary<DateTime, decimal> GetViewedMinutesPerDay();
 
     }
 }

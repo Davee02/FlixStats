@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Helper;
 using NetflixStatizier.Models;
 using NetflixStatizier.Stats;
+using NetflixStatizier.Stats.Exceptions;
 using NetflixStatizier.Stats.Model;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -27,15 +28,23 @@ namespace NetflixStatizier.Controllers
             if (!ModelState.IsValid)
                 return View("../Home/Index", model);
 
-            using (var driver = GetWebDriver())
+            try
             {
-                //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
-                var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
-                var history = await stats.GetNetflixViewingHistory(model.NetflixProfileName, driver);
+                using (var driver = GetWebDriver())
+                {
+                    //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
+                    var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
+                    var history = await stats.GetNetflixViewingHistory(model.NetflixProfileName, driver);
 
-                var calculatedStats = CalculateNetflixStats(history);
+                    var calculatedStats = CalculateNetflixStats(history);
 
-                return View("Index", calculatedStats);
+                    return View("Index", calculatedStats);
+                }
+            }
+            catch (NetflixLoginException e)
+            {
+
+                throw;
             }
         }
 
@@ -57,6 +66,10 @@ namespace NetflixStatizier.Controllers
                 .OrderByDescending(x => x.Value)
                 .ToDictionary(x => $"{x.Key} - {Math.Round(x.Value / 60, 2)}h", x => x.Value / 60);
 
+            var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
+                .OrderByDescending(x => x.Key)
+                .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", x => x.Value / 60);
+
             var statsModel = new NetflixStatsModel
             {
                 TotalViewedTime = Time.FromMinutes((double)statsCalculator.GetTotalViewedMinutes()),
@@ -66,7 +79,8 @@ namespace NetflixStatizier.Controllers
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
-                ViewedHoursPerSerieJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerSerie, "Serie","Time watched in hours")
+                ViewedHoursPerSerieJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerSerie, "Serie", "Time watched in hours"),
+                ViewedHoursPerDayJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerDay, "Date", "Time watched in hours"),
             };
 
 
