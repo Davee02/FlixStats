@@ -1,4 +1,7 @@
-﻿@model NetflixAccountModel
+﻿@using Microsoft.AspNetCore.Authorization
+@model NetflixAccountModel
+@inject IAuthorizationService AuthorizationService
+
 
 
 <form asp-action="GetStats" asp-controller="Results">
@@ -24,3 +27,8 @@
         <input type="submit" value="Calculate Stats" />
     </div>
 </form>
+
+@if (User.Identity.IsAuthenticated)
+{
+    <input type="button"/>
+}
