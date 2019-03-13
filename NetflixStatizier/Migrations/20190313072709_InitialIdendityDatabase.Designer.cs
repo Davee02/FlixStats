@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetflixStatizier.Data;
 
 namespace NetflixStatizier.Migrations
 {
     [DbContext(typeof(IdentityContext))]
-    [Migration("20190313064458_Initial")]
-    partial class Initial
+    [Migration("20190313072709_InitialIdendityDatabase")]
+    partial class InitialIdendityDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

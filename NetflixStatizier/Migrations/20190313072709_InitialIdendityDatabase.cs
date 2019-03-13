@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetflixStatizier.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialIdendityDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

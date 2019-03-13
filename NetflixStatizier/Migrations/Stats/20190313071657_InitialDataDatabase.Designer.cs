@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetflixStatizier.Data;
 
 namespace NetflixStatizier.Migrations.Stats
 {
     [DbContext(typeof(StatsContext))]
-    partial class StatsContextModelSnapshot : ModelSnapshot
+    [Migration("20190313071657_InitialDataDatabase")]
+    partial class InitialDataDatabase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

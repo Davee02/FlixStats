@@ -9,6 +9,6 @@ namespace NetflixStatizier.Data
             : base(options)
         { }
 
-        public DbSet<NetflixAccountModel> NetflixAccount { get; set; }
+        public DbSet<NetflixAccountModel> NetflixAccounts { get; set; }
     }
 }
