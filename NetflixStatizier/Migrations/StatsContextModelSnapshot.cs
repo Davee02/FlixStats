@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using NetflixStatizier.Data;
 using NetflixStatizier.Models;
 
 namespace NetflixStatizier.Migrations
 {
-    [DbContext(typeof(StatsContext))]
+    [DbContext(typeof(IdentityContext))]
     partial class StatsContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

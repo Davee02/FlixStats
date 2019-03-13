@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetflixStatizier.Data;
 using NetflixStatizier.Helper;
 using NetflixStatizier.Models;
 using NetflixStatizier.Services;
@@ -32,12 +33,16 @@ namespace NetflixStatizier
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddDbContext<IdentityContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("IdentityConnection")));
+
             services.AddDbContext<StatsContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<StatsContext>()
+                .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
 

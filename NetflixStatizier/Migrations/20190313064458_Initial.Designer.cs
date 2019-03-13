@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using NetflixStatizier.Models;
+using NetflixStatizier.Data;
 
 namespace NetflixStatizier.Migrations
 {
-    [DbContext(typeof(StatsContext))]
+    [DbContext(typeof(IdentityContext))]
     [Migration("20190313064458_Initial")]
     partial class Initial
     {

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using NetflixStatizier.Models;
 
 namespace NetflixStatizier.Controllers
 {
@@ -7,6 +10,13 @@ namespace NetflixStatizier.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SaveNetflixAccount(NetflixAccountModel netflixAccount)
+        {
+            
         }
     }
 }

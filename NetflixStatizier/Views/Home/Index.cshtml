@@ -4,7 +4,7 @@
 
 
 
-<form asp-action="GetStats" asp-controller="Results">
+<form asp-controller="Results" asp-action="GetStats">
     <div class="form-horizontal">
         <h2>Netflix Account</h2>
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -30,5 +30,5 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <input type="button"/>
+    <input type="button" asp-controller="Home" asp-action="SaveNetflixAccount" value="Save account details"/>
 }

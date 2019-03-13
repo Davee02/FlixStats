@@ -25,7 +25,7 @@ namespace NetflixStatizier.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage
             {
-                From = new EmailAddress("webadmin@timewastedonnetflix.com", "Webadmin"),
+                From = new EmailAddress("noreply@timewastedonnetflix.com", "TimeWastedOnNetflix"),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
