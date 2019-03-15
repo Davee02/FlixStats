@@ -36,7 +36,7 @@ namespace NetflixStatizier.Controllers
                 {
                     //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
                     var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
-                    var history = await stats.GetNetflixViewingHistory(model.NetflixProfileName, driver);
+                    var history = await stats.LoadNetflixViewingHistoryAsync(model.NetflixProfileName, driver);
 
                     var calculatedStats = CalculateNetflixStats(history);
 
@@ -69,7 +69,7 @@ namespace NetflixStatizier.Controllers
                 .ToDictionary(x => $"{x.Key} - {Math.Round(x.Value / 60, 2)}h", x => (double)Math.Round(x.Value / 60, 2));
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
-                .OrderByDescending(x => x.Key)
+                .OrderBy(x => x.Key)
                 .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", x => (double)Math.Round(x.Value / 60, 2));
 
 
@@ -83,6 +83,7 @@ namespace NetflixStatizier.Controllers
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
                 ViewedHoursPerSerieChart = GetTimePerSerieChart(viewedHoursPerSerie),
+                ViewedHoursPerDayChart = GetTimePerDayChart(viewedHoursPerDay),
             };
 
 
@@ -105,10 +106,10 @@ namespace NetflixStatizier.Controllers
             return chart;
         }
 
-        private static Chart GetTimePerDayChart(Dictionary<DateTime, double> timePerSerie)
+        private static Chart GetTimePerDayChart(Dictionary<string, double> timePerSerie)
         {
             var chart = new Chart { Type = "bar" };
-            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys.Select(x => x.ToString("d"))) };
+            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
