@@ -1,6 +1,8 @@
 ﻿@model NetflixStatsModel
 
 <h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m watching TV shows and movies on Netflix.</h2>
+<br/>
+<h2>You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
 
 <div class="container">
     <canvas id="timePerSerieBarChart"></canvas>

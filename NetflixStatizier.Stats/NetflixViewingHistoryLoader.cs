@@ -19,6 +19,8 @@ namespace NetflixStatizier.Stats
         private const string MAILADRESS_TEXTBOX_ID = "#id_userLoginId";
         private const string PASSWORD_TEXTBOX_ID = "#id_password";
         private const string LOGIN_BUTTON_ID = "button[type='submit']";
+        private const string ERROR_BOX_SELECTOR = "div[data-uia='error-message-container']";
+        private const string PROFILE_BUTTON_SELECTOR = "span[class='profile-name']";
 
         public string NetflixPassword { get; set; }
         public string NetflixEmail { get; set; }
@@ -74,7 +76,7 @@ namespace NetflixStatizier.Stats
 
             SearchForErrorBoxesAndThrowIfNecessary(driver);
 
-            var profileButton = driver.FindElements(By.CssSelector("span[class='profile-name']"))
+            var profileButton = driver.FindElements(By.CssSelector(PROFILE_BUTTON_SELECTOR))
                 .FirstOrDefault(x => string.Equals(x.Text, netflixProfileName, StringComparison.InvariantCultureIgnoreCase));
             if (profileButton == null)
                 throw new ArgumentException($"There is no profile with the name {netflixProfileName} in this account",
@@ -83,6 +85,7 @@ namespace NetflixStatizier.Stats
             profileButton.Click();
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            // This is necessary to ensure that the page loaded completely and the cookies were generated  
             var test = driver.FindElement(By.CssSelector("h2[class='rowHeader']"));
 
             return driver.Manage().Cookies.AllCookies;
@@ -90,7 +93,7 @@ namespace NetflixStatizier.Stats
 
         private static void SearchForErrorBoxesAndThrowIfNecessary(ISearchContext webDriver)
         {
-            var errorBox = webDriver.FindElements(By.CssSelector("div[data-uia='error-message-container']"));
+            var errorBox = webDriver.FindElements(By.CssSelector(ERROR_BOX_SELECTOR));
 
             if (!errorBox.Any())
                 return;
