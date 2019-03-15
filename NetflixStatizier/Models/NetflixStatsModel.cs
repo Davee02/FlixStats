@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using NetflixStatizier.Helper;
+﻿using ChartJSCore.Models;
 using NetflixStatizier.Stats.Model;
+using Time = NetflixStatizier.Helper.Time;
 
 namespace NetflixStatizier.Models
 {
@@ -20,8 +20,8 @@ namespace NetflixStatizier.Models
 
         public NetflixPlayback FirstWatchedSeriesEpisode { get; set; }
 
-        public string ViewedHoursPerSerieJson { get; set; }
+        public Chart ViewedHoursPerDayChart { get; set; }
 
-        public string ViewedHoursPerDayJson { get; set; }
+        public Chart ViewedHoursPerSerieChart{ get; set; }
     }
 }

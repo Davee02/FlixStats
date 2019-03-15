@@ -3,80 +3,17 @@
 <h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m watching TV shows and movies on Netflix.</h2>
 
 <div class="container">
-    <div id="timePerSerieBarChart"></div>
+    <canvas id="timePerSerieBarChart"></canvas>
 </div>
 <div class="container">
-    <div id="timePerDateBarChart"></div>
+    <canvas id="timePerDateBarChart"></canvas>
 </div>
 
 @section Scripts
-    {
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-    <script type="text/javascript">
-        google.charts.load('current', { packages: ['corechart'] });
-
-        google.charts.setOnLoadCallback(drawtimePerSerieBarChart);
-
-        google.charts.setOnLoadCallback(drawtimePerDateBarChart);
-
-
-
-        function drawtimePerSerieBarChart() {
-            let jsonString = @Html.Raw(Model.ViewedHoursPerSerieJson);
-            let data = new google.visualization.DataTable(jsonString);
-
-            let options = {
-                title: "Time per serie",
-                width: 900,
-                height: getDiagramHeightByNumberOfRows(data.getNumberOfRows()),
-                vAxis: { 
-                    textStyle : {
-                        fontSize: 11
-                    }
-
-                },
-                chartArea: {
-                    left: "35%"
-                },
-                explorer: {
-                    keepInBounds: true
-                }
-            };
-
-            let chart = new google.visualization.BarChart(document.getElementById("timePerSerieBarChart"));
-            chart.draw(data, options);
-        }
-
-        function drawtimePerDateBarChart() {
-            let jsonString = @Html.Raw(Model.ViewedHoursPerDayJson);
-            let data = new google.visualization.DataTable(jsonString);
-
-            let options = {
-                title: "Time per day",
-                width: 900,
-                height: getDiagramHeightByNumberOfRows(data.getNumberOfRows()),
-                vAxis: { 
-                    textStyle : {
-                        fontSize: 11
-                    }
-
-                },
-                chartArea: {
-                    left: "35%"
-                },
-                explorer: {
-                    keepInBounds: true
-                }
-            };
-
-            let chart = new google.visualization.BarChart(document.getElementById("timePerDateBarChart"));
-            chart.draw(data, options);
-
-        }
-
-        function getDiagramHeightByNumberOfRows(numberOfRows) {
-            return numberOfRows * 20 + 30;
-        }
+{
+    <script src="~/lib/chartsjs/Chart.bundle.min.js"></script>
+    <script>
+        @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
+        @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
     </script>
 }

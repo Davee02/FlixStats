@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Helper;
 using NetflixStatizier.Models;
+using ChartJSCore.Models;
 using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Exceptions;
 using NetflixStatizier.Stats.Model;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Time = NetflixStatizier.Helper.Time;
 
 namespace NetflixStatizier.Controllers
 {
@@ -64,11 +66,12 @@ namespace NetflixStatizier.Controllers
 
             var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
                 .OrderByDescending(x => x.Value)
-                .ToDictionary(x => $"{x.Key} - {Math.Round(x.Value / 60, 2)}h", x => x.Value / 60);
+                .ToDictionary(x => $"{x.Key} - {Math.Round(x.Value / 60, 2)}h", x => (double)Math.Round(x.Value / 60, 2));
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
                 .OrderByDescending(x => x.Key)
-                .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", x => x.Value / 60);
+                .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", x => (double)Math.Round(x.Value / 60, 2));
+
 
             var statsModel = new NetflixStatsModel
             {
@@ -79,12 +82,43 @@ namespace NetflixStatizier.Controllers
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
-                ViewedHoursPerSerieJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerSerie, "Serie", "Time watched in hours"),
-                ViewedHoursPerDayJson = GoogleDataTableBuilder.GetDataTableJsonFromDictionnary(viewedHoursPerDay, "Date", "Time watched in hours"),
+                ViewedHoursPerSerieChart = GetTimePerSerieChart(viewedHoursPerSerie),
             };
 
 
             return statsModel;
+        }
+
+        private static Chart GetTimePerSerieChart(Dictionary<string, double> timePerSerie)
+        {
+            var chart = new Chart { Type = "bar" };
+            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
+            var dataset = new BarDataset
+            {
+                Label = "# hours watched",
+                Data = new List<double>(timePerSerie.Values),
+                BorderWidth = new List<int> { 1 }
+            };
+            data.Datasets = new List<Dataset> { dataset };
+            chart.Data = data;
+
+            return chart;
+        }
+
+        private static Chart GetTimePerDayChart(Dictionary<DateTime, double> timePerSerie)
+        {
+            var chart = new Chart { Type = "bar" };
+            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys.Select(x => x.ToString("d"))) };
+            var dataset = new BarDataset
+            {
+                Label = "# hours watched",
+                Data = new List<double>(timePerSerie.Values),
+                BorderWidth = new List<int> { 1 }
+            };
+            data.Datasets = new List<Dataset> { dataset };
+            chart.Data = data;
+
+            return chart;
         }
     }
 }
