@@ -5,9 +5,11 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NetflixStatizier.Helper;
 using NetflixStatizier.Models;
 using ChartJSCore.Models;
+using ChartJSCore.Models.Bar;
+using Microsoft.AspNetCore.Identity;
+using NetflixStatizier.Interfaces;
 using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Exceptions;
 using NetflixStatizier.Stats.Model;
@@ -19,6 +21,15 @@ namespace NetflixStatizier.Controllers
 {
     public class ResultsController : BaseController
     {
+        private readonly INetflixAccountRepository m_NetflixAccountRepository;
+
+
+        public ResultsController(INetflixAccountRepository netflixAccountRepository, UserManager<IdentityUser> userManager)
+            : base(userManager)
+        {
+            m_NetflixAccountRepository = netflixAccountRepository;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -92,23 +103,30 @@ namespace NetflixStatizier.Controllers
 
         private static Chart GetTimePerSerieChart(Dictionary<string, double> timePerSerie)
         {
-            var chart = new Chart { Type = "bar" };
+            var chart = new Chart { Type = "horizontalBar" };
             var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
                 Data = new List<double>(timePerSerie.Values),
-                BorderWidth = new List<int> { 1 }
+                BorderWidth = new List<int> { 1 },
+                BackgroundColor = new List<string> { "rgb(159, 154, 232)" },
+                Type = "horizontalBar"
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
+            chart.Options = new BarOptions
+            {
+                Responsive = true,
+                Title = new Title { Text = "Hours watched per serie" }
+            };
 
             return chart;
         }
 
         private static Chart GetTimePerDayChart(Dictionary<string, double> timePerSerie)
         {
-            var chart = new Chart { Type = "bar" };
+            var chart = new Chart { Type = "horizontalBar" };
             var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {

@@ -7,32 +7,50 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetflixStatizier", "Netflix
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetflixStatizier.Stats", "NetflixStatizier.Stats\NetflixStatizier.Stats.csproj", "{26772ECE-6737-4231-B39F-507C5F7B3EAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixStatizier.Utilities", "NetflixStatizier.Utilities\NetflixStatizier.Utilities.csproj", "{221D2057-ED3E-4AF8-932D-DFCF14E492A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetflixStatizier.Utilities", "NetflixStatizier.Utilities\NetflixStatizier.Utilities.csproj", "{221D2057-ED3E-4AF8-932D-DFCF14E492A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetflixStatizier.Tests", "NetflixStatizier.Tests\NetflixStatizier.Tests.csproj", "{8619D0DF-FABC-4F97-93AD-90306616CC47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetflixStatizier.Tests", "NetflixStatizier.Tests\NetflixStatizier.Tests.csproj", "{8619D0DF-FABC-4F97-93AD-90306616CC47}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Debug|x86.ActiveCfg = Debug|x86
+		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Debug|x86.Build.0 = Debug|x86
 		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Release|x86.ActiveCfg = Release|x86
+		{798DCB31-7FFA-4585-91CD-8ED46A3F39B8}.Release|x86.Build.0 = Release|x86
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Debug|x86.ActiveCfg = Debug|x86
+		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Debug|x86.Build.0 = Debug|x86
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Release|x86.ActiveCfg = Release|x86
+		{26772ECE-6737-4231-B39F-507C5F7B3EAF}.Release|x86.Build.0 = Release|x86
 		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Debug|x86.ActiveCfg = Debug|x86
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Debug|x86.Build.0 = Debug|x86
 		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Release|x86.ActiveCfg = Release|x86
+		{221D2057-ED3E-4AF8-932D-DFCF14E492A4}.Release|x86.Build.0 = Release|x86
 		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Debug|x86.ActiveCfg = Debug|x86
+		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Debug|x86.Build.0 = Debug|x86
 		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Release|x86.ActiveCfg = Release|x86
+		{8619D0DF-FABC-4F97-93AD-90306616CC47}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

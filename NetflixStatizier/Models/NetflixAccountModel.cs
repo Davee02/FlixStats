@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace NetflixStatizier.Models
@@ -10,16 +11,21 @@ namespace NetflixStatizier.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [Required]
         [BindRequired]
         [EmailAddress]
         public string NetflixEmail { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [Required]
         [DataType(DataType.Password)]
         public string NetflixPassword { get; set; }
 
-        [Required(AllowEmptyStrings = false)]
+        [Required]
         public string NetflixProfileName { get; set; }
+
+
+        public IdentityUser IdentityUser { get; set; }
+
+        public string IdentityUserId { get; set; }
     }
 }

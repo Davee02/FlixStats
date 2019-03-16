@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NetflixStatizier.Data;
+using NetflixStatizier.Data.Repositories;
 using NetflixStatizier.Helper;
+using NetflixStatizier.Interfaces;
 using NetflixStatizier.Models;
 using NetflixStatizier.Services;
 
@@ -40,6 +42,8 @@ namespace NetflixStatizier
             services.AddDbContext<StatsContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<INetflixAccountRepository, NetflixAccountRepository>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>()

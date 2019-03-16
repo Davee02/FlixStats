@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Data;
 using NetflixStatizier.Models;
@@ -10,9 +11,9 @@ namespace NetflixStatizier.Controllers
     {
         private readonly StatsContext m_StatsContext;
 
-        public HomeController(StatsContext statsContext)
+        public HomeController(UserManager<IdentityUser> userManager)
+            : base(userManager)
         {
-            m_StatsContext = statsContext;
         }
 
         public IActionResult Index()
