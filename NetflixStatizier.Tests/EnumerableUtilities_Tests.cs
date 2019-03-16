@@ -40,6 +40,30 @@ namespace NetflixStatizier.Tests
             Assert.That(returnedList, Is.EqualTo(list));
         }
 
+        [Test]
+        public void GetNth_With_N_21_Returns_First_Element()
+        {
+            var list = GetListWithNumbersBetween1And20().ToList();
+
+            var returnedList = list.GetNth(21).ToList();
+
+            Assert.That(returnedList.Count, Is.EqualTo(1));
+            Assert.That(returnedList[0], Is.EqualTo(list[0]));
+        }
+
+        [Test]
+        public void GetNth_With_N_2_Returns_Elements()
+        {
+            var list = GetListWithNumbersBetween1And20().ToList();
+
+            var returnedList = list.GetNth(2).ToList();
+
+            Assert.That(returnedList.Count, Is.EqualTo(10));
+            Assert.That(returnedList[0], Is.EqualTo(list[0]));
+            Assert.That(returnedList[1], Is.EqualTo(list[2]));
+            Assert.That(returnedList[2], Is.EqualTo(list[4]));
+        }
+
 
         private static IEnumerable<int> GetListWithNumbersBetween1And20() => Enumerable.Range(1, 20);
     }
