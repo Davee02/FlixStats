@@ -12,7 +12,6 @@ namespace NetflixStatizier.Models
         public long Id { get; set; }
 
         [Required]
-        [BindRequired]
         [EmailAddress]
         public string NetflixEmail { get; set; }
 

@@ -41,24 +41,17 @@ namespace NetflixStatizier.Controllers
             if (!ModelState.IsValid)
                 return View("../Home/Index", model);
 
-            try
+            using (var driver = GetWebDriver())
             {
-                using (var driver = GetWebDriver())
-                {
-                    //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
-                    var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
-                    var history = await stats.LoadNetflixViewingHistoryAsync(model.NetflixProfileName, driver);
+                //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
+                var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
+                var history = await stats.LoadNetflixViewingHistoryAsync(model.NetflixProfileName, driver);
 
-                    var calculatedStats = CalculateNetflixStats(history);
+                var calculatedStats = CalculateNetflixStats(history);
 
-                    return View("Index", calculatedStats);
-                }
+                return View("Index", calculatedStats);
             }
-            catch (NetflixLoginException e)
-            {
 
-                throw;
-            }
         }
 
 
