@@ -33,10 +33,5 @@ namespace NetflixStatizier.Stats
             sb.Remove(sb.Length - 1, 1);
             return sb.ToString();
         }
-
-        internal static RegionInfo GetRegionInfoFromTwoLetterIsoName(string twoLetterIsoName)
-        {
-            return new RegionInfo(twoLetterIsoName);
-        }
     }
 }

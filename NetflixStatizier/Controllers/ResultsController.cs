@@ -104,18 +104,25 @@ namespace NetflixStatizier.Controllers
             return chart;
         }
 
-        private static Chart GetTimePerDayChart(Dictionary<string, double> timePerSerie)
+        private static Chart GetTimePerDayChart(Dictionary<string, double> timePerDay)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
-            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
+            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerDay.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
-                Data = new List<double>(timePerSerie.Values),
-                BorderWidth = new List<int> { 1 }
+                Data = new List<double>(timePerDay.Values),
+                BorderWidth = new List<int> { 1 },
+                BackgroundColor = new List<string> { "rgb(159, 154, 232)" },
+                Type = Enums.ChartType.HorizontalBar
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
+            chart.Options = new BarOptions
+            {
+                Responsive = true,
+                Title = new Title { Text = "Hours watched per day" }
+            };
 
             return chart;
         }

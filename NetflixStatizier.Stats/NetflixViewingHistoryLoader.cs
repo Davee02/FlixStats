@@ -151,7 +151,7 @@ namespace NetflixStatizier.Stats
                     yield return new NetflixPlayback
                     {
                         PlaybackDateTime = netflixViewedItem.PlaybackDateTime,
-                        PlaybackCountry = Utilities.GetRegionInfoFromTwoLetterIsoName(netflixViewedItem.CountryCode),
+                        PlaybackCountry = netflixViewedItem.CountryCode,
                         PlaybackDevice = netflixViewedItem.DeviceType,
                         PlaybackDuration = netflixViewedItem.PlaybackBookmark,
                         Sort = netflixViewedItem.Index,

@@ -8,7 +8,7 @@ namespace NetflixStatizier.Stats.Model
     {
         public Enums.DeviceType PlaybackDevice { get; set; }
 
-        public RegionInfo PlaybackCountry { get; set; }
+        public string PlaybackCountry { get; set; }
 
         public NetflixEpisode Episode { get; set; }
 
