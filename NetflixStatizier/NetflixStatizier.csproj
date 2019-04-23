@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="ChartJSCore" Version="1.4.2" />
-    <PackageReference Include="Google.DataTable.Net.Wrapper" Version="4.0.0-rc1" />
     <PackageReference Include="Humanizer" Version="2.6.2" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
