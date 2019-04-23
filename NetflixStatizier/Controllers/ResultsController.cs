@@ -15,6 +15,7 @@ using NetflixStatizier.Stats.Exceptions;
 using NetflixStatizier.Stats.Model;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using Enums = ChartJSCore.Models.Enums;
 using Time = NetflixStatizier.Helper.Time;
 
 namespace NetflixStatizier.Controllers
@@ -96,7 +97,7 @@ namespace NetflixStatizier.Controllers
 
         private static Chart GetTimePerSerieChart(Dictionary<string, double> timePerSerie)
         {
-            var chart = new Chart { Type = "horizontalBar" };
+            var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
             var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {
@@ -104,7 +105,7 @@ namespace NetflixStatizier.Controllers
                 Data = new List<double>(timePerSerie.Values),
                 BorderWidth = new List<int> { 1 },
                 BackgroundColor = new List<string> { "rgb(159, 154, 232)" },
-                Type = "horizontalBar"
+                Type = Enums.ChartType.HorizontalBar
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
@@ -119,7 +120,7 @@ namespace NetflixStatizier.Controllers
 
         private static Chart GetTimePerDayChart(Dictionary<string, double> timePerSerie)
         {
-            var chart = new Chart { Type = "horizontalBar" };
+            var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
             var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {
