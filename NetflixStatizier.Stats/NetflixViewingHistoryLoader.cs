@@ -22,24 +22,28 @@ namespace NetflixStatizier.Stats
         private const string ERROR_BOX_SELECTOR = "div[data-uia='error-message-container']";
         private const string PROFILE_BUTTON_SELECTOR = "span[class='profile-name']";
 
-        public string NetflixPassword { get; set; }
-        public string NetflixEmail { get; set; }
+        private readonly string _netflixPassword;
+        private readonly string _netflixEmail;
+        private readonly string _netflixProfile;
 
-        public NetflixViewingHistoryLoader(string netflixEmail, string netflixPassword)
+        public NetflixViewingHistoryLoader(NetflixProfile profile)
         {
-            if(string.IsNullOrEmpty(netflixEmail))
-                throw new ArgumentException("The netflix profile email must not be empty", nameof(netflixEmail));
-            if (string.IsNullOrEmpty(netflixPassword))
-                throw new ArgumentException("The netflix profile password must not be empty", nameof(netflixEmail));
+            if(string.IsNullOrEmpty(profile.AccountEmail))
+                throw new ArgumentException("The netflix account email must not be empty", nameof(profile.AccountEmail));
+            if (string.IsNullOrEmpty(profile.AccountEmail))
+                throw new ArgumentException("The netflix account password must not be empty", nameof(profile.AccountPassword));
+            if (string.IsNullOrEmpty(profile.ProfileName))
+                throw new ArgumentException("The netflix profile-name must not be empty", nameof(profile.ProfileName));
 
-            NetflixEmail = netflixEmail;
-            NetflixPassword = netflixPassword;
+            _netflixEmail = profile.AccountEmail;
+            _netflixPassword = profile.AccountPassword;
+            _netflixProfile = profile.ProfileName;
         }
 
 
-        public async Task<IEnumerable<NetflixPlayback>> LoadNetflixViewingHistoryAsync(string netflixProfileName, IWebDriver driver)
+        public async Task<IEnumerable<NetflixPlayback>> LoadNetflixViewingHistoryAsync(IWebDriver driver)
         {
-            var cookies = LogInToNetflixAndGetCookies(netflixProfileName, driver);
+            var cookies = LogInToNetflixAndGetCookies(_netflixProfile, driver);
 
             var historyJson = await GetViewingHistoryJsonAsync();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
@@ -49,18 +53,6 @@ namespace NetflixStatizier.Stats
             return GetNetflixPlaybacksFromViewingActivity(viewedElements);
         }
 
-        public IEnumerable<NetflixPlayback> GetNetflixViewingHistoryByJson(string json)
-        {
-            if (string.IsNullOrWhiteSpace(json))
-                return Enumerable.Empty<NetflixPlayback>();
-
-            if (!json.IsValidJson())
-                throw new ArgumentException("The provided json is not valid", nameof(json));
-
-            var viewingHistory = JsonConvert.DeserializeObject<IEnumerable<NetflixViewingHistoryPart>>(json);
-
-            return GetNetflixPlaybacksFromViewingActivity(viewingHistory);
-        }
 
         private IEnumerable<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
         {
@@ -70,8 +62,8 @@ namespace NetflixStatizier.Stats
             var passwordAdressTextBox = driver.FindElement(By.CssSelector(PASSWORD_TEXTBOX_ID));
             var logInButton = driver.FindElement(By.CssSelector(LOGIN_BUTTON_ID));
 
-            mailAdressTextBox.SendKeys(NetflixEmail);
-            passwordAdressTextBox.SendKeys(NetflixPassword);
+            mailAdressTextBox.SendKeys(_netflixEmail);
+            passwordAdressTextBox.SendKeys(_netflixPassword);
             logInButton.Click();
 
             SearchForErrorBoxesAndThrowIfNecessary(driver);
@@ -79,14 +71,13 @@ namespace NetflixStatizier.Stats
             var profileButton = driver.FindElements(By.CssSelector(PROFILE_BUTTON_SELECTOR))
                 .FirstOrDefault(x => string.Equals(x.Text, netflixProfileName, StringComparison.InvariantCultureIgnoreCase));
             if (profileButton == null)
-                throw new ArgumentException($"There is no profile with the name {netflixProfileName} in this account",
-                    nameof(netflixProfileName));
+                throw new NetflixLoginException($"There is no profile with the name {netflixProfileName} in this account");
 
             profileButton.Click();
 
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
             // This is necessary to ensure that the page loaded completely and the cookies were generated  
-            var test = driver.FindElement(By.CssSelector("h2[class='rowHeader']"));
+            _ = driver.FindElement(By.CssSelector("h2[class='rowHeader']"));
 
             return driver.Manage().Cookies.AllCookies;
         }

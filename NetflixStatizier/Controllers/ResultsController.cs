@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using NetflixStatizier.Models;
-using ChartJSCore.Models;
+﻿using ChartJSCore.Models;
 using ChartJSCore.Models.Bar;
 using Microsoft.AspNetCore.Identity;
-using NetflixStatizier.Interfaces;
+using Microsoft.AspNetCore.Mvc;
+using NetflixStatizier.Models;
 using NetflixStatizier.Stats;
-using NetflixStatizier.Stats.Exceptions;
 using NetflixStatizier.Stats.Model;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using NetflixStatizier.Interfaces;
+using RestEase;
 using Enums = ChartJSCore.Models.Enums;
 using Time = NetflixStatizier.Helper.Time;
 
@@ -22,13 +18,12 @@ namespace NetflixStatizier.Controllers
 {
     public class ResultsController : BaseController
     {
-        private readonly INetflixAccountRepository m_NetflixAccountRepository;
+        private readonly UserManager<IdentityUser> m_UserManager;
 
-
-        public ResultsController(INetflixAccountRepository netflixAccountRepository, UserManager<IdentityUser> userManager)
+        public ResultsController(UserManager<IdentityUser> userManager)
             : base(userManager)
         {
-            m_NetflixAccountRepository = netflixAccountRepository;
+            m_UserManager = userManager;
         }
 
         public IActionResult Index()
@@ -42,28 +37,19 @@ namespace NetflixStatizier.Controllers
             if (!ModelState.IsValid)
                 return View("../Home/Index", model);
 
-            using (var driver = GetWebDriver())
-            {
-                //var stats = new NetflixViewingHistoryLoader("kiumo777@gmail.com", "s-INF17a+");
-                var stats = new NetflixViewingHistoryLoader(model.NetflixEmail, model.NetflixPassword);
-                var history = await stats.LoadNetflixViewingHistoryAsync(model.NetflixProfileName, driver);
+                var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
+                var history = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
+                {
+                    AccountEmail = model.NetflixEmail, AccountPassword = model.NetflixPassword,
+                    ProfileName = model.NetflixProfileName
+                });
 
                 var calculatedStats = CalculateNetflixStats(history);
 
                 return View("Index", calculatedStats);
-            }
 
         }
 
-
-        private static IWebDriver GetWebDriver()
-        {
-            var options = new ChromeOptions();
-            options.AddArgument("headless");
-            options.AddArgument("blink-settings=imagesEnabled=false");
-            options.AddArgument("disable-gpu");
-            return new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), options);
-        }
 
         private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
         {

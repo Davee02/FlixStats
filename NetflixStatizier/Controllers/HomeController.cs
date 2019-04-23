@@ -9,11 +9,12 @@ namespace NetflixStatizier.Controllers
 {
     public class HomeController : BaseController
     {
-        private readonly StatsContext m_StatsContext;
+        private readonly StatsContext _statsContext;
 
-        public HomeController(UserManager<IdentityUser> userManager)
+        public HomeController(UserManager<IdentityUser> userManager, StatsContext statsContext)
             : base(userManager)
         {
+            _statsContext = statsContext;
         }
 
         public IActionResult Index()
@@ -25,8 +26,8 @@ namespace NetflixStatizier.Controllers
         [Authorize]
         public async Task<IActionResult> SaveNetflixAccount(NetflixAccountModel netflixAccount)
         {
-            await m_StatsContext.NetflixAccounts.AddAsync(netflixAccount);
-            await m_StatsContext.SaveChangesAsync();
+            await _statsContext.NetflixAccounts.AddAsync(netflixAccount);
+            await _statsContext.SaveChangesAsync();
 
             return View();
         }
