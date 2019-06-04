@@ -1,7 +1,4 @@
-﻿@using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Identity
-@model NetflixAccountModel
-@inject SignInManager<IdentityUser> SignInManager
+﻿@model NetflixAccountModel
 
 @{
     ViewData["Title"] = "Home";
@@ -30,11 +27,6 @@
         <input type="submit" value="Calculate Stats" class="btn btn-primary" />
     </div>
 </form>
-
-@if (!SignInManager.IsSignedIn(User))
-{
-    <button type="button" asp-controller="Home" asp-action="SaveNetflixAccount" value="Save account details" ></button>
-}
 
 @section Scripts
 {

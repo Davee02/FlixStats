@@ -8,34 +8,34 @@ namespace NetflixStatizier.Stats
 {
     public class NetflixStatsCalculator : IStatsCalculator<NetflixPlayback, NetflixSerie, NetflixEpisode>
     {
-        private readonly List<NetflixPlayback> m_AllViewedElements;
-        private readonly List<NetflixPlayback> m_AllViewedMovies;
-        private readonly List<NetflixPlayback> m_AllViewedSeriesEpisodes;
+        private readonly List<NetflixPlayback> _allViewedElements;
+        private readonly List<NetflixPlayback> _allViewedMovies;
+        private readonly List<NetflixPlayback> _allViewedSeriesEpisodes;
 
         public NetflixStatsCalculator(IEnumerable<NetflixPlayback> netflixPlaybacks)
         {
-            m_AllViewedElements = netflixPlaybacks.ToList();
-            m_AllViewedMovies = GetAllMoviesFromViewedElements(m_AllViewedElements);
-            m_AllViewedSeriesEpisodes = GetAllSeriesEpisodesFromViewedElements(m_AllViewedElements);
+            _allViewedElements = netflixPlaybacks.ToList();
+            _allViewedMovies = GetAllMoviesFromViewedElements(_allViewedElements);
+            _allViewedSeriesEpisodes = GetAllSeriesEpisodesFromViewedElements(_allViewedElements);
         }
 
-        public decimal GetTotalViewedMinutes() => m_AllViewedElements.Sum(x => x.PlaybackDuration) / 60m;
+        public decimal GetTotalViewedMinutes() => _allViewedElements.Sum(x => x.PlaybackDuration) / 60m;
 
-        public decimal GetMoviesViewedMinutes() => m_AllViewedMovies.Sum(x => x.PlaybackDuration) / 60m;
+        public decimal GetMoviesViewedMinutes() => _allViewedMovies.Sum(x => x.PlaybackDuration) / 60m;
 
-        public decimal GetSeriesEpisodesViewedMinutes() => m_AllViewedSeriesEpisodes.Sum(x => x.PlaybackDuration) / 60m;
+        public decimal GetSeriesEpisodesViewedMinutes() => _allViewedSeriesEpisodes.Sum(x => x.PlaybackDuration) / 60m;
 
-        public NetflixPlayback GetFirstWatchedMovie() => m_AllViewedMovies.OrderBy(x => x.PlaybackDateTime).First();
+        public NetflixPlayback GetFirstWatchedMovie() => _allViewedMovies.OrderBy(x => x.PlaybackDateTime).First();
 
-        public NetflixPlayback GetFirstWatchedSeriesEpisode() => m_AllViewedSeriesEpisodes.OrderBy(x => x.PlaybackDateTime).First();
+        public NetflixPlayback GetFirstWatchedSeriesEpisode() => _allViewedSeriesEpisodes.OrderBy(x => x.PlaybackDateTime).First();
 
-        public int GetMoviesViewedCount() => m_AllViewedMovies.Count;
+        public int GetMoviesViewedCount() => _allViewedMovies.Count;
 
-        public int GetSeriesEpisodesViewedCount() => m_AllViewedSeriesEpisodes.Count;
+        public int GetSeriesEpisodesViewedCount() => _allViewedSeriesEpisodes.Count;
 
-        public IEnumerable<IGrouping<NetflixSerie, NetflixPlayback>> GetPlaybacksPerSerie() => m_AllViewedElements.GroupBy(x => x.Episode.Serie);
+        public IEnumerable<IGrouping<NetflixSerie, NetflixPlayback>> GetPlaybacksPerSerie() => _allViewedElements.GroupBy(x => x.Episode.Serie);
 
-        public IEnumerable<IGrouping<DateTime, NetflixPlayback>> GetPlaybacksPerDay() => m_AllViewedElements.GroupBy(x => x.PlaybackDateTime.Date);
+        public IEnumerable<IGrouping<DateTime, NetflixPlayback>> GetPlaybacksPerDay() => _allViewedElements.GroupBy(x => x.PlaybackDateTime.Date);
 
         public IDictionary<DateTime, decimal> GetViewedMinutesPerDay()
         {

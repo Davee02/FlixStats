@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace NetflixStatizier.Tests
 {
     [TestFixture]
-    public class EnumerableUtilities_Tests
+    public class EnumerableUtilitiesTests
     {
         [Test]
         public void GetNth_On_Empty_List_Returns_Empty_List()

@@ -1,6 +1,5 @@
 ﻿using ChartJSCore.Models;
 using ChartJSCore.Models.Bar;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetflixStatizier.Models;
 using NetflixStatizier.Stats;
@@ -18,14 +17,6 @@ namespace NetflixStatizier.Controllers
 {
     public class ResultsController : BaseController
     {
-        private readonly UserManager<IdentityUser> m_UserManager;
-
-        public ResultsController(UserManager<IdentityUser> userManager)
-            : base(userManager)
-        {
-            m_UserManager = userManager;
-        }
-
         public IActionResult Index()
         {
             return View();
@@ -37,17 +28,16 @@ namespace NetflixStatizier.Controllers
             if (!ModelState.IsValid)
                 return View("../Home/Index", model);
 
-                var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
-                var history = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
-                {
-                    AccountEmail = model.NetflixEmail, AccountPassword = model.NetflixPassword,
-                    ProfileName = model.NetflixProfileName
-                });
+            var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
+            var history = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
+            {
+                AccountEmail = model.NetflixEmail,
+                AccountPassword = model.NetflixPassword,
+                ProfileName = model.NetflixProfileName
+            });
+            var calculatedStats = CalculateNetflixStats(history);
 
-                var calculatedStats = CalculateNetflixStats(history);
-
-                return View("Index", calculatedStats);
-
+            return View("Index", calculatedStats);
         }
 
 
@@ -84,7 +74,7 @@ namespace NetflixStatizier.Controllers
         private static Chart GetTimePerSerieChart(Dictionary<string, double> timePerSerie)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
-            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
+            var data = new Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
@@ -107,7 +97,7 @@ namespace NetflixStatizier.Controllers
         private static Chart GetTimePerDayChart(Dictionary<string, double> timePerDay)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
-            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerDay.Keys) };
+            var data = new Data { Labels = new List<string>(timePerDay.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",

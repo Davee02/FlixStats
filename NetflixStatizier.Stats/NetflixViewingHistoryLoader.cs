@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -75,7 +76,7 @@ namespace NetflixStatizier.Stats
 
             profileButton.Click();
 
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             // This is necessary to ensure that the page loaded completely and the cookies were generated  
             _ = driver.FindElement(By.CssSelector("h2[class='rowHeader']"));
 
