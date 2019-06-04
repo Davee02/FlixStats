@@ -42,7 +42,7 @@ namespace NetflixStatizier.NetflixApi.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "An error occured while processing the request");
+                return StatusCode(500, $"An error occured while processing the request: {e.Message}");
             }
         }
     }
