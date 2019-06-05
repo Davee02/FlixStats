@@ -91,7 +91,7 @@ namespace NetflixStatizier.Controllers
             chart.Data = data;
             chart.Options = new BarOptions
             {
-                Responsive = null,
+                Responsive = true,
                 Title = new Title { Text = "Hours watched per serie" }
             };
 
@@ -114,7 +114,7 @@ namespace NetflixStatizier.Controllers
             chart.Data = data;
             chart.Options = new BarOptions
             {
-                Responsive = null,
+                Responsive = true,
                 Title = new Title { Text = "Hours watched per day" }
             };
 
