@@ -1,10 +1,11 @@
-﻿using ChartJSCore.Models;
+﻿using System;
+using ChartJSCore.Models;
 using NetflixStatizier.Stats.Model;
 using Time = NetflixStatizier.Helper.Time;
 
 namespace NetflixStatizier.Models
 {
-    public class NetflixStatsModel
+    public class NetflixStatsViewModel
     {
         public Time TotalViewedTime { get; set; }
 
@@ -23,5 +24,9 @@ namespace NetflixStatizier.Models
         public Chart ViewedHoursPerDayChart { get; set; }
 
         public Chart ViewedHoursPerSerieChart{ get; set; }
+
+        public DateTime HighscoreDate { get; set; }
+
+        public Time HighcoreTime { get; set; }
     }
 }

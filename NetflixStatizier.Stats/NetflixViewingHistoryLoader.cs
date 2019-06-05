@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -92,7 +91,6 @@ namespace NetflixStatizier.Stats
 
             var errorMessage = errorBox[0].Text;
             throw new NetflixLoginException(errorMessage);
-
         }
 
         private static async Task<string> GetViewingHistoryJsonAsync()
@@ -131,7 +129,7 @@ namespace NetflixStatizier.Stats
                 NetflixViewingHistoryPart currentViewingHistoryPartElement;
                 do
                 {
-                    var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}&pgsize=1000");
+                    var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}&pgsize=2000");
                     currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
                     counter++;
 

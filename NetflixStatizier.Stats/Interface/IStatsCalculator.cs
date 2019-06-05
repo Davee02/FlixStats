@@ -31,5 +31,7 @@ namespace NetflixStatizier.Stats.Interface
 
         IDictionary<DateTime, decimal> GetViewedMinutesPerDay();
 
+        (decimal minutes, DateTime date) GetHighscoreDateAndMinutes();
+
     }
 }

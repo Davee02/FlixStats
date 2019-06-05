@@ -2,7 +2,7 @@
 
 namespace NetflixStatizier.Models
 {
-    public class NetflixAccountModel
+    public class NetflixAccountViewModel
     {
         [Required]
         [EmailAddress]

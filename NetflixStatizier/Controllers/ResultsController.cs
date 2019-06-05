@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using NetflixStatizier.Interfaces;
+using NetflixStatizier.Utilities;
 using RestEase;
 using Enums = ChartJSCore.Models.Enums;
 using Time = NetflixStatizier.Helper.Time;
@@ -23,25 +24,26 @@ namespace NetflixStatizier.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetStats(NetflixAccountModel model)
+        public async Task<IActionResult> GetStats(NetflixAccountViewModel viewModel)
         {
             if (!ModelState.IsValid)
-                return View("../Home/Index", model);
+                return View("../Home/Index", viewModel);
 
             var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
             var history = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
             {
-                AccountEmail = model.NetflixEmail,
-                AccountPassword = model.NetflixPassword,
-                ProfileName = model.NetflixProfileName
+                AccountEmail = viewModel.NetflixEmail,
+                AccountPassword = viewModel.NetflixPassword,
+                ProfileName = viewModel.NetflixProfileName
             });
+
             var calculatedStats = CalculateNetflixStats(history);
 
             return View("Index", calculatedStats);
         }
 
 
-        private static NetflixStatsModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
+        private static NetflixStatsViewModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
         {
             var statsCalculator = new NetflixStatsCalculator(viewingHistory);
 
@@ -54,17 +56,19 @@ namespace NetflixStatizier.Controllers
                 .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", x => (double)Math.Round(x.Value / 60, 2));
 
 
-            var statsModel = new NetflixStatsModel
+            var statsModel = new NetflixStatsViewModel
             {
-                TotalViewedTime = Time.FromMinutes((double)statsCalculator.GetTotalViewedMinutes()),
-                MoviesViewedTime = Time.FromMinutes((double)statsCalculator.GetMoviesViewedMinutes()),
-                SeriesViewedTime = Time.FromMinutes((double)statsCalculator.GetSeriesEpisodesViewedMinutes()),
+                TotalViewedTime = Time.FromMinutes(statsCalculator.GetTotalViewedMinutes()),
+                MoviesViewedTime = Time.FromMinutes(statsCalculator.GetMoviesViewedMinutes()),
+                SeriesViewedTime = Time.FromMinutes(statsCalculator.GetSeriesEpisodesViewedMinutes()),
                 MoviesViewedCount = statsCalculator.GetMoviesViewedCount(),
                 SeriesEpisodesViewedItemsCount = statsCalculator.GetSeriesEpisodesViewedCount(),
                 FirstWatchedMovie = statsCalculator.GetFirstWatchedMovie(),
                 FirstWatchedSeriesEpisode = statsCalculator.GetFirstWatchedSeriesEpisode(),
                 ViewedHoursPerSerieChart = GetTimePerSerieChart(viewedHoursPerSerie),
                 ViewedHoursPerDayChart = GetTimePerDayChart(viewedHoursPerDay),
+                HighscoreDate = statsCalculator.GetHighscoreDateAndMinutes().date,
+                HighcoreTime = Time.FromMinutes(statsCalculator.GetHighscoreDateAndMinutes().minutes)
             };
 
 
@@ -87,7 +91,7 @@ namespace NetflixStatizier.Controllers
             chart.Data = data;
             chart.Options = new BarOptions
             {
-                Responsive = true,
+                Responsive = null,
                 Title = new Title { Text = "Hours watched per serie" }
             };
 
@@ -110,7 +114,7 @@ namespace NetflixStatizier.Controllers
             chart.Data = data;
             chart.Options = new BarOptions
             {
-                Responsive = true,
+                Responsive = null,
                 Title = new Title { Text = "Hours watched per day" }
             };
 

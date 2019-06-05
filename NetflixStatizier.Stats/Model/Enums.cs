@@ -13,7 +13,9 @@
             A = 1736,
             E = 1798,
             H = 1816,
-            C = 2407
+            C = 2407,
+            Z = 2413,
+
         }
 
         public enum EpisodeType

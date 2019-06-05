@@ -39,7 +39,7 @@ namespace NetflixStatizier.Stats
 
         public IDictionary<DateTime, decimal> GetViewedMinutesPerDay()
         {
-            IDictionary<DateTime, decimal> dict = new Dictionary<DateTime, decimal>();
+            var dict = new Dictionary<DateTime, decimal>();
             foreach (var grouping in GetPlaybacksPerDay())
             {
                 dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
@@ -48,9 +48,16 @@ namespace NetflixStatizier.Stats
             return dict;
         }
 
+        public (decimal minutes, DateTime date) GetHighscoreDateAndMinutes()
+        {
+            var viewedMinutesPerDay = GetViewedMinutesPerDay();
+            var maxValue = viewedMinutesPerDay.Max(x => x.Value);
+            return (maxValue, viewedMinutesPerDay.First(x => x.Value == maxValue).Key);
+        }
+
         public IDictionary<NetflixSerie, decimal> GetViewedMinutesPerSerie()
         {
-            IDictionary<NetflixSerie, decimal> dict = new Dictionary<NetflixSerie, decimal>();
+            var dict = new Dictionary<NetflixSerie, decimal>();
             foreach (var grouping in GetPlaybacksPerSerie())
             {
                 dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
@@ -58,7 +65,6 @@ namespace NetflixStatizier.Stats
 
             return dict;
         }
-
 
 
         private static List<NetflixPlayback> GetAllMoviesFromViewedElements(IEnumerable<NetflixPlayback> allViewedItems) =>
