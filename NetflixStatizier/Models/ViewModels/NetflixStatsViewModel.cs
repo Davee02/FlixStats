@@ -3,7 +3,7 @@ using ChartJSCore.Models;
 using NetflixStatizier.Stats.Model;
 using Time = NetflixStatizier.Helper.Time;
 
-namespace NetflixStatizier.Models
+namespace NetflixStatizier.Models.ViewModels
 {
     public class NetflixStatsViewModel
     {

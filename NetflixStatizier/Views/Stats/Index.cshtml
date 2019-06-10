@@ -1,10 +1,10 @@
-﻿@model NetflixStatsViewModel
+﻿@model NetflixStatizier.Models.ViewModels.NetflixStatsViewModel
 
 @{
     ViewData["Title"] = "Results";
 }
 
-<h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m watching TV shows and movies on Netflix.</h2>
+<h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m watching TV shows and movies on Overview.</h2>
 <br />
 <h2>You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
 <br/>

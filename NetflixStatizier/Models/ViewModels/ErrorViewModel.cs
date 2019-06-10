@@ -1,6 +1,4 @@
-using System;
-
-namespace NetflixStatizier.Models
+namespace NetflixStatizier.Models.ViewModels
 {
     public class ErrorViewModel
     {

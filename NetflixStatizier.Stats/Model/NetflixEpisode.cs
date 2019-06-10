@@ -1,4 +1,4 @@
-﻿using NetflixStatizier.Stats.Interface;
+﻿using NetflixStatizier.Stats.Abstractions;
 
 namespace NetflixStatizier.Stats.Model
 {

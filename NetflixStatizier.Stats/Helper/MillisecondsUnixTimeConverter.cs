@@ -7,17 +7,18 @@ namespace NetflixStatizier.Stats.Helper
 {
     public class MillisecondsUnixTimeConverter : DateTimeConverterBase
     {
-        private static readonly DateTime m_Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private readonly DateTime _epochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            writer.WriteRawValue(((DateTime)value - m_Epoch).TotalMilliseconds.ToString(new CultureInfo("en-us")));
+            writer.WriteRawValue(((DateTime)value - _epochStart).TotalMilliseconds.ToString(new CultureInfo("en-us")));
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            if (reader.Value == null) { return null; }
-            return m_Epoch.AddMilliseconds((long)reader.Value);
+            if (reader.Value == null)
+                return null;
+            return _epochStart.AddMilliseconds((long)reader.Value);
         }
     }
 }

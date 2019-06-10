@@ -1,45 +1,45 @@
 ﻿using ChartJSCore.Models;
 using ChartJSCore.Models.Bar;
 using Microsoft.AspNetCore.Mvc;
-using NetflixStatizier.Models;
 using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NetflixStatizier.Interfaces;
-using NetflixStatizier.Utilities;
+using NetflixStatizier.Models.InputModels;
+using NetflixStatizier.Models.ViewModels;
+using NetflixStatizier.Services;
 using RestEase;
 using Enums = ChartJSCore.Models.Enums;
 using Time = NetflixStatizier.Helper.Time;
 
 namespace NetflixStatizier.Controllers
 {
-    public class ResultsController : BaseController
+    public class StatsController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(NetflixStatsViewModel netflixStatsViewModel)
         {
-            return View();
+            return View("Index", netflixStatsViewModel);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetStats(NetflixAccountViewModel viewModel)
+        public async Task<IActionResult> Overview(NetflixAccountInputModel inputModel)
         {
             if (!ModelState.IsValid)
-                return View("../Home/Index", viewModel);
+                return View("../Home/Index", inputModel);
 
             var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
             var history = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
             {
-                AccountEmail = viewModel.NetflixEmail,
-                AccountPassword = viewModel.NetflixPassword,
-                ProfileName = viewModel.NetflixProfileName
+                AccountEmail = inputModel.NetflixEmail,
+                AccountPassword = inputModel.NetflixPassword,
+                ProfileName = inputModel.NetflixProfileName
             });
 
             var calculatedStats = CalculateNetflixStats(history);
 
-            return View("Index", calculatedStats);
+            return Index(calculatedStats);
         }
 
 

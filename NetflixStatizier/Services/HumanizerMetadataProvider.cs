@@ -1,11 +1,11 @@
-﻿using Humanizer;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Humanizer;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 
-namespace NetflixStatizier.Helper
+namespace NetflixStatizier.Services
 {
     public class HumanizerMetadataProvider : IDisplayMetadataProvider
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NetflixStatizier.Stats.Interface
+namespace NetflixStatizier.Stats.Abstractions
 {
     public interface IStatsCalculator<out TPlayback, TSerie, TEpisode> 
         where TSerie : ISerie 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NetflixStatizier.Stats.Interface;
+using NetflixStatizier.Stats.Abstractions;
 using NetflixStatizier.Stats.Model;
 
 namespace NetflixStatizier.Stats

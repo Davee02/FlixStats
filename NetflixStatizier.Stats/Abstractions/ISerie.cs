@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NetflixStatizier.Stats.Interface
+namespace NetflixStatizier.Stats.Abstractions
 {
     public interface ISerie : IEquatable<ISerie>
     {

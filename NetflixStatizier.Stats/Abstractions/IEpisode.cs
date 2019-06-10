@@ -1,7 +1,7 @@
 ﻿using System;
 using NetflixStatizier.Stats.Model;
 
-namespace NetflixStatizier.Stats.Interface
+namespace NetflixStatizier.Stats.Abstractions
 {
     public interface IEpisode<TSerie> : IComparable<IEpisode<ISerie>> 
         where TSerie : ISerie

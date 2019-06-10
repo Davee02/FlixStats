@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetflixStatizier.Helper;
+using NetflixStatizier.DataConnection;
 using NetflixStatizier.Services;
 
 namespace NetflixStatizier
@@ -33,9 +33,8 @@ namespace NetflixStatizier
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddMvcOptions(options => options.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
 
-            services.AddTransient<IEmailSender, EmailSender>();
-
-            services.Configure<EmailSenderOptions>(Configuration);
+            services.AddDbContext<StatsContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,7 +52,7 @@ namespace NetflixStatizier
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-           app.UseCookiePolicy();
+            app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {

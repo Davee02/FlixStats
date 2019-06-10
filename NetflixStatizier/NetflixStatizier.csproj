@@ -24,4 +24,8 @@
     <ProjectReference Include="..\NetflixStatizier.Stats\NetflixStatizier.Stats.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\SqlModels\" />
+  </ItemGroup>
+
 </Project>

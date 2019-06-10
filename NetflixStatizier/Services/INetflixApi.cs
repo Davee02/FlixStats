@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using NetflixStatizier.Stats.Model;
 using RestEase;
 
-namespace NetflixStatizier.Interfaces
+namespace NetflixStatizier.Services
 {
     [Header("User-Agent", "TWON")]
     [Header("Content-Type", "application/json")]

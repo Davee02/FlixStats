@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NetflixStatizier.Models
+namespace NetflixStatizier.Models.InputModels
 {
-    public class NetflixAccountViewModel
+    public class NetflixAccountInputModel
     {
         [Required]
         [EmailAddress]
