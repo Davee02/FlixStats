@@ -41,7 +41,7 @@ namespace NetflixStatizier.Stats
         }
 
 
-        public async Task<IEnumerable<NetflixPlayback>> LoadNetflixViewingHistoryAsync(IWebDriver driver)
+        public async Task<IEnumerable<NetflixViewedItem>> LoadNetflixViewedItemsAsync(IWebDriver driver)
         {
             var cookies = LogInToNetflixAndGetCookies(_netflixProfile, driver);
 
@@ -50,7 +50,7 @@ namespace NetflixStatizier.Stats
 
             var viewedElements = await GetAllViewedElementsAsync(apiBaseUrl, cookies);
 
-            return GetNetflixPlaybacksFromViewingActivity(viewedElements);
+            return viewedElements.SelectMany(x => x.ViewedItems);
         }
 
 

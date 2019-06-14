@@ -22,7 +22,7 @@ namespace NetflixStatizier.NetflixApi.Controllers
 
         // GET api/viewingHistory
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<NetflixPlayback>>> Get(NetflixProfile profile)
+        public async Task<ActionResult<IEnumerable<NetflixViewedItem>>> Get(NetflixProfile profile)
         {
             if (string.IsNullOrEmpty(profile.AccountEmail))
                 return BadRequest("The netflix account email must not be empty");
@@ -34,7 +34,7 @@ namespace NetflixStatizier.NetflixApi.Controllers
             try
             {
                 var historyLoader = new NetflixViewingHistoryLoader(profile);
-                return Ok(await historyLoader.LoadNetflixViewingHistoryAsync(_webDriver));
+                return Ok(await historyLoader.LoadNetflixViewedItemsAsync(_webDriver));
             }
             catch (NetflixLoginException e)
             {

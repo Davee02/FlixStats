@@ -10,6 +10,6 @@ namespace NetflixStatizier.Services
     public interface INetflixApi
     {
         [Get("viewingHistory")]
-        Task<IEnumerable<NetflixPlayback>> GetNetflixViewingHistory([Body(BodySerializationMethod.Serialized)] NetflixProfile netflixProfile);
+        Task<IEnumerable<NetflixViewedItem>> GetNetflixViewingHistory([Body(BodySerializationMethod.Serialized)] NetflixProfile netflixProfile);
     }
 }

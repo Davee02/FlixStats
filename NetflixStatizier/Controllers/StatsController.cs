@@ -38,14 +38,14 @@ namespace NetflixStatizier.Controllers
                 return View("../Home/Index", inputModel);
 
             var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
-            var history = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
+            var viewedItems = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
             {
                 AccountEmail = inputModel.NetflixEmail,
                 AccountPassword = inputModel.NetflixPassword,
                 ProfileName = inputModel.NetflixProfileName
             });
 
-            var calculatedStats = CalculateNetflixStats(history);
+            //var calculatedStats = CalculateNetflixStats(history);
 
             return Index(calculatedStats);
         }
