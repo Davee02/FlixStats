@@ -28,7 +28,7 @@ namespace NetflixStatizier.Stats
 
         public NetflixViewingHistoryLoader(NetflixProfile profile)
         {
-            if(string.IsNullOrEmpty(profile.AccountEmail))
+            if (string.IsNullOrEmpty(profile.AccountEmail))
                 throw new ArgumentException("The netflix account email must not be empty", nameof(profile.AccountEmail));
             if (string.IsNullOrEmpty(profile.AccountEmail))
                 throw new ArgumentException("The netflix account password must not be empty", nameof(profile.AccountPassword));
@@ -140,34 +140,31 @@ namespace NetflixStatizier.Stats
             return viewingHistory;
         }
 
-        private static IEnumerable<NetflixPlayback> GetNetflixPlaybacksFromViewingActivity(
-            IEnumerable<NetflixViewingHistoryPart> history)
+        public static IEnumerable<NetflixPlayback> GetNetflixPlaybacksFromViewingActivity(
+            IEnumerable<NetflixViewedItem> history)
         {
-            foreach (var netflixViewingHistoryPart in history)
+            foreach (var netflixViewedItem in history)
             {
-                foreach (var netflixViewedItem in netflixViewingHistoryPart.ViewedItems)
+                yield return new NetflixPlayback
                 {
-                    yield return new NetflixPlayback
+                    PlaybackDateTime = netflixViewedItem.PlaybackDateTime,
+                    PlaybackCountry = netflixViewedItem.CountryCode,
+                    PlaybackDevice = netflixViewedItem.DeviceType,
+                    PlaybackDuration = netflixViewedItem.PlaybackBookmark,
+                    Sort = netflixViewedItem.Index,
+                    Episode = new NetflixEpisode
                     {
-                        PlaybackDateTime = netflixViewedItem.PlaybackDateTime,
-                        PlaybackCountry = netflixViewedItem.CountryCode,
-                        PlaybackDevice = netflixViewedItem.DeviceType,
-                        PlaybackDuration = netflixViewedItem.PlaybackBookmark,
-                        Sort = netflixViewedItem.Index,
-                        Episode = new NetflixEpisode
+                        Duration = netflixViewedItem.Duration,
+                        SeasonDescriptor = netflixViewedItem.SeasonDescriptor,
+                        Title = netflixViewedItem.EpisodeTitle,
+                        EpisodeType = GetEpisodeTypeFromViewedItem(netflixViewedItem),
+                        Serie = new NetflixSerie
                         {
-                            Duration = netflixViewedItem.Duration,
-                            SeasonDescriptor = netflixViewedItem.SeasonDescriptor,
-                            Title = netflixViewedItem.EpisodeTitle,
-                            EpisodeType = GetEpisodeTypeFromViewedItem(netflixViewedItem),
-                            Serie = new NetflixSerie
-                            {
-                                Title = netflixViewedItem.SeriesTitle,
-                                IdentificationNumber = netflixViewedItem.SeriesId
-                            }
+                            Title = netflixViewedItem.SeriesTitle,
+                            IdentificationNumber = netflixViewedItem.SeriesId
                         }
-                    };
-                }
+                    }
+                };
             }
         }
 

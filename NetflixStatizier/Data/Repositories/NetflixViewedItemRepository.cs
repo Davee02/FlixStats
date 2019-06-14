@@ -15,11 +15,17 @@ namespace NetflixStatizier.Data.Repositories
         {
         }
 
-        public async Task<IEnumerable<NetflixViewedItem>> GetByGuid(Guid guid)
+        public async Task<IEnumerable<NetflixViewedItem>> GetByGuidAsync(Guid guid)
         {
             return await Context.NetflixViewedItems
                 .Where(x => x.Identifier == guid)
                 .ToListAsync();
+        }
+
+        public async Task CreateManyAsync(IEnumerable<NetflixViewedItem> entities)
+        {
+            await Context.AddRangeAsync(entities);
+            await Context.SaveChangesAsync();
         }
     }
 }

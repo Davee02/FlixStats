@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
@@ -20,15 +21,31 @@ namespace NetflixStatizier.Controllers
     public class StatsController : Controller
     {
         private readonly INetflixViewedItemRepository _netflixViewedItemRepository;
+        private readonly IMapper _mapper;
 
-        public StatsController(INetflixViewedItemRepository netflixViewedItemRepository)
+
+        public StatsController(INetflixViewedItemRepository netflixViewedItemRepository, IMapper mapper)
         {
             _netflixViewedItemRepository = netflixViewedItemRepository;
+            _mapper = mapper;
         }
+
 
         public IActionResult Index(NetflixStatsViewModel netflixStatsViewModel)
         {
             return View("Index", netflixStatsViewModel);
+        }
+
+        public async Task<IActionResult> Overview(Guid id)
+        {
+            var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(id);
+            var playbacks =
+                NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
+                    viewedItems.Select(x => _mapper.Map<Stats.Model.NetflixViewedItem>(x)));
+
+            var calculatedStats = CalculateNetflixStats(playbacks);
+
+            return View("Index", calculatedStats);
         }
 
         [HttpPost]
@@ -45,9 +62,19 @@ namespace NetflixStatizier.Controllers
                 ProfileName = inputModel.NetflixProfileName
             });
 
-            //var calculatedStats = CalculateNetflixStats(history);
+            var identificationGuid = Guid.NewGuid();
+            var mappedItems = new List<Models.EntityFrameworkModels.NetflixViewedItem>();
+            foreach (var netflixViewedItem in viewedItems)
+            {
+                var mapped = _mapper.Map<Models.EntityFrameworkModels.NetflixViewedItem>(netflixViewedItem);
+                mapped.Identifier = identificationGuid;
 
-            return Index(calculatedStats);
+                mappedItems.Add(mapped);
+            }
+
+            await _netflixViewedItemRepository.CreateManyAsync(mappedItems);
+
+            return RedirectToAction("Overview", new { id = identificationGuid });
         }
 
 

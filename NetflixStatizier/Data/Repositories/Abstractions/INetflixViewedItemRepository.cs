@@ -8,6 +8,8 @@ namespace NetflixStatizier.Data.Repositories.Abstractions
 {
     public interface INetflixViewedItemRepository : IGenericInterface<NetflixViewedItem>
     {
-        Task<IEnumerable<NetflixViewedItem>> GetByGuid(Guid guid);
+        Task<IEnumerable<NetflixViewedItem>> GetByGuidAsync(Guid guid);
+
+        Task CreateManyAsync(IEnumerable<NetflixViewedItem> entities);
     }
 }

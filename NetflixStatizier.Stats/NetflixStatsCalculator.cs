@@ -25,9 +25,9 @@ namespace NetflixStatizier.Stats
 
         public decimal GetSeriesEpisodesViewedMinutes() => _allViewedSeriesEpisodes.Sum(x => x.PlaybackDuration) / 60m;
 
-        public NetflixPlayback GetFirstWatchedMovie() => _allViewedMovies.OrderBy(x => x.PlaybackDateTime).First();
+        public NetflixPlayback GetFirstWatchedMovie() => _allViewedMovies.OrderBy(x => x.PlaybackDateTime).FirstOrDefault();
 
-        public NetflixPlayback GetFirstWatchedSeriesEpisode() => _allViewedSeriesEpisodes.OrderBy(x => x.PlaybackDateTime).First();
+        public NetflixPlayback GetFirstWatchedSeriesEpisode() => _allViewedSeriesEpisodes.OrderBy(x => x.PlaybackDateTime).FirstOrDefault();
 
         public int GetMoviesViewedCount() => _allViewedMovies.Count;
 
@@ -52,6 +52,7 @@ namespace NetflixStatizier.Stats
         {
             var viewedMinutesPerDay = GetViewedMinutesPerDay();
             var maxValue = viewedMinutesPerDay.Max(x => x.Value);
+
             return (maxValue, viewedMinutesPerDay.First(x => x.Value == maxValue).Key);
         }
 
