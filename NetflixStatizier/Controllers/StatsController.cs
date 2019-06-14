@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
 using NetflixStatizier.Services;
@@ -18,6 +19,13 @@ namespace NetflixStatizier.Controllers
 {
     public class StatsController : Controller
     {
+        private readonly INetflixViewedItemRepository _netflixViewedItemRepository;
+
+        public StatsController(INetflixViewedItemRepository netflixViewedItemRepository)
+        {
+            _netflixViewedItemRepository = netflixViewedItemRepository;
+        }
+
         public IActionResult Index(NetflixStatsViewModel netflixStatsViewModel)
         {
             return View("Index", netflixStatsViewModel);
@@ -78,7 +86,7 @@ namespace NetflixStatizier.Controllers
         private static Chart GetTimePerSerieChart(Dictionary<string, double> timePerSerie)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
-            var data = new Data { Labels = new List<string>(timePerSerie.Keys) };
+            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerSerie.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
@@ -101,7 +109,7 @@ namespace NetflixStatizier.Controllers
         private static Chart GetTimePerDayChart(Dictionary<string, double> timePerDay)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
-            var data = new Data { Labels = new List<string>(timePerDay.Keys) };
+            var data = new ChartJSCore.Models.Data { Labels = new List<string>(timePerDay.Keys) };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",

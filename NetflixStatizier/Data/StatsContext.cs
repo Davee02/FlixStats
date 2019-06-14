@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NetflixStatizier.Stats.Model;
+using NetflixStatizier.Models.EntityFrameworkModels;
 
-namespace NetflixStatizier.DataConnection
+namespace NetflixStatizier.Data
 {
     public class StatsContext : DbContext
     {
         public StatsContext(DbContextOptions options) : base(options) { }
 
-
-        public DbSet<NetflixPlayback> NetflixPlaybacks { get; set; }
+        public DbSet<NetflixViewedItem> NetflixViewedItems { get; set; }
     }
 }

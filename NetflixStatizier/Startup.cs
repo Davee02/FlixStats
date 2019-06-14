@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NetflixStatizier.DataConnection;
+using NetflixStatizier.Data;
+using NetflixStatizier.Data.Repositories;
+using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Services;
 
 namespace NetflixStatizier
@@ -35,6 +37,8 @@ namespace NetflixStatizier
 
             services.AddDbContext<StatsContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddTransient<INetflixViewedItemRepository, NetflixViewedItemRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
