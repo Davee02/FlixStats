@@ -1,30 +1,28 @@
 ﻿using HtmlAgilityPack;
 using NetflixStatizier.Stats.Model;
 using Newtonsoft.Json;
-using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
+using HtmlAgilityPack.CssSelectors.NetCore;
 using NetflixStatizier.Stats.Exceptions;
-using Cookie = OpenQA.Selenium.Cookie;
 
 namespace NetflixStatizier.Stats
 {
     public class NetflixViewingHistoryLoader
     {
-        private const string NETFLIX_VIEWINGACTIVITY_URL = "https://www.netflix.com/viewingactivity";
-        private const string NETFLIX_LOGINPAGE_URL = "https://www.netflix.com/login";
-        private const string MAILADRESS_TEXTBOX_ID = "#id_userLoginId";
-        private const string PASSWORD_TEXTBOX_ID = "#id_password";
-        private const string LOGIN_BUTTON_ID = "button[type='submit']";
         private const string ERROR_BOX_SELECTOR = "div[data-uia='error-message-container']";
-        private const string PROFILE_BUTTON_SELECTOR = "span[class='profile-name']";
+        private const string PROFILE_BUTTON_SELECTOR = "a.profile-link";
 
-        private readonly string _netflixPassword;
-        private readonly string _netflixEmail;
-        private readonly string _netflixProfile;
+        private readonly NetflixProfile _netflixProfile;
+        private readonly HttpClient _httpClient;
+        private readonly Uri _netflixViewingactivityUrl = new Uri("https://www.netflix.com/viewingactivity", UriKind.Absolute);
+        private readonly Uri _netflixLoginpageUrl = new Uri("https://www.netflix.com/login", UriKind.Absolute);
+        private readonly string _netflixBaseUrl = "https://www.netflix.com";
 
         public NetflixViewingHistoryLoader(NetflixProfile profile)
         {
@@ -35,68 +33,93 @@ namespace NetflixStatizier.Stats
             if (string.IsNullOrEmpty(profile.ProfileName))
                 throw new ArgumentException("The netflix profile-name must not be empty", nameof(profile.ProfileName));
 
-            _netflixEmail = profile.AccountEmail;
-            _netflixPassword = profile.AccountPassword;
-            _netflixProfile = profile.ProfileName;
+            _netflixProfile = profile;
+
+            _httpClient = new HttpClient(new HttpClientHandler
+            {
+                UseCookies = true,
+                CookieContainer = new CookieContainer()
+            });
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("TWON");
         }
 
 
-        public async Task<IEnumerable<NetflixViewedItem>> LoadNetflixViewedItemsAsync(IWebDriver driver)
+        public async Task<IEnumerable<NetflixViewedItem>> LoadNetflixViewedItemsAsync()
         {
-            var cookies = LogInToNetflixAndGetCookies(_netflixProfile, driver);
+            await LogInToNetflixAndSetCookies();
 
             var historyJson = await GetViewingHistoryJsonAsync();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
 
-            var viewedElements = await GetAllViewedElementsAsync(apiBaseUrl, cookies);
+            var viewedElements = await GetAllViewedElementsAsync(apiBaseUrl);
 
             return viewedElements.SelectMany(x => x.ViewedItems);
         }
 
 
-        private IEnumerable<Cookie> LogInToNetflixAndGetCookies(string netflixProfileName, IWebDriver driver)
+        private async Task LogInToNetflixAndSetCookies()
         {
-            driver.Navigate().GoToUrl(NETFLIX_LOGINPAGE_URL);
+            var authToken = await GetAuthToken();
+            var profileSelectionHtmlDocument = await GetProfileSelectionHtmlDocument(authToken);
 
-            var mailAdressTextBox = driver.FindElement(By.CssSelector(MAILADRESS_TEXTBOX_ID));
-            var passwordAdressTextBox = driver.FindElement(By.CssSelector(PASSWORD_TEXTBOX_ID));
-            var logInButton = driver.FindElement(By.CssSelector(LOGIN_BUTTON_ID));
+            //SearchForErrorBoxesAndThrowIfNecessary(driver);
 
-            mailAdressTextBox.SendKeys(_netflixEmail);
-            passwordAdressTextBox.SendKeys(_netflixPassword);
-            logInButton.Click();
+            var profileButton = profileSelectionHtmlDocument.QuerySelectorAll(PROFILE_BUTTON_SELECTOR)
+                .FirstOrDefault(x => string.Equals( HttpUtility.HtmlDecode(x.InnerText.Trim()), _netflixProfile.ProfileName, StringComparison.OrdinalIgnoreCase));
 
-            SearchForErrorBoxesAndThrowIfNecessary(driver);
-
-            var profileButton = driver.FindElements(By.CssSelector(PROFILE_BUTTON_SELECTOR))
-                .FirstOrDefault(x => string.Equals(x.Text, netflixProfileName, StringComparison.InvariantCultureIgnoreCase));
             if (profileButton == null)
-                throw new NetflixLoginException($"There is no profile with the name {netflixProfileName} in this account");
+                throw new NetflixLoginException($"There is no profile with the name {_netflixProfile.ProfileName} in this account");
 
-            profileButton.Click();
-
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            // This is necessary to ensure that the page loaded completely and the cookies were generated  
-            _ = driver.FindElement(By.CssSelector("h2[class='rowHeader']"));
-
-            return driver.Manage().Cookies.AllCookies;
+            await _httpClient.GetStringAsync($"{_netflixBaseUrl}{profileButton.Attributes["href"].Value}");
         }
 
-        private static void SearchForErrorBoxesAndThrowIfNecessary(ISearchContext webDriver)
+        private async Task<string> GetAuthToken()
         {
-            var errorBox = webDriver.FindElements(By.CssSelector(ERROR_BOX_SELECTOR));
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(await _httpClient.GetStringAsync(_netflixLoginpageUrl));
 
-            if (!errorBox.Any())
-                return;
-
-            var errorMessage = errorBox[0].Text;
-            throw new NetflixLoginException(errorMessage);
+            return htmlDocument
+                .QuerySelector("form.login-form > input[name='authURL']")
+                ?.GetAttributeValue("value", "");
         }
 
-        private static async Task<string> GetViewingHistoryJsonAsync()
+        private async Task<HtmlDocument> GetProfileSelectionHtmlDocument(string authToken)
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("userLoginId", _netflixProfile.AccountEmail),
+                new KeyValuePair<string, string>("password", _netflixProfile.AccountPassword),
+                new KeyValuePair<string, string>("authURL", authToken),
+                new KeyValuePair<string, string>("rememberMe", "true"),
+                new KeyValuePair<string, string>("flow", "websiteSignUp"),
+                new KeyValuePair<string, string>("mode", "login"),
+                new KeyValuePair<string, string>("action", "loginAction"),
+                new KeyValuePair<string, string>("withFields", "rememberMe,nextPage,userLoginId,password"),
+            });
+
+            var response = await _httpClient.PostAsync(_netflixLoginpageUrl, formContent);
+
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(await response.Content.ReadAsStringAsync());
+
+            return htmlDocument;
+        }
+
+        private static void SearchForErrorBoxesAndThrowIfNecessary()
+        {
+            //var errorBox = webDriver.FindElements(By.CssSelector(ERROR_BOX_SELECTOR));
+
+            //if (!errorBox.Any())
+            //    return;
+
+            //var errorMessage = errorBox[0].Text;
+            //throw new NetflixLoginException(errorMessage);
+        }
+
+        private async Task<string> GetViewingHistoryJsonAsync()
         {
             var htmlWeb = new HtmlWeb();
-            var htmlDocument = await htmlWeb.LoadFromWebAsync(NETFLIX_VIEWINGACTIVITY_URL);
+            var htmlDocument = await htmlWeb.LoadFromWebAsync(_netflixViewingactivityUrl.ToString());
             var jsonNodeText = htmlDocument.DocumentNode.SelectSingleNode("/html/body/div[2]/script[1]").InnerText;
 
             jsonNodeText = jsonNodeText
@@ -117,25 +140,20 @@ namespace NetflixStatizier.Stats
                     .Replace(@"\x2F", "/");
         }
 
-        private static async Task<IEnumerable<NetflixViewingHistoryPart>> GetAllViewedElementsAsync(string apiBaseUrl, IEnumerable<Cookie> cookies)
+        private async Task<IEnumerable<NetflixViewingHistoryPart>> GetAllViewedElementsAsync(string apiBaseUrl)
         {
             var counter = 0;
             var viewingHistory = new List<NetflixViewingHistoryPart>();
 
-            using (var client = new WebClient())
+            NetflixViewingHistoryPart currentViewingHistoryPartElement;
+            do
             {
-                client.Headers.Add(HttpRequestHeader.Cookie, Utilities.GetKeyValueStringOutOfCookieCollection(cookies));
+                var jsonString = await _httpClient.GetStringAsync($"{apiBaseUrl}?pg={counter}&pgsize=2000");
+                currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
+                counter++;
 
-                NetflixViewingHistoryPart currentViewingHistoryPartElement;
-                do
-                {
-                    var jsonString = await client.DownloadStringTaskAsync($"{apiBaseUrl}?pg={counter}&pgsize=2000");
-                    currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
-                    counter++;
-
-                    viewingHistory.Add(currentViewingHistoryPartElement);
-                } while (currentViewingHistoryPartElement.ViewedItems.Count > 0);
-            }
+                viewingHistory.Add(currentViewingHistoryPartElement);
+            } while (currentViewingHistoryPartElement.ViewedItems.Count > 0);
 
             return viewingHistory;
         }

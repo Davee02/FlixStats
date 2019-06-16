@@ -11,8 +11,6 @@ using AutoMapper;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
-using NetflixStatizier.Services;
-using RestEase;
 using Enums = ChartJSCore.Models.Enums;
 using Time = NetflixStatizier.Helper.Time;
 
@@ -54,13 +52,14 @@ namespace NetflixStatizier.Controllers
             if (!ModelState.IsValid)
                 return View("../Home/Index", inputModel);
 
-            var netflixApi = RestClient.For<INetflixApi>("https://localhost:5005/api");
-            var viewedItems = await netflixApi.GetNetflixViewingHistory(new NetflixProfile
+            var historyLoader = new NetflixViewingHistoryLoader(new NetflixProfile
             {
                 AccountEmail = inputModel.NetflixEmail,
                 AccountPassword = inputModel.NetflixPassword,
                 ProfileName = inputModel.NetflixProfileName
             });
+
+            var viewedItems = await historyLoader.LoadNetflixViewedItemsAsync();
 
             var identificationGuid = Guid.NewGuid();
             var mappedItems = new List<Models.EntityFrameworkModels.NetflixViewedItem>();
