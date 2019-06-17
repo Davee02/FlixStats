@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using NetflixStatizier.Data;
 using NetflixStatizier.Data.Repositories;
 using NetflixStatizier.Data.Repositories.Abstractions;
@@ -33,8 +34,8 @@ namespace NetflixStatizier
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddMvc(options => options.AllowValidatingTopLevelNodes = true)
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            services.AddMvc(options => options.EnableEndpointRouting = false)
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddMvcOptions(options => options.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
 
             services.AddDbContext<StatsContext>(options =>
@@ -46,7 +47,7 @@ namespace NetflixStatizier
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

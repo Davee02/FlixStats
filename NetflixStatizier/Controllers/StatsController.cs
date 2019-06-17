@@ -45,8 +45,7 @@ namespace NetflixStatizier.Controllers
                 return BadRequest($"There are no results saved with the identifier {identifier}");
 
             var playbacks =
-                NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
-                    viewedItems.Select(x => _mapper.Map<Stats.Model.NetflixViewedItem>(x)));
+                NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(_mapper.Map<List<NetflixViewedItem>>(viewedItems));
 
             var calculatedStats = CalculateNetflixStats(playbacks);
 
@@ -70,15 +69,10 @@ namespace NetflixStatizier.Controllers
             var viewedItems = await historyLoader.LoadNetflixViewedItemsAsync();
 
             var identificationGuid = Guid.NewGuid();
-            var mappedItems = new List<Models.EntityFrameworkModels.NetflixViewedItem>();
-            foreach (var netflixViewedItem in viewedItems)
-            {
-                var mapped = _mapper.Map<Models.EntityFrameworkModels.NetflixViewedItem>(netflixViewedItem);
-                mapped.Identifier = identificationGuid;
+            var mappedItems = _mapper.Map<List<Models.EntityFrameworkModels.NetflixViewedItem>>(viewedItems);
 
-                mappedItems.Add(mapped);
-            }
-
+            mappedItems.ForEach(x => x.Identifier = identificationGuid);
+            
             await _netflixViewedItemRepository.CreateManyAsync(mappedItems);
 
             return RedirectToAction("Overview", new { id = identificationGuid });
@@ -88,15 +82,20 @@ namespace NetflixStatizier.Controllers
         public async Task<IActionResult> Export(ExportInputModel model)
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(model.Identifier);
+
             if (viewedItems == null)
                 return BadRequest($"There are no results saved with the identifier {model.Identifier}");
 
-            if (string.Equals(model.Format, "json"))
+            if (string.Equals(model.Format, "json", StringComparison.OrdinalIgnoreCase))
             {
                 var json = JsonConvert.SerializeObject(viewedItems, Formatting.Indented);
 
                 return File(new MemoryStream(Encoding.UTF8.GetBytes(json)), "application/json",
-                    $"TWON-export-{DateTime.Now}.json");
+                    $"TWON-export-{DateTime.Now:yyyyMMddhhmmss}.json");
+            }
+            else if(string.Equals(model.Format, "csv", StringComparison.OrdinalIgnoreCase))
+            {
+                
             }
 
             return BadRequest($"Unknown format: {model.Format}");
