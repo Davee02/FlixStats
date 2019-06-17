@@ -5,12 +5,15 @@ using NetflixStatizier.Stats;
 using NetflixStatizier.Stats.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
+using Newtonsoft.Json;
 using Enums = ChartJSCore.Models.Enums;
 using Time = NetflixStatizier.Helper.Time;
 
@@ -29,14 +32,18 @@ namespace NetflixStatizier.Controllers
         }
 
 
-        public IActionResult Index(NetflixStatsViewModel netflixStatsViewModel)
+        public IActionResult Index(NetflixStatsViewModel model)
         {
-            return View("Index", netflixStatsViewModel);
+            return View("Index", model);
         }
 
-        public async Task<IActionResult> Overview(Guid id)
+        [Route("stats/overview/{identifier:guid}")]
+        public async Task<IActionResult> Overview(Guid identifier)
         {
-            var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(id);
+            var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
+            if (viewedItems == null)
+                return BadRequest($"There are no results saved with the identifier {identifier}");
+
             var playbacks =
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
                     viewedItems.Select(x => _mapper.Map<Stats.Model.NetflixViewedItem>(x)));
@@ -47,16 +54,17 @@ namespace NetflixStatizier.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Overview(NetflixAccountInputModel inputModel)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Overview(NetflixAccountInputModel model)
         {
             if (!ModelState.IsValid)
-                return View("../Home/Index", inputModel);
+                return View("../Home/Index", model);
 
             var historyLoader = new NetflixViewingHistoryLoader(new NetflixProfile
             {
-                AccountEmail = inputModel.NetflixEmail,
-                AccountPassword = inputModel.NetflixPassword,
-                ProfileName = inputModel.NetflixProfileName
+                AccountEmail = model.NetflixEmail,
+                AccountPassword = model.NetflixPassword,
+                ProfileName = model.NetflixProfileName
             });
 
             var viewedItems = await historyLoader.LoadNetflixViewedItemsAsync();
@@ -76,6 +84,23 @@ namespace NetflixStatizier.Controllers
             return RedirectToAction("Overview", new { id = identificationGuid });
         }
 
+        [Route("stats/export/{identifier:guid}")]
+        public async Task<IActionResult> Export(ExportInputModel model)
+        {
+            var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(model.Identifier);
+            if (viewedItems == null)
+                return BadRequest($"There are no results saved with the identifier {model.Identifier}");
+
+            if (string.Equals(model.Format, "json"))
+            {
+                var json = JsonConvert.SerializeObject(viewedItems, Formatting.Indented);
+
+                return File(new MemoryStream(Encoding.UTF8.GetBytes(json)), "application/json",
+                    $"TWON-export-{DateTime.Now}.json");
+            }
+
+            return BadRequest($"Unknown format: {model.Format}");
+        }
 
         private static NetflixStatsViewModel CalculateNetflixStats(IEnumerable<NetflixPlayback> viewingHistory)
         {
