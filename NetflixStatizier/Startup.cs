@@ -12,6 +12,7 @@ using NetflixStatizier.Data;
 using NetflixStatizier.Data.Repositories;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Services;
+using NetflixStatizier.Services.Abstractions;
 
 namespace NetflixStatizier
 {
@@ -42,6 +43,8 @@ namespace NetflixStatizier
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<INetflixViewedItemRepository, NetflixViewedItemRepository>();
+
+            services.AddTransient<INetflixStatsCreator, NetflixStatsCreator>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
