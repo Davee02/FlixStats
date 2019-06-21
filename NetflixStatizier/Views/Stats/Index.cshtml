@@ -13,15 +13,19 @@
 <hr/>
 
 <div class="container">
-    <canvas id="timePerSerieBarChart" height="@(Model.ViewedHoursPerSerieChart.Data.Labels.Count * 5)"></canvas>
+    <canvas id="timePerSerieBarChart" height="@(Model.ViewedHoursPerSerieChart.Data.Labels.Count * 5)" role="img">
+        <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
+    </canvas>
 </div>
 <div class="container">
-    <canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3)"></canvas>
+    <canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3)" role="img">
+        <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
+    </canvas>
 </div>
 
 @section Scripts
 {
-    <script src="~/lib/chartsjs/Chart.bundle.min.js"></script>
+    <partial name="_ChartScriptsPartial"/>
     <script>
         @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))

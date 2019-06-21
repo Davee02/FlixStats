@@ -37,6 +37,10 @@ namespace NetflixStatizier.Stats
 
         public IEnumerable<IGrouping<DateTime, NetflixPlayback>> GetPlaybacksPerDay() => _allViewedElements.GroupBy(x => x.PlaybackDateTime.Date);
 
+        public IEnumerable<IGrouping<DayOfWeek, NetflixPlayback>> GetPlaybacksPerWeekDay() => _allViewedElements.GroupBy(x => x.PlaybackDateTime.DayOfWeek);
+
+        public IEnumerable<IGrouping<TimeSpan, NetflixPlayback>> GetPlaybacksPerTimeOfDay() => _allViewedElements.GroupBy(x => x.PlaybackDateTime.TimeOfDay);
+
         public IDictionary<DateTime, decimal> GetViewedMinutesPerDay()
         {
             var dict = new Dictionary<DateTime, decimal>();
@@ -60,6 +64,28 @@ namespace NetflixStatizier.Stats
         {
             var dict = new Dictionary<NetflixSerie, decimal>();
             foreach (var grouping in GetPlaybacksPerSerie())
+            {
+                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
+            }
+
+            return dict;
+        }
+
+        public IDictionary<TimeSpan, decimal> GetViewedMinutesPerTimeOfDay()
+        {
+            var dict = new Dictionary<TimeSpan, decimal>();
+            foreach (var grouping in GetPlaybacksPerTimeOfDay())
+            {
+                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
+            }
+
+            return dict;
+        }
+
+        public IDictionary<DayOfWeek, decimal> GetViewedMinutesPerWeekDay()
+        {
+            var dict = new Dictionary<DayOfWeek, decimal>();
+            foreach (var grouping in GetPlaybacksPerWeekDay())
             {
                 dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
             }

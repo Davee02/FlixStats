@@ -62,13 +62,16 @@ namespace NetflixStatizier.Stats
             var authToken = await GetAuthToken();
             var profileSelectionHtmlDocument = await GetProfileSelectionHtmlDocument(authToken);
 
-            //SearchForErrorBoxesAndThrowIfNecessary(driver);
+            SearchForErrorBoxesAndThrowIfNecessary(profileSelectionHtmlDocument);
 
             var profileButton = profileSelectionHtmlDocument.QuerySelectorAll(PROFILE_BUTTON_SELECTOR)
                 .FirstOrDefault(x => string.Equals( HttpUtility.HtmlDecode(x.InnerText.Trim()), _netflixProfile.ProfileName, StringComparison.OrdinalIgnoreCase));
 
             if (profileButton == null)
-                throw new NetflixLoginException($"There is no profile with the name {_netflixProfile.ProfileName} in this account");
+                throw new NetflixProfileNotFoundException($"There is no profile with the name {_netflixProfile.ProfileName} in this account")
+                {
+                    ProfileName = _netflixProfile.ProfileName
+                };
 
             await _httpClient.GetStringAsync($"{_netflixBaseUrl}{profileButton.Attributes["href"].Value}");
         }
@@ -105,15 +108,15 @@ namespace NetflixStatizier.Stats
             return htmlDocument;
         }
 
-        private static void SearchForErrorBoxesAndThrowIfNecessary()
+        private static void SearchForErrorBoxesAndThrowIfNecessary(HtmlDocument htmDocument)
         {
-            //var errorBox = webDriver.FindElements(By.CssSelector(ERROR_BOX_SELECTOR));
+            var errorBox = htmDocument.QuerySelectorAll(ERROR_BOX_SELECTOR);
 
-            //if (!errorBox.Any())
-            //    return;
+            if (!errorBox.Any())
+                return;
 
-            //var errorMessage = errorBox[0].Text;
-            //throw new NetflixLoginException(errorMessage);
+            var errorMessage = errorBox[0].InnerText;
+            throw new NetflixLoginException(errorMessage);
         }
 
         private async Task<string> GetViewingHistoryJsonAsync()
@@ -136,7 +139,7 @@ namespace NetflixStatizier.Stats
                 throw new ArgumentException("The provided json is not valid.", nameof(viewingActivityPageJson));
 
             dynamic parsedJson = JsonConvert.DeserializeObject(viewingActivityPageJson);
-            return $"{parsedJson.models.serverDefs.data.SHAKTI_API_ROOT}/{parsedJson.models.serverDefs.data.BUILD_IDENTIFIER}/viewingactivity"
+            return $"{_netflixBaseUrl}/api/shakti/{parsedJson.models.serverDefs.data.BUILD_IDENTIFIER}/viewingactivity"
                     .Replace(@"\x2F", "/");
         }
 
@@ -148,7 +151,7 @@ namespace NetflixStatizier.Stats
             NetflixViewingHistoryPart currentViewingHistoryPartElement;
             do
             {
-                var jsonString = await _httpClient.GetStringAsync($"{apiBaseUrl}?pg={counter}&pgsize=2000");
+                var jsonString = await _httpClient.GetStringAsync($"{apiBaseUrl}?pg={counter}&pgsize=500");
                 currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
                 counter++;
 

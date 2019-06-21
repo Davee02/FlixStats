@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ChartJSCore.Models;
-using ChartJSCore.Models.Bar;
+using ChartJSCore.Plugins.Zoom;
 using NetflixStatizier.Models.ViewModels;
 using NetflixStatizier.Services.Abstractions;
 using NetflixStatizier.Stats;
@@ -26,8 +26,9 @@ namespace NetflixStatizier.Services
                 .OrderBy(x => x.Key)
                 .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", x => (double)Math.Round(x.Value / 60, 2));
 
+            var viewedHoursPerTimeOfDay = statsCalculator.GetViewedMinutesPerTimeOfDay().OrderBy(x => x.Key).ToList();
 
-            var statsModel = new NetflixStatsViewModel
+             var statsModel = new NetflixStatsViewModel
             {
                 TotalViewedTime = Time.FromMinutes(statsCalculator.GetTotalViewedMinutes()),
                 MoviesViewedTime = Time.FromMinutes(statsCalculator.GetMoviesViewedMinutes()),
@@ -60,10 +61,22 @@ namespace NetflixStatizier.Services
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
-            chart.Options = new BarOptions
+            chart.Options = new ZoomOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per serie" }
+                Title = new Title { Text = "Hours watched per serie" },
+                ResponsiveAnimationDuration = 500,
+                Zoom = new Zoom
+                {
+                    Enabled = true,
+                    Mode = "xy",
+                    Speed = 0.2
+                },
+                Pan = new Pan
+                {
+                    Enabled = true,
+                    Mode = "xy"
+                }
             };
 
             return chart;
@@ -83,12 +96,24 @@ namespace NetflixStatizier.Services
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
-            chart.Options = new BarOptions
+            chart.Options = new ZoomOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per day" }
+                Title = new Title { Text = "Hours watched per day" },
+                ResponsiveAnimationDuration = 500,
+                Zoom = new Zoom
+                {
+                    Enabled = true,
+                    Mode = "xy",
+                    Speed = 0.2
+                },
+                Pan = new Pan
+                {
+                    Enabled = true,
+                    Mode = "xy"
+                }
             };
-
+            
             return chart;
         }
     }
