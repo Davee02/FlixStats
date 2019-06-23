@@ -23,7 +23,9 @@ namespace NetflixStatizier.Models.ViewModels
 
         public Chart ViewedHoursPerDayChart { get; set; }
 
-        public Chart ViewedHoursPerSerieChart{ get; set; }
+        public Chart ViewedHoursPerSerieChart { get; set; }
+
+        public Chart HourlyActivityChart { get; set; }
 
         public DateTime HighscoreDate { get; set; }
 

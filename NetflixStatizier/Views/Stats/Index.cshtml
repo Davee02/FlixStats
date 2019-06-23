@@ -22,6 +22,11 @@
         <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
     </canvas>
 </div>
+<div class="container">
+    <canvas id="hourlyWatchedRadioChart" role="img">
+        <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
+    </canvas>
+</div>
 
 @section Scripts
 {
@@ -29,5 +34,6 @@
     <script>
         @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
+        @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
     </script>
 }
