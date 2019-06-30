@@ -11,6 +11,7 @@ using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
 using NetflixStatizier.Services;
 using NetflixStatizier.Services.Abstractions;
+using NetflixStatizier.Stats.Exceptions;
 
 namespace NetflixStatizier.Controllers
 {
@@ -61,7 +62,21 @@ namespace NetflixStatizier.Controllers
                 ProfileName = model.NetflixProfileName
             });
 
-            var viewedItems = await historyLoader.LoadNetflixViewedItemsAsync();
+            List<NetflixViewedItem> viewedItems;
+            try
+            {
+                viewedItems = (await historyLoader.LoadNetflixViewedItemsAsync()).ToList();
+            }
+            catch (NetflixProfileNotFoundException e)
+            {
+                ModelState.AddModelError("NetflixProfileNotFoundException", e.Message);
+                return View("../Home/Index", model);
+            }
+            catch (NetflixLoginException e)
+            {
+                ModelState.AddModelError("NetflixLoginException", $"There was a problem while login in to your Netflix Account: {e.Message}");
+                return View("../Home/Index", model);
+            }
 
             var identificationGuid = Guid.NewGuid();
             var mappedItems = _mapper.Map<List<Models.EntityFrameworkModels.NetflixViewedItem>>(viewedItems);

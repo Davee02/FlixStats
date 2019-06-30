@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -15,7 +14,7 @@ namespace NetflixStatizier.Stats
 {
     public class NetflixViewingHistoryLoader
     {
-        private const string ERROR_BOX_SELECTOR = "div[data-uia='error-message-container']";
+        private const string ERROR_BOX_SELECTOR = "div.ui-message-container";
         private const string PROFILE_BUTTON_SELECTOR = "a.profile-link";
 
         private readonly NetflixProfile _netflixProfile;
@@ -35,11 +34,7 @@ namespace NetflixStatizier.Stats
 
             _netflixProfile = profile;
 
-            _httpClient = new HttpClient(new HttpClientHandler
-            {
-                UseCookies = true,
-                CookieContainer = new CookieContainer()
-            });
+            _httpClient = new HttpClient();
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("TWON");
         }
 
@@ -68,7 +63,7 @@ namespace NetflixStatizier.Stats
                 .FirstOrDefault(x => string.Equals( HttpUtility.HtmlDecode(x.InnerText.Trim()), _netflixProfile.ProfileName, StringComparison.OrdinalIgnoreCase));
 
             if (profileButton == null)
-                throw new NetflixProfileNotFoundException($"There is no profile with the name {_netflixProfile.ProfileName} in this account")
+                throw new NetflixProfileNotFoundException($"No profile with the name '{_netflixProfile.ProfileName}' exists in this account")
                 {
                     ProfileName = _netflixProfile.ProfileName
                 };
@@ -93,7 +88,7 @@ namespace NetflixStatizier.Stats
                 new KeyValuePair<string, string>("userLoginId", _netflixProfile.AccountEmail),
                 new KeyValuePair<string, string>("password", _netflixProfile.AccountPassword),
                 new KeyValuePair<string, string>("authURL", authToken),
-                new KeyValuePair<string, string>("rememberMe", "true"),
+                new KeyValuePair<string, string>("rememberMe", "false"),
                 new KeyValuePair<string, string>("flow", "websiteSignUp"),
                 new KeyValuePair<string, string>("mode", "login"),
                 new KeyValuePair<string, string>("action", "loginAction"),
@@ -115,7 +110,12 @@ namespace NetflixStatizier.Stats
             if (!errorBox.Any())
                 return;
 
-            var errorMessage = errorBox[0].InnerText;
+            string errorMessage;
+            if (errorBox.Count > 1 && errorBox[0].InnerText.Contains("JavaScript", StringComparison.OrdinalIgnoreCase))
+                errorMessage = errorBox[1].InnerText;
+            else
+                errorMessage = errorBox[0].InnerText;
+
             throw new NetflixLoginException(errorMessage);
         }
 

@@ -21,17 +21,21 @@ namespace NetflixStatizier.Services
 
             var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
                 .OrderByDescending(x => x.Value)
-                .ToDictionary(x => $"{x.Key} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
+                .ToDictionary(x => $"{x.Key.Title ?? "Movies"} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
                 .OrderBy(x => x.Key)
                 .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
 
-            var viewedMinutesPerTimeOfDay = statsCalculator.GetViewedMinutesPerTimeOfDay()
+            var viewedMinutesPerTimeOfDayTemp = statsCalculator.GetViewedMinutesPerTimeOfDay()
                 .Select(x =>
-                    new KeyValuePair<TimeSpan, decimal>(x.Key.RoundToNearest(TimeSpan.FromMinutes(15)), x.Value))
+                    new KeyValuePair<TimeSpan, double>(x.Key.RoundToNearest(TimeSpan.FromMinutes(15)), (double)Math.Round(x.Value / 60, 2)))
                 .GroupBy(x => x.Key)
-                .ToDictionary(x => x.Key, y => (double)y.Sum(z => z.Value));
+                .Select(x => new KeyValuePair<TimeSpan, double>(x.Key, x.Sum(y => y.Value)))
+                .ToList();
+
+            var viewedMinutesPerTimeOfDay = GetKeyValuePairsForTimeOfDay(viewedMinutesPerTimeOfDayTemp)
+                .ToDictionary(x => x.Key, y => y.Value);
 
             var statsModel = new NetflixStatsViewModel
             {
@@ -131,7 +135,10 @@ namespace NetflixStatizier.Services
             var data = new ChartJSCore.Models.Data { Labels = labels.ToList()};
             var dataset = new RadarDataset
             {
+                Label = "# hours watched",
                 Data = new List<double>(timePerTimeOfDay.Values),
+                BorderWidth = 1 ,
+                BackgroundColor = "rgb(159, 154, 232)",
                 Type = Enums.ChartType.Radar
             };
             data.Datasets = new List<Dataset> { dataset };
@@ -139,7 +146,7 @@ namespace NetflixStatizier.Services
             chart.Options = new ZoomRadarOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per day" },
+                Title = new Title { Text = "Hours watched per time of day" },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
                 {
@@ -155,6 +162,30 @@ namespace NetflixStatizier.Services
             };
 
             return chart;
+        }
+
+        private IEnumerable<KeyValuePair<TimeSpan, double>> GetKeyValuePairsForTimeOfDay(IReadOnlyCollection<KeyValuePair<TimeSpan, double>> existingKeyValuePairs)
+        {
+            foreach (var quarterHour in GetTimeSpansForEveryQuarterHour())
+            {
+                if (existingKeyValuePairs.Any(x => x.Key == quarterHour))
+                {
+                    yield return existingKeyValuePairs.FirstOrDefault(x => x.Key == quarterHour);
+                }
+                else
+                {
+                    yield return new KeyValuePair<TimeSpan, double>(quarterHour, 0);
+                }
+            }
+        }
+
+        private IEnumerable<TimeSpan> GetTimeSpansForEveryQuarterHour()
+        {
+            var startTime = new TimeSpan(0, 0, 0);
+            foreach (var quarterHourOffset in Enumerable.Range(0, 96))
+            {
+                yield return startTime.Add(TimeSpan.FromMinutes(quarterHourOffset * 15));
+            }
         }
     }
 }
