@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
+using CsvHelper.Configuration;
 using NetflixStatizier.Models.EntityFrameworkModels;
 using NetflixStatizier.Services.Abstractions;
 
@@ -22,7 +23,7 @@ namespace NetflixStatizier.Services
         {
             var stream = new MemoryStream();
             var streamWriter = new StreamWriter(stream, Encoding.UTF8);
-            var csvWriter = new CsvWriter(streamWriter);
+            var csvWriter = new CsvWriter(streamWriter, new Configuration { SanitizeForInjection = true });
 
             csvWriter.WriteRecords(_viewedItems);
             csvWriter.Flush();

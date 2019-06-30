@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ChartJSCore.Models;
 using ChartJSCore.Plugins.Zoom;
+using DaHo.Library.Utilities;
 using NetflixStatizier.Helper;
 using NetflixStatizier.Models.ViewModels;
 using NetflixStatizier.Services.Abstractions;
@@ -25,7 +26,7 @@ namespace NetflixStatizier.Services
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
                 .OrderBy(x => x.Key)
-                .ToDictionary(x => $"{x.Key:d} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
+                .ToDictionary(x => $"{x.Key:dd-MM-yyyy} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
 
             var viewedMinutesPerTimeOfDayTemp = statsCalculator.GetViewedMinutesPerTimeOfDay()
                 .Select(x =>
@@ -74,7 +75,7 @@ namespace NetflixStatizier.Services
             chart.Options = new ZoomOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per serie" },
+                Title = new Title { Text = "Hours watched per serie" , Display = true },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
                 {
@@ -109,7 +110,7 @@ namespace NetflixStatizier.Services
             chart.Options = new ZoomOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per day" },
+                Title = new Title { Text = "Hours watched per day", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
                 {
@@ -129,12 +130,13 @@ namespace NetflixStatizier.Services
 
         private static Chart GetHourlyActivityChart(Dictionary<TimeSpan, double> timePerTimeOfDay)
         {
-            var labels = timePerTimeOfDay.Keys.Select(x => x.IsFullHour() ? x.ToString() : "");
+            var labels = timePerTimeOfDay.Keys.Select(x => x.IsFullHour() ? x.ToString("hh':'mm") : "");
 
             var chart = new Chart { Type = Enums.ChartType.Radar };
             var data = new ChartJSCore.Models.Data { Labels = labels.ToList()};
             var dataset = new RadarDataset
             {
+                
                 Label = "# hours watched",
                 Data = new List<double>(timePerTimeOfDay.Values),
                 BorderWidth = 1 ,
@@ -146,7 +148,7 @@ namespace NetflixStatizier.Services
             chart.Options = new ZoomRadarOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per time of day" },
+                Title = new Title { Text = "Hours watched per time of day", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
                 {
@@ -158,7 +160,8 @@ namespace NetflixStatizier.Services
                 {
                     Enabled = true,
                     Mode = "xy"
-                }
+                },
+                Tooltips = new ToolTip { Enabled = false }
             };
 
             return chart;
@@ -166,7 +169,7 @@ namespace NetflixStatizier.Services
 
         private IEnumerable<KeyValuePair<TimeSpan, double>> GetKeyValuePairsForTimeOfDay(IReadOnlyCollection<KeyValuePair<TimeSpan, double>> existingKeyValuePairs)
         {
-            foreach (var quarterHour in GetTimeSpansForEveryQuarterHour())
+            foreach (var quarterHour in TimeSpanUtilities.GetEveryXMinutesForDay(15))
             {
                 if (existingKeyValuePairs.Any(x => x.Key == quarterHour))
                 {
@@ -176,15 +179,6 @@ namespace NetflixStatizier.Services
                 {
                     yield return new KeyValuePair<TimeSpan, double>(quarterHour, 0);
                 }
-            }
-        }
-
-        private IEnumerable<TimeSpan> GetTimeSpansForEveryQuarterHour()
-        {
-            var startTime = new TimeSpan(0, 0, 0);
-            foreach (var quarterHourOffset in Enumerable.Range(0, 96))
-            {
-                yield return startTime.Add(TimeSpan.FromMinutes(quarterHourOffset * 15));
             }
         }
     }

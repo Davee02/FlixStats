@@ -8,7 +8,7 @@
 <br />
 <h2>You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
 <br/>
-<h2>Your highscore day was the @(Model.HighscoreDate.ToString("d")). On this day, you have watched @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m long.</h2>
+<h2>Your highscore day was the @(Model.HighscoreDate.ToString("dd-MM-yyyy")). On this day, you wasted @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m on Netflix.</h2>
 
 <hr/>
 
@@ -18,7 +18,7 @@
     </canvas>
 </div>
 <div class="container">
-    <canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3)" role="img">
+    <canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3.5)" role="img">
         <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
     </canvas>
 </div>

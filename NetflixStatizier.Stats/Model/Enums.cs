@@ -17,8 +17,8 @@
             Z = 2413,
             T = 1416,
             X = 1278,
-            L = 1156
-
+            L = 1156,
+            U = 1612
         }
 
         public enum EpisodeType
