@@ -20,12 +20,18 @@ namespace NetflixStatizier.Controllers
         private readonly INetflixViewedItemRepository _netflixViewedItemRepository;
         private readonly IMapper _mapper;
         private readonly INetflixStatsCreator _netflixStatsCreator;
+        private readonly IEnumerable<INetflixViewedItemsFileExporter> _netlNetflixViewedItemsFileExporters;
 
-        public StatsController(INetflixViewedItemRepository netflixViewedItemRepository, IMapper mapper, INetflixStatsCreator netflixStatsCreator)
+        public StatsController(
+            INetflixViewedItemRepository netflixViewedItemRepository, 
+            IMapper mapper, 
+            INetflixStatsCreator netflixStatsCreator, 
+            IEnumerable<INetflixViewedItemsFileExporter> netlNetflixViewedItemsFileExporters)
         {
             _netflixViewedItemRepository = netflixViewedItemRepository;
             _mapper = mapper;
             _netflixStatsCreator = netflixStatsCreator;
+            _netlNetflixViewedItemsFileExporters = netlNetflixViewedItemsFileExporters;
         }
 
 
@@ -97,20 +103,15 @@ namespace NetflixStatizier.Controllers
             if (viewedItems == null)
                 return BadRequest($"There are no results saved with the identifier {model.Identifier}");
 
-            INetflixViewedItemsFileExporter fileExporter;
+            var fileExporter =
+                _netlNetflixViewedItemsFileExporters.FirstOrDefault(x => x.IsFormatSupported(model.Format));
 
-            if (string.Equals(model.Format, "json", StringComparison.OrdinalIgnoreCase))
-            {
-                fileExporter = new NetflixViewedItemsJsonExporter(viewedItems);
-            }
-            else if (string.Equals(model.Format, "csv", StringComparison.OrdinalIgnoreCase))
-            {
-                fileExporter = new NetflixViewedItemsCsvExporter(viewedItems);
-            }
-            else
+            if(fileExporter == null)
             {
                 return BadRequest($"Unknown format: {model.Format}");
             }
+
+            fileExporter.ViewedItems = viewedItems;
 
             return File(fileExporter.GetFileContent(), fileExporter.GetMimeType(), fileExporter.GetFileName());
         }

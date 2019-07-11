@@ -5,6 +5,7 @@ using NetflixStatizier.Stats.Model;
 
 namespace NetflixStatizier.Models.EntityFrameworkModels
 {
+    [Serializable]
     public class NetflixViewedItem
     {
         [Key]

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -45,6 +46,10 @@ namespace NetflixStatizier
             services.AddTransient<INetflixViewedItemRepository, NetflixViewedItemRepository>();
 
             services.AddTransient<INetflixStatsCreator, NetflixStatsCreator>();
+
+            services.AddTransient<INetflixViewedItemsFileExporter, NetflixViewedItemsCsvExporter>();
+            services.AddTransient<INetflixViewedItemsFileExporter, NetflixViewedItemsJsonExporter>();
+            services.AddTransient<INetflixViewedItemsFileExporter, NetflixViewedItemsXmlExporter>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }

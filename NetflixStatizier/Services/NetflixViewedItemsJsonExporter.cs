@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using NetflixStatizier.Models.EntityFrameworkModels;
 using NetflixStatizier.Services.Abstractions;
@@ -10,16 +9,11 @@ namespace NetflixStatizier.Services
 {
     public class NetflixViewedItemsJsonExporter : INetflixViewedItemsFileExporter
     {
-        private readonly List<NetflixViewedItem> _viewedItems;
-
-        public NetflixViewedItemsJsonExporter(IEnumerable<NetflixViewedItem> viewedItems)
-        {
-            _viewedItems = viewedItems.ToList();
-        }
+        public IEnumerable<NetflixViewedItem> ViewedItems { get; set; }
 
         public byte[] GetFileContent()
         {
-            var json = JsonConvert.SerializeObject(_viewedItems, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(ViewedItems, Formatting.Indented);
 
             return Encoding.UTF8.GetBytes(json);
         }
@@ -27,5 +21,8 @@ namespace NetflixStatizier.Services
         public string GetFileName() => $"TWON-export-{DateTime.Now:yyyyMMddhhmmss}.json";
 
         public string GetMimeType() => "application/json";
+
+        public bool IsFormatSupported(string format) =>
+            string.Equals(format, "json", StringComparison.OrdinalIgnoreCase);
     }
 }
