@@ -139,8 +139,7 @@ namespace NetflixStatizier.Stats
                 throw new ArgumentException("The provided json is not valid.", nameof(viewingActivityPageJson));
 
             dynamic parsedJson = JsonConvert.DeserializeObject(viewingActivityPageJson);
-            return $"{_netflixBaseUrl}/api/shakti/{parsedJson.models.serverDefs.data.BUILD_IDENTIFIER}/viewingactivity"
-                    .Replace(@"\x2F", "/");
+            return $"{_netflixBaseUrl}/api/shakti/{parsedJson.models.serverDefs.data.BUILD_IDENTIFIER}/viewingactivity";
         }
 
         private async Task<IEnumerable<NetflixViewingHistoryPart>> GetAllViewedElementsAsync(string apiBaseUrl)
