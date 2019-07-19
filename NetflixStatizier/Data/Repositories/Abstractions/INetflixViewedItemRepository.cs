@@ -10,6 +10,8 @@ namespace NetflixStatizier.Data.Repositories.Abstractions
     {
         Task<IEnumerable<NetflixViewedItem>> GetByGuidAsync(Guid guid);
 
+        Task<IEnumerable<NetflixViewedItem>> GetByGuidForDayAsync(Guid guid, DateTime date);
+
         Task CreateManyAsync(IEnumerable<NetflixViewedItem> entities);
     }
 }

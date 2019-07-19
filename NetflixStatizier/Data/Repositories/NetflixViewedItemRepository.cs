@@ -9,7 +9,9 @@ using NetflixStatizier.Models.EntityFrameworkModels;
 
 namespace NetflixStatizier.Data.Repositories
 {
-    public class NetflixViewedItemRepository : GenericEntityInterface<NetflixViewedItem, StatsContext>, INetflixViewedItemRepository
+    public class NetflixViewedItemRepository : 
+        GenericEntityInterface<NetflixViewedItem, StatsContext>, 
+        INetflixViewedItemRepository
     {
         public NetflixViewedItemRepository(StatsContext context) : base(context)
         {
@@ -19,6 +21,14 @@ namespace NetflixStatizier.Data.Repositories
         {
             return await Context.NetflixViewedItems
                 .Where(x => x.Identifier == guid)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<NetflixViewedItem>> GetByGuidForDayAsync(Guid guid, DateTime date)
+        {
+            return await Context.NetflixViewedItems
+                .Where(x => x.Identifier == guid)
+                .Where(x => x.PlaybackDateTime.Date == date.Date)
                 .ToListAsync();
         }
 

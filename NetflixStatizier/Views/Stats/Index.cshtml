@@ -31,7 +31,7 @@
             <br />
             <h2>You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
             <br />
-            <h2>Your highscore day was the @(Model.HighscoreDate.ToString("dd-MM-yyyy")). On this day, you wasted @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m on Netflix.</h2>
+            <h2>Your highscore day was the @(Model.HighscoreDate.ToString("yyyy-MM-dd")). On this day, you wasted @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m on Netflix.</h2>
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-serie">
@@ -44,6 +44,8 @@
             <canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3.5)" role="img">
                 <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
             </canvas>
+
+            <div class="container" id="per-day-sub"></div>
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-daytime">
@@ -78,5 +80,19 @@
         @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
         @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
+
+
+        $("#timePerDateBarChart").click(function(e) {
+            const activeBars = timePerDateBarChart.getElementsAtEvent(e);
+
+            if (activeBars.length > 0) {
+                const clickedElementindex = activeBars[0]["_index"];
+                const label = timePerDateBarChart.data.labels[clickedElementindex];
+
+                $.get(`/stats/partial/date/@Model.Identifier?forDate=${label}`, function(data) {
+                    $('#per-day-sub').html(`<p>${data}</p>`);
+                });
+        }
+        });
     </script>
 }

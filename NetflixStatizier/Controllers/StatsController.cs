@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DaHo.Library.AspNetCore.CustomAttributes;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
@@ -22,9 +23,9 @@ namespace NetflixStatizier.Controllers
         private readonly IEnumerable<INetflixViewedItemsFileExporter> _netlNetflixViewedItemsFileExporters;
 
         public StatsController(
-            INetflixViewedItemRepository netflixViewedItemRepository, 
-            IMapper mapper, 
-            INetflixStatsCreator netflixStatsCreator, 
+            INetflixViewedItemRepository netflixViewedItemRepository,
+            IMapper mapper,
+            INetflixStatsCreator netflixStatsCreator,
             IEnumerable<INetflixViewedItemsFileExporter> netlNetflixViewedItemsFileExporters)
         {
             _netflixViewedItemRepository = netflixViewedItemRepository;
@@ -40,18 +41,32 @@ namespace NetflixStatizier.Controllers
         }
 
         [Route("stats/overview/{identifier:guid}")]
-        public async Task<IActionResult> Overview(Guid identifier)
+        public async Task<IActionResult> GetPlaybacksForIdentifier(Guid identifier)
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
             if (viewedItems == null)
                 return BadRequest($"There are no results saved with the identifier {identifier}");
 
             var playbacks =
-                NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(_mapper.Map<List<NetflixViewedItem>>(viewedItems));
+                NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
+                    _mapper.Map<List<NetflixViewedItem>>(viewedItems));
             var viewModel = _netflixStatsCreator.GetNetflixStatsViewModel(playbacks);
             viewModel.Identifier = identifier;
 
             return View("Index", viewModel);
+        }
+
+        [Route("stats/partial/date/{identifier:guid}")]
+        [AjaxOnly]
+        public async Task<IActionResult> GetPlaybacksForIdentifierOnDate(Guid identifier, DateTime forDate)
+        {
+            var viewedItems = await _netflixViewedItemRepository.GetByGuidForDayAsync(identifier, forDate);
+
+            var playbacks =
+                NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
+                    _mapper.Map<List<NetflixViewedItem>>(viewedItems));
+
+            return Json(playbacks.Select(x => $"{x.Episode.Serie.Title}: {x.Episode.Title}").ToList());
         }
 
         [HttpPost]
@@ -95,7 +110,8 @@ namespace NetflixStatizier.Controllers
         }
 
         [Route("stats/export/{identifier:guid}")]
-        public async Task<IActionResult> Export(ExportInputModel model)
+        [ActionName("export")]
+        public async Task<IActionResult> ExportPlaybacks(ExportInputModel model)
         {
             var viewedItems = (await _netflixViewedItemRepository.GetByGuidAsync(model.Identifier))
                 ?.OrderByDescending(x => x.PlaybackDateTime);
@@ -106,7 +122,7 @@ namespace NetflixStatizier.Controllers
             var fileExporter =
                 _netlNetflixViewedItemsFileExporters.FirstOrDefault(x => x.IsFormatSupported(model.Format));
 
-            if(fileExporter == null)
+            if (fileExporter == null)
             {
                 return BadRequest($"Unknown format: {model.Format}");
             }

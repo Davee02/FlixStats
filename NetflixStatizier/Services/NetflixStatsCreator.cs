@@ -26,7 +26,7 @@ namespace NetflixStatizier.Services
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
                 .OrderBy(x => x.Key)
-                .ToDictionary(x => $"{x.Key:dd-MM-yyyy} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
+                .ToDictionary(x => x.Key, y => (double)Math.Round(y.Value / 60, 2));
 
             var viewedMinutesPerTimeOfDayTemp = statsCalculator.GetViewedMinutesPerTimeOfDay()
                 .Select(x =>
@@ -93,17 +93,20 @@ namespace NetflixStatizier.Services
             return chart;
         }
 
-        private static Chart GetTimePerDayChart(Dictionary<string, double> timePerDay)
+        private static Chart GetTimePerDayChart(Dictionary<DateTime, double> timePerDay)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
-            var data = new ChartJSCore.Models.Data { Labels = timePerDay.Keys.ToList() };
+            var data = new ChartJSCore.Models.Data
+            {
+                Labels = timePerDay.Keys.Select(x => x.ToString("yyyy-MM-dd")).ToList()
+            };
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
                 Data = new List<double>(timePerDay.Values),
                 BorderWidth = new List<int> { 1 },
                 BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
-                Type = Enums.ChartType.HorizontalBar
+                Type = Enums.ChartType.HorizontalBar,
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
@@ -122,7 +125,8 @@ namespace NetflixStatizier.Services
                 {
                     Enabled = true,
                     Mode = "xy"
-                }
+                },
+                Tooltips = new ToolTip { }
             };
 
             return chart;
