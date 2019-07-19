@@ -35,7 +35,7 @@ namespace NetflixStatizier.Stats
             _netflixProfile = profile;
 
             _httpClient = new HttpClient();
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("TWON");
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("FlixStats");
         }
 
 

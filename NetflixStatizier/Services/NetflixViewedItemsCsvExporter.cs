@@ -25,7 +25,7 @@ namespace NetflixStatizier.Services
             return stream.ToArray();
         }
 
-        public string GetFileName() => $"TWON-export-{DateTime.Now:yyyyMMddhhmmss}.csv";
+        public string GetFileName() => $"FlixStats-export-{DateTime.Now:yyyyMMddhhmmss}.csv";
 
         public string GetMimeType() => "text/csv";
 

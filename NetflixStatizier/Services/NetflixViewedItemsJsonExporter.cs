@@ -18,7 +18,7 @@ namespace NetflixStatizier.Services
             return Encoding.UTF8.GetBytes(json);
         }
 
-        public string GetFileName() => $"TWON-export-{DateTime.Now:yyyyMMddhhmmss}.json";
+        public string GetFileName() => $"FlixStats-export-{DateTime.Now:yyyyMMddhhmmss}.json";
 
         public string GetMimeType() => "application/json";
 

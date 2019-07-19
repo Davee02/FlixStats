@@ -9,7 +9,6 @@ using AutoMapper;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
-using NetflixStatizier.Services;
 using NetflixStatizier.Services.Abstractions;
 using NetflixStatizier.Stats.Exceptions;
 
@@ -50,6 +49,7 @@ namespace NetflixStatizier.Controllers
             var playbacks =
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(_mapper.Map<List<NetflixViewedItem>>(viewedItems));
             var viewModel = _netflixStatsCreator.GetNetflixStatsViewModel(playbacks);
+            viewModel.Identifier = identifier;
 
             return View("Index", viewModel);
         }
@@ -80,7 +80,7 @@ namespace NetflixStatizier.Controllers
             }
             catch (NetflixLoginException e)
             {
-                ModelState.AddModelError("NetflixLoginException", $"There was a problem while login in to your Netflix Account: {e.Message}");
+                ModelState.AddModelError("NetflixLoginException", $"There was a problem while login in to your Netflix account: {e.Message}");
                 return View("../Home/Index", model);
             }
 

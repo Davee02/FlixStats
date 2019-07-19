@@ -5,7 +5,6 @@ using ChartJSCore.Helpers;
 using ChartJSCore.Models;
 using ChartJSCore.Plugins.Zoom;
 using DaHo.Library.Utilities;
-using NetflixStatizier.Helper;
 using NetflixStatizier.Models.ViewModels;
 using NetflixStatizier.Services.Abstractions;
 using NetflixStatizier.Stats;
@@ -68,7 +67,7 @@ namespace NetflixStatizier.Services
                 Label = "# hours watched",
                 Data = new List<double>(timePerSerie.Values),
                 BorderWidth = new List<int> { 1 },
-                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(159, 154, 232, 0.7) },
+                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
                 Type = Enums.ChartType.HorizontalBar
             };
             data.Datasets = new List<Dataset> { dataset };
@@ -103,7 +102,7 @@ namespace NetflixStatizier.Services
                 Label = "# hours watched",
                 Data = new List<double>(timePerDay.Values),
                 BorderWidth = new List<int> { 1 },
-                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(159, 154, 232, 0.7) },
+                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
                 Type = Enums.ChartType.HorizontalBar
             };
             data.Datasets = new List<Dataset> { dataset };
@@ -141,7 +140,7 @@ namespace NetflixStatizier.Services
                 Label = "# hours watched",
                 Data = new List<double>(timePerTimeOfDay.Values),
                 BorderWidth = 1 ,
-                BackgroundColor = ChartColor.FromRgba(159, 154, 232, 0.7),
+                BackgroundColor = ChartColor.FromRgba(229, 9, 20, 0.8),
                 Type = Enums.ChartType.Radar
             };
             data.Datasets = new List<Dataset> { dataset };

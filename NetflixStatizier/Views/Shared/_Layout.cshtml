@@ -3,43 +3,31 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - TWON</title>
+    <title>@ViewData["Title"] - FlixStats</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
           asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
           crossorigin="anonymous"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
+    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg bg-light navbar-light">
+    <nav class="navbar bg-light navbar-light">
 
-        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">TWON</a>
-
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
-                aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="navbar-collapse collapse" id="basicExampleNav">
-
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
-                        Home
-                        <span class="sr-only">(current)</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+            <img src="/img/flixstats_logo_transparent.png" alt="FlixStats logo" height="60" />
+        </a>
     </nav>
 
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2019 - TWON</p>
+            <p style="width: 150px;">
+                <img src="/img/flixstats_logo_short.png" alt="FlixStats small logo" height="20" style="float: right;"/>
+                &copy; 2019 - FlixStats
+            </p>
         </footer>
     </div>
 

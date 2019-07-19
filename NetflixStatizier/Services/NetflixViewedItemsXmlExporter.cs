@@ -22,7 +22,7 @@ namespace NetflixStatizier.Services
             }
         }
 
-        public string GetFileName() => $"TWON-export-{DateTime.Now:yyyyMMddhhmmss}.xml";
+        public string GetFileName() => $"FlixStats-export-{DateTime.Now:yyyyMMddhhmmss}.xml";
 
         public string GetMimeType() => "text/xml";
 

@@ -30,5 +30,7 @@ namespace NetflixStatizier.Models.ViewModels
         public DateTime HighscoreDate { get; set; }
 
         public Time HighcoreTime { get; set; }
+
+        public Guid Identifier { get; set; }
     }
 }
