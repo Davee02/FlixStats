@@ -5,22 +5,33 @@
 }
 
 <div class="main-content">
+
+    <div class="alert alert-primary alert-dismissible fade show" role="alert">
+        <strong>Important:</strong> Your results are only saved for 1 hour. If you want to share it with your friends or keep it for another reason, please go to the <a id="share-section-link" href="javascript:;" class="alert-link">share section</a> and click the <i>Save results</i>-button
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
     <!-- Tabstrip -->
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="nav-item">
-            <a class="nav-link active" href="#overview" role="tab" data-toggle="tab">Overview</a>
+            <a class="nav-link active" href="#overview" id="overviewt-tab" role="tab" data-toggle="tab">Overview</a>
         </li>
         <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-serie" role="tab" data-toggle="tab">Per serie</a>
+            <a class="nav-link" href="#per-serie" id="per-serie-tab" role="tab" data-toggle="tab">Per serie</a>
         </li>
         <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-day" role="tab" data-toggle="tab">Per day</a>
+            <a class="nav-link" href="#per-day" id="per-day-tab" role="tab" data-toggle="tab">Per day</a>
         </li>
         <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-daytime" role="tab" data-toggle="tab">Per daytime</a>
+            <a class="nav-link" href="#per-daytime" id="per-daytime-tab" role="tab" data-toggle="tab">Per daytime</a>
         </li>
         <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#share-export" role="tab" data-toggle="tab">Share / export</a>
+            <a class="nav-link" href="#per-weekday" id="per-weekday-tab" role="tab" data-toggle="tab">Per weekday</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#share-export" id="share-export-tab" role="tab" data-toggle="tab">Share / export</a>
         </li>
     </ul>
 
@@ -42,6 +53,10 @@
             <partial name="_PerDayTimePartial" model="@Model" />
         </div>
 
+        <div role="tabpanel" class="tab-pane fade" id="per-weekday">
+            <partial name="_PerWeekDayTimePartial" model="@Model" />
+        </div>
+
         <div role="tabpanel" class="tab-pane fade" id="share-export">
             <partial name="_ShareExportPartial" model="@Model" />
         </div>
@@ -56,6 +71,7 @@
         @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
         @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
+        @Html.Raw(Model.WeekDailyActivityChart.CreateChartCode("weekDailyWatchedBarChart"))
 
 
         $("#timePerDateBarChart").click(e => {
@@ -71,12 +87,17 @@
         }
         });
 
-        $("#per-serie-reset-zoom").click(e => {
+        $("#per-serie-reset-zoom").click(() => {
             timePerSerieBarChart.resetZoom();
         })
 
-        $("#per-date-reset-zoom").click(e => {
+        $("#per-date-reset-zoom").click(() => {
             timePerDateBarChart.resetZoom();
         })
+
+        $("#share-section-link").click(() => {
+            $("#share-export-tab").tab("show");
+        })
+
     </script>
 }

@@ -32,10 +32,19 @@ namespace NetflixStatizier.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task CreateManyAsync(IEnumerable<NetflixViewedItem> entities)
+        public async Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities)
         {
+            var identificationGuid = Guid.NewGuid();
+
+            foreach(var entity in entities)
+            {
+                entity.Identifier = identificationGuid;
+            }
+
             await Context.AddRangeAsync(entities);
             await Context.SaveChangesAsync();
+
+            return identificationGuid;
         }
     }
 }

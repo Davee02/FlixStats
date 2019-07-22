@@ -3,10 +3,10 @@
 @{
     ViewData["Title"] = "Home";
 }
-
-<form asp-controller="Stats" asp-action="Overview">
+<form asp-controller="Home" asp-action="Load">
     <div id="form-horizontal">
         <h2>Your Netflix account</h2>
+        <button type="button" class="btn btn-sm btn-outline-info" data-toggle="popover" title="Your Netflix account data..." data-content="isn't saved anywhere. It is only used ONCE for the retrieval of your viewing activity">What happens to my data?</button>
         <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="NetflixEmail"></label>

@@ -40,6 +40,10 @@ namespace NetflixStatizier.Services
                 .OrderBy(x => x.Key)
                 .ToDictionary(x => x.Key, y => (double)Math.Round(y.Value / 60, 2));
 
+            var viewedHoursPerWeekDay = statsCalculator.GetViewedMinutesPerWeekDay()
+                .OrderBy(x => x.Key)
+                .ToDictionary(x => x.Key.ToString(), y => (double)Math.Round(y.Value / 60, 2));
+
             var viewedMinutesPerTimeOfDayTemp = statsCalculator.GetViewedMinutesPerTimeOfDay()
                 .Select(x =>
                     new KeyValuePair<TimeSpan, double>(x.Key.RoundToNearest(TimeSpan.FromMinutes(15)), (double)Math.Round(x.Value / 60, 2)))
@@ -62,6 +66,7 @@ namespace NetflixStatizier.Services
                 ViewedHoursPerSerieChart = GetTimePerSerieChart(viewedHoursPerSerie),
                 ViewedHoursPerDayChart = GetTimePerDayChart(viewedHoursPerDay),
                 HourlyActivityChart = GetHourlyActivityChart(viewedMinutesPerTimeOfDay),
+                WeekDailyActivityChart = GetWeekDailyWatchedChart(viewedHoursPerWeekDay),
                 HighscoreDate = statsCalculator.GetHighscoreDateAndMinutes().date,
                 HighcoreTime = Time.FromMinutes(statsCalculator.GetHighscoreDateAndMinutes().minutes)
             };
@@ -167,6 +172,43 @@ namespace NetflixStatizier.Services
                 Title = new Title { Text = "Hours watched per time of day", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Tooltips = new ToolTip { Enabled = false }
+            };
+
+            return chart;
+        }
+
+        private static Chart GetWeekDailyWatchedChart(Dictionary<string, double> timePerWeekday)
+        {
+            var chart = new Chart { Type = Enums.ChartType.Bar };
+            var data = new ChartJSCore.Models.Data
+            {
+                Labels = timePerWeekday.Keys.ToList()
+            };
+            var dataset = new BarDataset
+            {
+                Label = "# hours watched",
+                Data = new List<double>(timePerWeekday.Values),
+                BorderWidth = new List<int> { 1 },
+                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
+                Type = Enums.ChartType.Bar,
+            };
+            data.Datasets = new List<Dataset> { dataset };
+            chart.Data = data;
+            chart.Options = new Options
+            {
+                Responsive = true,
+                Title = new Title { Text = "Hours watched per weekday", Display = true },
+                ResponsiveAnimationDuration = 500,
+                Scales = new Scales
+                {
+                    YAxes = new List<Scale>
+                    {
+                        new CartesianScale
+                        {
+                            Ticks = new CartesianLinearTick { BeginAtZero = true }
+                        }
+                    }
+                }
             };
 
             return chart;

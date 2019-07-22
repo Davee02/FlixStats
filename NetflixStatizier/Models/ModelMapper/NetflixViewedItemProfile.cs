@@ -9,6 +9,9 @@ namespace NetflixStatizier.Models.ModelMapper
             CreateMap<Stats.Model.NetflixViewedItem, Models.EntityFrameworkModels.NetflixViewedItem>();
 
             CreateMap<Models.EntityFrameworkModels.NetflixViewedItem, Stats.Model.NetflixViewedItem>();
+
+            CreateMap<Models.EntityFrameworkModels.NetflixViewedItem, Models.ImportExportModels.NetflixViewedItem>();
+
         }
     }
 }

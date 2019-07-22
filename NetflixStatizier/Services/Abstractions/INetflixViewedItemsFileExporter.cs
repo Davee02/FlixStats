@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using NetflixStatizier.Models.EntityFrameworkModels;
+using NetflixStatizier.Models.ImportExportModels;
 
 namespace NetflixStatizier.Services.Abstractions
 {

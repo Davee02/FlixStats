@@ -11,7 +11,6 @@ using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Models.InputModels;
 using NetflixStatizier.Models.ViewModels;
 using NetflixStatizier.Services.Abstractions;
-using NetflixStatizier.Stats.Exceptions;
 
 namespace NetflixStatizier.Controllers
 {
@@ -45,7 +44,7 @@ namespace NetflixStatizier.Controllers
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
             if (viewedItems == null)
-                return BadRequest($"There are no results saved with the identifier {identifier}");
+                return NotFound($"There are no results saved with the identifier {identifier}");
 
             var playbacks =
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
@@ -69,46 +68,7 @@ namespace NetflixStatizier.Controllers
             return PartialView("_PlaybacksPartial", _netflixStatsCreator.GetNetflixPlaybacksViewModel(playbacks));
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Overview(NetflixAccountInputModel model)
-        {
-            if (!ModelState.IsValid)
-                return View("../Home/Index", model);
-
-            var historyLoader = new NetflixViewingHistoryLoader(new NetflixProfile
-            {
-                AccountEmail = model.NetflixEmail,
-                AccountPassword = model.NetflixPassword,
-                ProfileName = model.NetflixProfileName
-            });
-
-            List<NetflixViewedItem> viewedItems;
-            try
-            {
-                viewedItems = (await historyLoader.LoadNetflixViewedItemsAsync()).ToList();
-            }
-            catch (NetflixProfileNotFoundException e)
-            {
-                ModelState.AddModelError("NetflixProfileNotFoundException", e.Message);
-                return View("../Home/Index", model);
-            }
-            catch (NetflixLoginException e)
-            {
-                ModelState.AddModelError("NetflixLoginException", $"There was a problem while login in to your Netflix account: {e.Message}");
-                return View("../Home/Index", model);
-            }
-
-            var identificationGuid = Guid.NewGuid();
-            var mappedItems = _mapper.Map<List<Models.EntityFrameworkModels.NetflixViewedItem>>(viewedItems);
-
-            mappedItems.ForEach(x => x.Identifier = identificationGuid);
-
-            await _netflixViewedItemRepository.CreateManyAsync(mappedItems);
-
-            return RedirectToAction("Overview", new { id = identificationGuid });
-        }
-
+       
         [Route("stats/export/{identifier:guid}")]
         [ActionName("export")]
         public async Task<IActionResult> ExportPlaybacks(ExportInputModel model)
@@ -117,7 +77,7 @@ namespace NetflixStatizier.Controllers
                 ?.OrderByDescending(x => x.PlaybackDateTime);
 
             if (viewedItems == null)
-                return BadRequest($"There are no results saved with the identifier {model.Identifier}");
+                return NotFound($"There are no results saved with the identifier {model.Identifier}");
 
             var fileExporter =
                 _netlNetflixViewedItemsFileExporters.FirstOrDefault(x => x.IsFormatSupported(model.Format));
@@ -127,7 +87,7 @@ namespace NetflixStatizier.Controllers
                 return BadRequest($"Unknown format: {model.Format}");
             }
 
-            fileExporter.ViewedItems = viewedItems;
+            fileExporter.ViewedItems = _mapper.Map<IEnumerable<Models.ImportExportModels.NetflixViewedItem>>(viewedItems);
 
             return File(fileExporter.GetFileContent(), fileExporter.GetMimeType(), fileExporter.GetFileName());
         }

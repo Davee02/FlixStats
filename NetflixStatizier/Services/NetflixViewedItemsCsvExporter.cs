@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using CsvHelper;
 using CsvHelper.Configuration;
-using NetflixStatizier.Models.EntityFrameworkModels;
+using NetflixStatizier.Models.ImportExportModels;
 using NetflixStatizier.Services.Abstractions;
 
 namespace NetflixStatizier.Services

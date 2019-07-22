@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using NetflixStatizier.Models.EntityFrameworkModels;
+using NetflixStatizier.Models.ImportExportModels;
 using NetflixStatizier.Services.Abstractions;
 using Newtonsoft.Json;
 
