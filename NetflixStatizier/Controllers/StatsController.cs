@@ -56,7 +56,7 @@ namespace NetflixStatizier.Controllers
             return View("Index", viewModel);
         }
 
-        [Route("stats/partial/date/{identifier:guid}")]
+        [Route("stats/ajax/playbacks/{identifier:guid}")]
         [AjaxOnly]
         public async Task<IActionResult> GetPlaybacksForIdentifierOnDate(Guid identifier, DateTime forDate)
         {
@@ -66,7 +66,7 @@ namespace NetflixStatizier.Controllers
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
                     _mapper.Map<List<NetflixViewedItem>>(viewedItems));
 
-            return Json(playbacks.Select(x => $"{x.Episode.Serie.Title}: {x.Episode.Title}").ToList());
+            return PartialView("_PlaybacksPartial", _netflixStatsCreator.GetNetflixPlaybacksViewModel(playbacks));
         }
 
         [HttpPost]

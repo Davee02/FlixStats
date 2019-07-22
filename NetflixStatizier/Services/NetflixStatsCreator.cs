@@ -16,6 +16,18 @@ namespace NetflixStatizier.Services
 {
     public class NetflixStatsCreator : INetflixStatsCreator
     {
+        public NetflixPlaybacksViewModel GetNetflixPlaybacksViewModel(IEnumerable<NetflixPlayback> viewingHistory)
+        {
+            var statsCalculator = new NetflixStatsCalculator(viewingHistory);
+
+            return new NetflixPlaybacksViewModel
+            {
+                Playbacks = viewingHistory.OrderByDescending(x => x.Sort),
+                TotalPlaybackTime = Time.FromMinutes(statsCalculator.GetTotalViewedMinutes()),
+                PlaybackDate = viewingHistory.FirstOrDefault().PlaybackDateTime.Date
+            };
+        }
+
         public NetflixStatsViewModel GetNetflixStatsViewModel(IEnumerable<NetflixPlayback> viewingHistory)
         {
             var statsCalculator = new NetflixStatsCalculator(viewingHistory);
@@ -38,7 +50,7 @@ namespace NetflixStatizier.Services
             var viewedMinutesPerTimeOfDay = GetKeyValuePairsForTimeOfDay(viewedMinutesPerTimeOfDayTemp)
                 .ToDictionary(x => x.Key, y => y.Value);
 
-            var statsModel = new NetflixStatsViewModel
+            return new NetflixStatsViewModel
             {
                 TotalViewedTime = Time.FromMinutes(statsCalculator.GetTotalViewedMinutes()),
                 MoviesViewedTime = Time.FromMinutes(statsCalculator.GetMoviesViewedMinutes()),
@@ -53,9 +65,6 @@ namespace NetflixStatizier.Services
                 HighscoreDate = statsCalculator.GetHighscoreDateAndMinutes().date,
                 HighcoreTime = Time.FromMinutes(statsCalculator.GetHighscoreDateAndMinutes().minutes)
             };
-
-
-            return statsModel;
         }
 
         private static Chart GetTimePerSerieChart(Dictionary<string, double> timePerSerie)
@@ -75,18 +84,20 @@ namespace NetflixStatizier.Services
             chart.Options = new ZoomOptions
             {
                 Responsive = true,
-                Title = new Title { Text = "Hours watched per serie" , Display = true },
+                Title = new Title { Text = "Hours watched per serie", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
                 {
                     Enabled = true,
                     Mode = "xy",
-                    Speed = 0.2
+                    Speed = 0.1,
+                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
                 },
                 Pan = new Pan
                 {
                     Enabled = true,
-                    Mode = "xy"
+                    Mode = "xy",
+                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
                 }
             };
 
@@ -119,14 +130,15 @@ namespace NetflixStatizier.Services
                 {
                     Enabled = true,
                     Mode = "xy",
-                    Speed = 0.2
+                    Speed = 0.1,
+                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
                 },
                 Pan = new Pan
                 {
                     Enabled = true,
-                    Mode = "xy"
-                },
-                Tooltips = new ToolTip { }
+                    Mode = "xy",
+                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
+                }
             };
 
             return chart;
@@ -137,34 +149,23 @@ namespace NetflixStatizier.Services
             var labels = timePerTimeOfDay.Keys.Select(x => x.IsFullHour() ? x.ToString("hh':'mm") : "");
 
             var chart = new Chart { Type = Enums.ChartType.Radar };
-            var data = new ChartJSCore.Models.Data { Labels = labels.ToList()};
+            var data = new ChartJSCore.Models.Data { Labels = labels.ToList() };
             var dataset = new RadarDataset
             {
-                
+
                 Label = "# hours watched",
                 Data = new List<double>(timePerTimeOfDay.Values),
-                BorderWidth = 1 ,
+                BorderWidth = 1,
                 BackgroundColor = ChartColor.FromRgba(229, 9, 20, 0.8),
                 Type = Enums.ChartType.Radar
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
-            chart.Options = new ZoomRadarOptions
+            chart.Options = new RadarOptions
             {
                 Responsive = true,
                 Title = new Title { Text = "Hours watched per time of day", Display = true },
                 ResponsiveAnimationDuration = 500,
-                Zoom = new Zoom
-                {
-                    Enabled = true,
-                    Mode = "xy",
-                    Speed = 0.2
-                },
-                Pan = new Pan
-                {
-                    Enabled = true,
-                    Mode = "xy"
-                },
                 Tooltips = new ToolTip { Enabled = false }
             };
 

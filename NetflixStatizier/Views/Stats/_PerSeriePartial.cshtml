@@ -1,0 +1,7 @@
+﻿@model NetflixStatizier.Models.ViewModels.NetflixStatsViewModel
+
+<button class="btn btn-primary" id="per-serie-reset-zoom">Reset zoom</button>
+
+<canvas id="timePerSerieBarChart" height="@(Model.ViewedHoursPerSerieChart.Data.Labels.Count * 5)" role="img">
+    <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
+</canvas>

@@ -27,47 +27,23 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade show active" id="overview">
-            <h2>You have wasted a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m watching TV shows and movies on Netflix.</h2>
-            <br />
-            <h2>You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
-            <br />
-            <h2>Your highscore day was the @(Model.HighscoreDate.ToString("yyyy-MM-dd")). On this day, you wasted @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m on Netflix.</h2>
+            <partial name="_OverviewPartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-serie">
-            <canvas id="timePerSerieBarChart" height="@(Model.ViewedHoursPerSerieChart.Data.Labels.Count * 5)" role="img">
-                <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
-            </canvas>
+            <partial name="_PerSeriePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-day">
-            <canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3.5)" role="img">
-                <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
-            </canvas>
-
-            <div class="container" id="per-day-sub"></div>
+            <partial name="_PerDatePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-daytime">
-            <div class="container">
-                <canvas id="hourlyWatchedRadioChart" role="img">
-                    <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
-                </canvas>
-            </div>
+            <partial name="_PerDayTimePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="share-export">
-            <div class="dropdown">
-                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Export results as...
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                    <a class="dropdown-item" asp-controller="Stats" asp-action="Export" asp-route-identifier="@Model.Identifier" asp-route-format="json">JSON</a>
-                    <a class="dropdown-item" asp-controller="Stats" asp-action="Export" asp-route-identifier="@Model.Identifier" asp-route-format="xml">XML</a>
-                    <a class="dropdown-item" asp-controller="Stats" asp-action="Export" asp-route-identifier="@Model.Identifier" asp-route-format="csv">CSV</a>
-                </div>
-            </div>
+            <partial name="_ShareExportPartial" model="@Model" />
         </div>
     </div>
 </div>
@@ -82,17 +58,25 @@
         @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
 
 
-        $("#timePerDateBarChart").click(function(e) {
+        $("#timePerDateBarChart").click(e => {
             const activeBars = timePerDateBarChart.getElementsAtEvent(e);
 
             if (activeBars.length > 0) {
                 const clickedElementindex = activeBars[0]["_index"];
                 const label = timePerDateBarChart.data.labels[clickedElementindex];
 
-                $.get(`/stats/partial/date/@Model.Identifier?forDate=${label}`, function(data) {
-                    $('#per-day-sub').html(`<p>${data}</p>`);
+                $.get(`/stats/ajax/playbacks/@Model.Identifier?forDate=${label}`, data => {
+                    $('#per-day-sub').html(data);
                 });
         }
         });
+
+        $("#per-serie-reset-zoom").click(e => {
+            timePerSerieBarChart.resetZoom();
+        })
+
+        $("#per-date-reset-zoom").click(e => {
+            timePerDateBarChart.resetZoom();
+        })
     </script>
 }

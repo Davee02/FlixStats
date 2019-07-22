@@ -24,11 +24,25 @@
             <span asp-validation-for="NetflixProfileName" class="text-danger"></span>
         </div>
 
-        <input type="submit" value="Calculate Stats" class="btn btn-primary" />
+        <input type="submit" value="Load Stats" class="btn btn-primary" />
     </div>
 </form>
 
+<partial name="_LoadingModalPartial" />
+
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $("form").submit(() => {
+            if ($("form").valid()) {
+                $("#loadMe").modal({
+                    backdrop: "static", //remove ability to close modal with click
+                    keyboard: false, //remove option to close with keyboard
+                    show: true //Display loader!
+                });
+            }
+        });
+    </script>
 }

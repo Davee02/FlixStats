@@ -1,0 +1,7 @@
+﻿@model NetflixStatizier.Models.ViewModels.NetflixStatsViewModel
+
+<h2 class="text-center">You have watched a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m TV shows and movies on Netflix.</h2>
+<br />
+<h2 class="text-center">You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
+<br />
+<h2 class="text-center">Your highscore day was the @(Model.HighscoreDate.ToString("yyyy-MM-dd")). On this day, you were @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m on Netflix.</h2>

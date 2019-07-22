@@ -22,5 +22,12 @@ namespace NetflixStatizier.Stats.Model
         {
             return other.Sort.CompareTo(this.Sort);
         }
+
+        public override string ToString()
+        {
+            return Episode.EpisodeType == Enums.EpisodeType.Movie
+                ? Episode.Title
+                : $"{Episode.Serie.Title} {Episode.SeasonDescriptor}: \"{Episode.Title}\"";
+        }
     }
 }

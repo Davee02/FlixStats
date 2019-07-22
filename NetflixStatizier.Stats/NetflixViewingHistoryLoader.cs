@@ -176,7 +176,7 @@ namespace NetflixStatizier.Stats
                     {
                         Duration = netflixViewedItem.Duration,
                         SeasonDescriptor = netflixViewedItem.SeasonDescriptor,
-                        Title = netflixViewedItem.EpisodeTitle,
+                        Title = netflixViewedItem.EpisodeTitle ?? netflixViewedItem.VideoTitle,
                         EpisodeType = GetEpisodeTypeFromViewedItem(netflixViewedItem),
                         Serie = new NetflixSerie
                         {
