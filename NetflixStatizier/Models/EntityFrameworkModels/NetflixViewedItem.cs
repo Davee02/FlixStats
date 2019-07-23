@@ -5,7 +5,6 @@ using NetflixStatizier.Stats.Model;
 
 namespace NetflixStatizier.Models.EntityFrameworkModels
 {
-    [Serializable]
     public class NetflixViewedItem
     {
         [Key]
@@ -43,5 +42,9 @@ namespace NetflixStatizier.Models.EntityFrameworkModels
         public string EpisodeTitle { get; set; }
 
         public int EstRating { get; set; }
+
+        public DateTime SavedDateTime { get; set; }
+
+        public bool KeepResult { get; set; }
     }
 }

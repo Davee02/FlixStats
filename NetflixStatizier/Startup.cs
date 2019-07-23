@@ -14,6 +14,8 @@ using NetflixStatizier.Data.Repositories;
 using NetflixStatizier.Data.Repositories.Abstractions;
 using NetflixStatizier.Services;
 using NetflixStatizier.Services.Abstractions;
+using NetflixStatizier.Services.Schedule;
+using NetflixStatizier.Services.Schedule.Jobs;
 
 namespace NetflixStatizier
 {
@@ -59,6 +61,8 @@ namespace NetflixStatizier
                     typeof(IActionResultExecutor<JsonResult>),
                     Type.GetType("Microsoft.AspNetCore.Mvc.Infrastructure.SystemTextJsonResultExecutor, Microsoft.AspNetCore.Mvc.Core"),
                     ServiceLifetime.Singleton));
+
+            services.AddQuartz(typeof(DeleteOldResultsJob));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +88,8 @@ namespace NetflixStatizier
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            app.UseQuartz();
         }
     }
 }

@@ -7,7 +7,7 @@
 <div class="main-content">
 
     <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        <strong>Important:</strong> Your results are only saved for 1 hour. If you want to share it with your friends or keep it for another reason, please go to the <a id="share-section-link" href="javascript:;" class="alert-link">share section</a> and click the <i>Save results</i>-button
+        <strong>Important:</strong> Your results are only saved for 12 hours. If you want to share it with your friends or keep it for another reason, please go to the <a id="share-section-link" href="javascript:;" class="alert-link">share section</a> and click the <i>Keep results</i>-button
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -71,7 +71,7 @@
         @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
         @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
-        @Html.Raw(Model.WeekDailyActivityChart.CreateChartCode("weekDailyWatchedBarChart"))
+        @Html.Raw(Model.WeekDailyActivityChart.CreateChartCode("weekDailyWatchedBarChart"));
 
 
         $("#timePerDateBarChart").click(e => {
@@ -89,15 +89,19 @@
 
         $("#per-serie-reset-zoom").click(() => {
             timePerSerieBarChart.resetZoom();
-        })
+        });
 
         $("#per-date-reset-zoom").click(() => {
             timePerDateBarChart.resetZoom();
-        })
+        });
 
         $("#share-section-link").click(() => {
             $("#share-export-tab").tab("show");
-        })
+        });
+
+        $("#btn-save-results").click(() => {
+            $.post(`/stats/ajax/keepResults/@Model.Identifier`);
+        });
 
     </script>
 }

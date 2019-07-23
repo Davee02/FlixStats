@@ -9,8 +9,8 @@ using NetflixStatizier.Models.EntityFrameworkModels;
 
 namespace NetflixStatizier.Data.Repositories
 {
-    public class NetflixViewedItemRepository : 
-        GenericEntityInterface<NetflixViewedItem, StatsContext>, 
+    public class NetflixViewedItemRepository :
+        GenericEntityInterface<NetflixViewedItem, StatsContext>,
         INetflixViewedItemRepository
     {
         public NetflixViewedItemRepository(StatsContext context) : base(context)
@@ -27,24 +27,50 @@ namespace NetflixStatizier.Data.Repositories
         public async Task<IEnumerable<NetflixViewedItem>> GetByGuidForDayAsync(Guid guid, DateTime date)
         {
             return await Context.NetflixViewedItems
-                .Where(x => x.Identifier == guid)
-                .Where(x => x.PlaybackDateTime.Date == date.Date)
+                .Where(x => x.Identifier == guid && x.PlaybackDateTime.Date == date.Date)
                 .ToListAsync();
         }
 
         public async Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities)
         {
             var identificationGuid = Guid.NewGuid();
+            var createdDateTime = DateTime.Now;
 
-            foreach(var entity in entities)
+            foreach (var entity in entities)
             {
                 entity.Identifier = identificationGuid;
+                entity.SavedDateTime = createdDateTime;
+                entity.KeepResult = false;
             }
 
             await Context.AddRangeAsync(entities);
             await Context.SaveChangesAsync();
 
             return identificationGuid;
+        }
+
+        public async Task<int> DeleteOldResultsAsync()
+        {
+            var toBeDeleted = await Context.NetflixViewedItems
+                .Where(x => !x.KeepResult && x.SavedDateTime < DateTime.Now.AddHours(-12))
+                .ToListAsync();
+
+            Context.NetflixViewedItems.RemoveRange(toBeDeleted);
+
+            return await Context.SaveChangesAsync();
+        }
+
+        public async Task SetKeepResultsStateAsync(Guid guid)
+        {
+            var toBeChanged = await GetByGuidAsync(guid);
+
+            foreach (var entity in toBeChanged)
+            {
+                entity.KeepResult = true;
+            }
+
+            Context.UpdateRange(toBeChanged);
+            await Context.SaveChangesAsync();
         }
     }
 }

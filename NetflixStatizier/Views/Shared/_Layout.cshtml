@@ -13,6 +13,9 @@
     <link href="@Url.Content("~/css/site.css")" rel="stylesheet" />
 </head>
 <body>
+
+    <span id="antiForge"> @Html.AntiForgeryToken() </span>
+
     <nav class="navbar bg-light navbar-light">
 
         <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
@@ -32,7 +35,7 @@
             </div>
             <div class="float-right">
                 <a href="https://github.com/Davee02/NetflixStatizier">
-                    <img src="~/img/github_logo.png" alt="The GitHub Octocat (logo)" height="20"/>
+                    <img src="~/img/github_logo.png" alt="The GitHub Octocat (logo)" height="20" />
                 </a>
             </div>
         </footer>

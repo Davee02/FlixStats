@@ -43,7 +43,7 @@ namespace NetflixStatizier.Controllers
         public async Task<IActionResult> GetPlaybacksForIdentifier(Guid identifier)
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
-            if (viewedItems == null)
+            if (!viewedItems?.Any() ?? false)
                 return NotFound($"There are no results saved with the identifier {identifier}");
 
             var playbacks =
@@ -70,13 +70,12 @@ namespace NetflixStatizier.Controllers
 
        
         [Route("stats/export/{identifier:guid}")]
-        [ActionName("export")]
-        public async Task<IActionResult> ExportPlaybacks(ExportInputModel model)
+        public async Task<IActionResult> Export(ExportInputModel model)
         {
             var viewedItems = (await _netflixViewedItemRepository.GetByGuidAsync(model.Identifier))
                 ?.OrderByDescending(x => x.PlaybackDateTime);
 
-            if (viewedItems == null)
+            if (!viewedItems?.Any() ?? false)
                 return NotFound($"There are no results saved with the identifier {model.Identifier}");
 
             var fileExporter =
@@ -90,6 +89,21 @@ namespace NetflixStatizier.Controllers
             fileExporter.ViewedItems = _mapper.Map<IEnumerable<Models.ImportExportModels.NetflixViewedItem>>(viewedItems);
 
             return File(fileExporter.GetFileContent(), fileExporter.GetMimeType(), fileExporter.GetFileName());
+        }
+
+        [Route("stats/ajax/keepResults/{identifier:guid}")]
+        [AjaxOnly]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> KeepResults(Guid identifier)
+        {
+            var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
+            if (!viewedItems?.Any() ?? false)
+                return NotFound($"There are no results saved with the identifier {identifier}");
+
+            await _netflixViewedItemRepository.SetKeepResultsStateAsync(identifier);
+
+            return Ok();
         }
     }
 }
