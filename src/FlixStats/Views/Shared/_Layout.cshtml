@@ -3,6 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta property="og:title" content="FlixStats">
+    <meta property="og:description" content="Displaying your Netflix usage in interesting charts.">
+    <meta property="og:image" content="@Url.Content("~/img/flixstats_logo_transparent.png")">
+    <meta property="og:url" content="http://euro-travel-example.com/index.htm">
+    <meta name="twitter:card" content="@Url.Content("~/img/flixstats_logo_transparent.png")">
+
     <title>@ViewData["Title"] - FlixStats</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
@@ -10,7 +17,11 @@
           asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute"
           crossorigin="anonymous"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
-    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" />
+
+    <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
+
+    <!-- Social Share Kit CSS -->
+    <link rel="stylesheet" href="@Url.Content("~/css/social-share-kit.css")" type="text/css" />
 </head>
 <body>
 

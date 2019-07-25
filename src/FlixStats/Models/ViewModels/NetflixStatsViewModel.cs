@@ -34,5 +34,7 @@ namespace FlixStats.Models.ViewModels
         public Time HighcoreTime { get; set; }
 
         public Guid Identifier { get; set; }
+
+        public bool ResultsAreKept { get; set; }
     }
 }

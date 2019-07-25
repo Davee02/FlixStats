@@ -39,18 +39,20 @@ namespace FlixStats.Controllers
             return View("Index", model);
         }
 
+
         [Route("stats/overview/{identifier:guid}")]
         public async Task<IActionResult> GetPlaybacksForIdentifier(Guid identifier)
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
             if (!viewedItems?.Any() ?? false)
-                return NotFound($"There are no results saved with the identifier {identifier}");
+                return RedirectToAction("NoResults");
 
             var playbacks =
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
                     _mapper.Map<List<NetflixViewedItem>>(viewedItems));
             var viewModel = _netflixStatsCreator.GetNetflixStatsViewModel(playbacks);
             viewModel.Identifier = identifier;
+            viewModel.ResultsAreKept = viewedItems.FirstOrDefault().KeepResult;
 
             return View("Index", viewModel);
         }
@@ -65,7 +67,7 @@ namespace FlixStats.Controllers
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
                     _mapper.Map<List<NetflixViewedItem>>(viewedItems));
 
-            return PartialView("_PlaybacksPartial", _netflixStatsCreator.GetNetflixPlaybacksViewModel(playbacks));
+            return PartialView("Partials/_PlaybacksPartial", _netflixStatsCreator.GetNetflixPlaybacksViewModel(playbacks));
         }
 
        
@@ -76,7 +78,7 @@ namespace FlixStats.Controllers
                 ?.OrderByDescending(x => x.PlaybackDateTime);
 
             if (!viewedItems?.Any() ?? false)
-                return NotFound($"There are no results saved with the identifier {model.Identifier}");
+                return RedirectToAction("NoResults");
 
             var fileExporter =
                 _netlNetflixViewedItemsFileExporters.FirstOrDefault(x => x.IsFormatSupported(model.Format));
@@ -99,11 +101,18 @@ namespace FlixStats.Controllers
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
             if (!viewedItems?.Any() ?? false)
-                return NotFound($"There are no results saved with the identifier {identifier}");
+                return RedirectToAction("NoResults");
 
             await _netflixViewedItemRepository.SetKeepResultsStateAsync(identifier);
 
             return Ok();
+        }
+
+
+        public IActionResult NoResults()
+        {
+            Response.StatusCode = 404;
+            return View("NoResults");
         }
     }
 }

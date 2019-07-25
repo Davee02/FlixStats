@@ -22,3 +22,7 @@ div.per-day-sub {
 div.loader-modal {
     margin-top: 200px;
 }
+
+div.main-content {
+    min-height: 650px;
+}

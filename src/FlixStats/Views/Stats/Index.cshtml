@@ -5,13 +5,16 @@
 }
 
 <div class="main-content">
-
-    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-        <strong>Important:</strong> Your results are only saved for 12 hours. If you want to share it with your friends or keep it for another reason, please go to the <a id="share-section-link" href="javascript:;" class="alert-link">share section</a> and click the <i>Keep results</i>-button
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+    
+    @if (!Model.ResultsAreKept)
+    {
+        <div class="alert alert-primary alert-dismissible fade show" role="alert">
+            <strong>Important:</strong> Your results are only saved for 12 hours. If you want to share it with your friends or keep it for another reason, please go to the <a id="share-section-link" href="javascript:;" class="alert-link">share section</a> and click the <i>Keep results</i>-button
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
 
     <!-- Tabstrip -->
     <ul class="nav nav-tabs" role="tablist">
@@ -38,27 +41,27 @@
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade show active" id="overview">
-            <partial name="_OverviewPartial" model="@Model" />
+            <partial name="Partials/_OverviewPartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-serie">
-            <partial name="_PerSeriePartial" model="@Model" />
+            <partial name="Partials/_PerSeriePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-day">
-            <partial name="_PerDatePartial" model="@Model" />
+            <partial name="Partials/_PerDatePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-daytime">
-            <partial name="_PerDayTimePartial" model="@Model" />
+            <partial name="Partials/_PerDayTimePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="per-weekday">
-            <partial name="_PerWeekDayTimePartial" model="@Model" />
+            <partial name="Partials/_PerWeekDayTimePartial" model="@Model" />
         </div>
 
         <div role="tabpanel" class="tab-pane fade" id="share-export">
-            <partial name="_ShareExportPartial" model="@Model" />
+            <partial name="Partials/_ShareExportPartial" model="@Model" />
         </div>
     </div>
 </div>
@@ -67,7 +70,10 @@
 @section Scripts
 {
     <partial name="_ChartScriptsPartial" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share-kit/1.0.15/js/social-share-kit.js"></script>
     <script>
+        SocialShareKit.init();
+
         @Html.Raw(Model.ViewedHoursPerSerieChart.CreateChartCode("timePerSerieBarChart"))
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
         @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
@@ -84,7 +90,7 @@
                 $.get(`/stats/ajax/playbacks/@Model.Identifier?forDate=${label}`, data => {
                     $('#per-day-sub').html(data);
                 });
-        }
+            }
         });
 
         $("#per-serie-reset-zoom").click(() => {
@@ -100,6 +106,7 @@
         });
 
         $("#btn-save-results").click(() => {
+            $("#btn-save-results").hide();
             $.post(`/stats/ajax/keepResults/@Model.Identifier`);
         });
 

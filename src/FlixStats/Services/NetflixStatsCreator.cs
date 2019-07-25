@@ -24,7 +24,7 @@ namespace FlixStats.Services
             {
                 Playbacks = viewingHistory.OrderByDescending(x => x.Sort),
                 TotalPlaybackTime = Time.FromMinutes(statsCalculator.GetTotalViewedMinutes()),
-                PlaybackDate = viewingHistory.FirstOrDefault().PlaybackDateTime.Date
+                PlaybackDate = viewingHistory.FirstOrDefault().PlaybackDateTime.Date,
             };
         }
 
