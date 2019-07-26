@@ -6,6 +6,8 @@
 
 <div class="main-content">
     
+    <p class="text-center lead">The data which you can view on this page was loaded at @Model.QueryDateTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+
     @if (!Model.ResultsAreKept)
     {
         <div class="alert alert-primary alert-dismissible fade show" role="alert">

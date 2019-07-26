@@ -1,7 +1,12 @@
 ﻿@model FlixStats.Models.ViewModels.NetflixStatsViewModel
 
-<h2 class="text-center">You have watched a total of @(Model.TotalViewedTime.Hours)h @(Model.TotalViewedTime.Minutes)m TV shows and movies on Netflix.</h2>
 <br />
-<h2 class="text-center">You have watched @Model.SeriesEpisodesViewedItemsCount episodes of TV shows and @Model.MoviesViewedCount movies.</h2>
+<hr />
+<p class="text-center display-4">You have watched a total of <span class="text-danger">@Model.TotalViewedTime</span> TV shows and movies on Netflix.</p>
 <br />
-<h2 class="text-center">Your highscore day was the @(Model.HighscoreDate.ToString("yyyy-MM-dd")). On this day, you were @(Model.HighcoreTime.Hours)h @(Model.HighcoreTime.Minutes)m on Netflix.</h2>
+<hr />
+<p class="text-center display-4">You have watched <span class="text-danger">@Model.SeriesEpisodesViewedItemsCount episodes (@Model.SeriesViewedTime)</span> of TV shows and <span class="text-danger">@Model.MoviesViewedCount movies. (@Model.MoviesViewedTime)</span></p>
+<br />
+<hr />
+<p class="text-center display-4">Your highscore day was the <span class="text-danger">@Model.HighscoreDate.ToString("yyyy-MM-dd")</span>. On this day, you chilled <span class="text-danger">@Model.HighcoreTime</span> on Netflix.</p>
+<br />

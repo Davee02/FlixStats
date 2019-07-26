@@ -36,5 +36,7 @@ namespace FlixStats.Models.ViewModels
         public Guid Identifier { get; set; }
 
         public bool ResultsAreKept { get; set; }
+
+        public DateTime QueryDateTime { get; set; }
     }
 }

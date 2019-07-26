@@ -27,7 +27,7 @@ namespace FlixStats.Stats.Model
         {
             return Episode.EpisodeType == Enums.EpisodeType.Movie
                 ? Episode.Title
-                : $"{Episode.Serie.Title} {Episode.SeasonDescriptor}: \"{Episode.Title}\"";
+                : $"{Episode.Serie.Title}, {Episode.SeasonDescriptor}: \"{Episode.Title}\"";
         }
     }
 }

@@ -1,12 +1,13 @@
-﻿@model FlixStats.Models.ViewModels.NetflixPlaybacksViewModel
+﻿@using FlixStats.Helper
+@model FlixStats.Models.ViewModels.NetflixPlaybacksViewModel
 
 <h4>@Model.PlaybackDate.ToLongDateString()</h4>
 
-<p><span class="font-weight-bold">Total time:</span> @(Model.TotalPlaybackTime.Hours)h @(Model.TotalPlaybackTime.Minutes)m</p>
+<p><span class="font-weight-bold">Total time:</span> @Model.TotalPlaybackTime</p>
 
 <hr/>
 
 @foreach(var playback in Model.Playbacks)
 {
-    <p>@playback.PlaybackDateTime.ToShortTimeString(): @playback.ToString()</p>
+    <p>@playback.PlaybackDateTime.ToShortTimeString(): @playback.ToString() (@Time.FromSeconds(playback.PlaybackDuration))</p>
 }

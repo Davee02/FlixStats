@@ -50,9 +50,11 @@ namespace FlixStats.Controllers
             var playbacks =
                 NetflixViewingHistoryLoader.GetNetflixPlaybacksFromViewingActivity(
                     _mapper.Map<List<NetflixViewedItem>>(viewedItems));
+
             var viewModel = _netflixStatsCreator.GetNetflixStatsViewModel(playbacks);
             viewModel.Identifier = identifier;
             viewModel.ResultsAreKept = viewedItems.FirstOrDefault().KeepResult;
+            viewModel.QueryDateTime = viewedItems.FirstOrDefault().SavedDateTime;
 
             return View("Index", viewModel);
         }

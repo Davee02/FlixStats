@@ -34,11 +34,11 @@ namespace FlixStats.Services
 
             var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
                 .OrderByDescending(x => x.Value)
-                .ToDictionary(x => $"{x.Key.Title ?? "Movies"} - {Math.Round(x.Value / 60, 2)}h", y => (double)Math.Round(y.Value / 60, 2));
+                .ToDictionary(x => $"{x.Key.Title ?? "Movies"}", y => (double)Math.Round(y.Value / 60, 2));
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
                 .OrderBy(x => x.Key)
-                .ToDictionary(x => x.Key, y => (double)Math.Round(y.Value / 60, 2));
+                .ToDictionary(x => x.Key.ToString("yyyy-MM-dd"), y => (double)Math.Round(y.Value / 60, 2));
 
             var viewedHoursPerWeekDay = statsCalculator.GetViewedMinutesPerWeekDay()
                 .OrderBy(x => x.Key)
@@ -109,12 +109,12 @@ namespace FlixStats.Services
             return chart;
         }
 
-        private static Chart GetTimePerDayChart(Dictionary<DateTime, double> timePerDay)
+        private static Chart GetTimePerDayChart(Dictionary<string, double> timePerDay)
         {
             var chart = new Chart { Type = Enums.ChartType.HorizontalBar };
             var data = new ChartJSCore.Models.Data
             {
-                Labels = timePerDay.Keys.Select(x => x.ToString("yyyy-MM-dd")).ToList()
+                Labels = timePerDay.Keys.ToList()
             };
             var dataset = new BarDataset
             {

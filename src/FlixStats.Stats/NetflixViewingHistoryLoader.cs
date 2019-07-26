@@ -19,11 +19,8 @@ namespace FlixStats.Stats
 
         private readonly NetflixProfile _netflixProfile;
         private readonly HttpClient _httpClient;
-        private readonly Uri _netflixViewingactivityUrl = new Uri("https://www.netflix.com/viewingactivity", UriKind.Absolute);
-        private readonly Uri _netflixLoginpageUrl = new Uri("https://www.netflix.com/login", UriKind.Absolute);
-        private readonly string _netflixBaseUrl = "https://www.netflix.com";
 
-        public NetflixViewingHistoryLoader(NetflixProfile profile)
+        public NetflixViewingHistoryLoader(NetflixProfile profile, HttpMessageHandler messageHandler = null)
         {
             if (string.IsNullOrEmpty(profile.AccountEmail))
                 throw new ArgumentException("The netflix account email must not be empty", nameof(profile.AccountEmail));
@@ -34,8 +31,9 @@ namespace FlixStats.Stats
 
             _netflixProfile = profile;
 
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient(messageHandler ?? new HttpClientHandler());
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("FlixStats");
+            _httpClient.BaseAddress = new Uri("https://www.netflix.com");
         }
 
 
@@ -68,13 +66,13 @@ namespace FlixStats.Stats
                     ProfileName = _netflixProfile.ProfileName
                 };
 
-            await _httpClient.GetStringAsync($"{_netflixBaseUrl}{profileButton.Attributes["href"].Value}");
+            await _httpClient.GetStringAsync($"{profileButton.Attributes["href"].Value}");
         }
 
         private async Task<string> GetAuthToken()
         {
             var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(await _httpClient.GetStringAsync(_netflixLoginpageUrl));
+            htmlDocument.LoadHtml(await _httpClient.GetStringAsync("login"));
 
             return htmlDocument
                 .QuerySelector("form.login-form > input[name='authURL']")
@@ -95,7 +93,7 @@ namespace FlixStats.Stats
                 new KeyValuePair<string, string>("withFields", "rememberMe,nextPage,userLoginId,password"),
             });
 
-            var response = await _httpClient.PostAsync(_netflixLoginpageUrl, formContent);
+            var response = await _httpClient.PostAsync("login", formContent);
 
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(await response.Content.ReadAsStringAsync());
@@ -122,7 +120,7 @@ namespace FlixStats.Stats
         private async Task<string> GetViewingHistoryJsonAsync()
         {
             var htmlWeb = new HtmlWeb();
-            var htmlDocument = await htmlWeb.LoadFromWebAsync(_netflixViewingactivityUrl.ToString());
+            var htmlDocument = await htmlWeb.LoadFromWebAsync($"{_httpClient.BaseAddress.AbsoluteUri}/viewingactivity");
             var jsonNodeText = htmlDocument.DocumentNode.SelectSingleNode("/html/body/div[2]/script[1]").InnerText;
 
             jsonNodeText = jsonNodeText
@@ -139,7 +137,7 @@ namespace FlixStats.Stats
                 throw new ArgumentException("The provided json is not valid.", nameof(viewingActivityPageJson));
 
             dynamic parsedJson = JsonConvert.DeserializeObject(viewingActivityPageJson);
-            return $"{_netflixBaseUrl}/api/shakti/{parsedJson.models.serverDefs.data.BUILD_IDENTIFIER}/viewingactivity";
+            return $"api/shakti/{parsedJson.models.serverDefs.data.BUILD_IDENTIFIER}/viewingactivity";
         }
 
         private async Task<IEnumerable<NetflixViewingHistoryPart>> GetAllViewedElementsAsync(string apiBaseUrl)
