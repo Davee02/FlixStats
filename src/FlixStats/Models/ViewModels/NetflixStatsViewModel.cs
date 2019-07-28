@@ -29,6 +29,8 @@ namespace FlixStats.Models.ViewModels
 
         public Chart WeekDailyActivityChart { get; set; }
 
+        public Chart ViewedPercentagePerCountryChart { get; set; }
+
         public DateTime HighscoreDate { get; set; }
 
         public Time HighcoreTime { get; set; }

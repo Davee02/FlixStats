@@ -51,6 +51,10 @@ namespace FlixStats.Services
                 .Select(x => new KeyValuePair<TimeSpan, double>(x.Key, x.Sum(y => y.Value)))
                 .ToList();
 
+            var totalViewedMinutes = statsCalculator.GetTotalViewedMinutes();
+            var viewedPercentagePerCountry = statsCalculator.GetViewedMinutesPerCountry()
+                .ToDictionary(x => x.Key, y => (double)Math.Round(y.Value / totalViewedMinutes * 100, 3));
+
             var viewedMinutesPerTimeOfDay = GetKeyValuePairsForTimeOfDay(viewedMinutesPerTimeOfDayTemp)
                 .ToDictionary(x => x.Key, y => y.Value);
 
@@ -67,6 +71,7 @@ namespace FlixStats.Services
                 ViewedHoursPerDayChart = GetTimePerDayChart(viewedHoursPerDay),
                 HourlyActivityChart = GetHourlyActivityChart(viewedMinutesPerTimeOfDay),
                 WeekDailyActivityChart = GetWeekDailyWatchedChart(viewedHoursPerWeekDay),
+                ViewedPercentagePerCountryChart = GetPercentagePerCountryChart(viewedPercentagePerCountry),
                 HighscoreDate = statsCalculator.GetHighscoreDateAndMinutes().date,
                 HighcoreTime = Time.FromMinutes(statsCalculator.GetHighscoreDateAndMinutes().minutes)
             };
@@ -144,6 +149,39 @@ namespace FlixStats.Services
                     Mode = "xy",
                     RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
                 }
+            };
+
+            return chart;
+        }
+
+        private static Chart GetPercentagePerCountryChart(Dictionary<string, double> percentagePerCountry)
+        {
+            var chart = new Chart { Type = Enums.ChartType.Doughnut };
+            var data = new ChartJSCore.Models.Data
+            {
+                Labels = percentagePerCountry.Keys.ToList()
+            };
+            var dataset = new PieDataset
+            {
+                Label = "# hours watched",
+                Data = new List<double>(percentagePerCountry.Values),
+                BorderWidth = 1,
+                BackgroundColor = new List<ChartColor>(),
+                Type = Enums.ChartType.Doughnut,
+            };
+
+            for (int i = 0; i < percentagePerCountry.Count; i++)
+            {
+                dataset.BackgroundColor.Add(ChartColor.CreateRandomChartColor(false));
+            }
+
+            data.Datasets = new List<Dataset> { dataset };
+            chart.Data = data;
+            chart.Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new Title { Text = "Watched per country (in percentage)", Display = true },
+                ResponsiveAnimationDuration = 500
             };
 
             return chart;

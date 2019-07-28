@@ -19,26 +19,29 @@
     }
 
     <!-- Tabstrip -->
-    <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="nav-item">
-            <a class="nav-link active" href="#overview" id="overviewt-tab" role="tab" data-toggle="tab">Overview</a>
-        </li>
-        <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-serie" id="per-serie-tab" role="tab" data-toggle="tab">Per serie</a>
-        </li>
-        <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-day" id="per-day-tab" role="tab" data-toggle="tab">Per day</a>
-        </li>
-        <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-daytime" id="per-daytime-tab" role="tab" data-toggle="tab">Per daytime</a>
-        </li>
-        <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#per-weekday" id="per-weekday-tab" role="tab" data-toggle="tab">Per weekday</a>
-        </li>
-        <li role="presentation" class="nav-item">
-            <a class="nav-link" href="#share-export" id="share-export-tab" role="tab" data-toggle="tab">Share / export</a>
-        </li>
-    </ul>
+<ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="nav-item">
+        <a class="nav-link active" href="#overview" id="overviewt-tab" role="tab" data-toggle="tab">Overview</a>
+    </li>
+    <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#per-serie" id="per-serie-tab" role="tab" data-toggle="tab">Per serie</a>
+    </li>
+    <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#per-day" id="per-day-tab" role="tab" data-toggle="tab">Per day</a>
+    </li>
+    <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#per-daytime" id="per-daytime-tab" role="tab" data-toggle="tab">Per daytime</a>
+    </li>
+    <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#per-weekday" id="per-weekday-tab" role="tab" data-toggle="tab">Per weekday</a>
+    </li>
+    <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#per-country" id="per-country-tab" role="tab" data-toggle="tab">Per country</a>
+    </li>
+    <li role="presentation" class="nav-item">
+        <a class="nav-link" href="#share-export" id="share-export-tab" role="tab" data-toggle="tab">Share / export</a>
+    </li>
+</ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
@@ -61,6 +64,10 @@
         <div role="tabpanel" class="tab-pane fade" id="per-weekday">
             <partial name="Partials/_PerWeekDayTimePartial" model="@Model" />
         </div>
+        
+        <div role="tabpanel" class="tab-pane fade" id="per-country">
+            <partial name="Partials/_PerCountryPartial" model="@Model" />
+        </div>
 
         <div role="tabpanel" class="tab-pane fade" id="share-export">
             <partial name="Partials/_ShareExportPartial" model="@Model" />
@@ -80,7 +87,7 @@
         @Html.Raw(Model.ViewedHoursPerDayChart.CreateChartCode("timePerDateBarChart"))
         @Html.Raw(Model.HourlyActivityChart.CreateChartCode("hourlyWatchedRadioChart"))
         @Html.Raw(Model.WeekDailyActivityChart.CreateChartCode("weekDailyWatchedBarChart"));
-
+        @Html.Raw(Model.ViewedPercentagePerCountryChart.CreateChartCode("timePerCountryPieChart"));
 
         $("#timePerDateBarChart").click(e => {
             const activeBars = timePerDateBarChart.getElementsAtEvent(e);

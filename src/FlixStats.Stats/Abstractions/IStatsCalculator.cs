@@ -27,9 +27,13 @@ namespace FlixStats.Stats.Abstractions
 
         IEnumerable<IGrouping<DateTime, TPlayback>> GetPlaybacksPerDay();
 
+        IEnumerable<IGrouping<string, TPlayback>> GetPlaybacksPerCountry();
+
         IDictionary<TSerie, decimal> GetViewedMinutesPerSerie();
 
         IDictionary<DateTime, decimal> GetViewedMinutesPerDay();
+
+        IDictionary<string, decimal> GetViewedMinutesPerCountry();
 
         (decimal minutes, DateTime date) GetHighscoreDateAndMinutes();
 

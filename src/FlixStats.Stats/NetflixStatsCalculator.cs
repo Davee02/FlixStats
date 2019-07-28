@@ -41,6 +41,8 @@ namespace FlixStats.Stats
 
         public IEnumerable<IGrouping<TimeSpan, NetflixPlayback>> GetPlaybacksPerTimeOfDay() => _allViewedElements.GroupBy(x => x.PlaybackDateTime.TimeOfDay);
 
+        public IEnumerable<IGrouping<string, NetflixPlayback>> GetPlaybacksPerCountry() => _allViewedElements.GroupBy(x => x.PlaybackCountry);
+
         public IDictionary<DateTime, decimal> GetViewedMinutesPerDay()
         {
             var dict = new Dictionary<DateTime, decimal>();
@@ -86,6 +88,17 @@ namespace FlixStats.Stats
         {
             var dict = new Dictionary<DayOfWeek, decimal>();
             foreach (var grouping in GetPlaybacksPerWeekDay())
+            {
+                dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
+            }
+
+            return dict;
+        }
+
+        public IDictionary<string, decimal> GetViewedMinutesPerCountry()
+        {
+            var dict = new Dictionary<string, decimal>();
+            foreach (var grouping in GetPlaybacksPerCountry())
             {
                 dict.Add(grouping.Key, grouping.Sum(x => x.PlaybackDuration) / 60m);
             }
