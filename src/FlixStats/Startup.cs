@@ -47,6 +47,7 @@ namespace FlixStats
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<INetflixViewedItemRepository, NetflixViewedItemRepository>();
+            services.AddTransient<ILeaderboardRepository, LeaderboardRepository>();
 
             services.AddTransient<INetflixStatsCreator, NetflixStatsCreator>();
 

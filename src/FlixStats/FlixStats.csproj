@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
-    <PackageReference Include="ChartJSCore" Version="1.5.1" />
+    <PackageReference Include="ChartJSCore" Version="1.5.2" />
     <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="DaHo.Library.Utilities" Version="1.2.0" />
     <PackageReference Include="Humanizer" Version="2.6.2" />
@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-preview7.19362.4" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.12" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0-preview6-19319-03" />
-    <PackageReference Include="DaHo.Library.AspNetCore" Version="1.2.0" />
+    <PackageReference Include="DaHo.Library.AspNetCore" Version="1.3.0" />
     <PackageReference Include="Quartz" Version="3.0.7" />
   </ItemGroup>
 

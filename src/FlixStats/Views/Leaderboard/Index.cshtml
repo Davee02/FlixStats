@@ -1,0 +1,53 @@
+﻿
+@using FlixStats.Helper
+@model FlixStats.Models.ViewModels.LeaderboardViewModel
+@{
+    ViewData["Title"] = "Leaderboard";
+}
+
+<h1>Global leaderboard</h1>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Username</th>
+            <th>Total playbacktime</th>
+            <th>Country</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 1; i <= Model.LeaderboardItems.Count; i++)
+        {
+            var item = Model.LeaderboardItems.ElementAt(i - 1);
+
+            <tr>
+                <td>@(i + Model.PageIndex * Model.PageSize).</td>
+                <td>@item.Username</td>
+                <td>@Time.FromMinutes(item.TotalPlaybackTime)</td>
+                <td>
+                    <img src="@Model.GetCountryFlagUrl(item.UserCountry)" alt="Country flag for @item.UserCountry" title="@item.UserCountry"/>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.LeaderboardItems.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.LeaderboardItems.HasNextPage ? "disabled" : "";
+}
+
+<a asp-controller="Leaderboard"
+   asp-action="Index"
+   asp-route-pageIndex="@(Model.LeaderboardItems.PageIndex - 1)"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-controller="Leaderboard"
+   asp-action="Index"
+   asp-route-pageIndex="@(Model.LeaderboardItems.PageIndex + 1)"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>

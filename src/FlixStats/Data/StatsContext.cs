@@ -8,5 +8,7 @@ namespace FlixStats.Data
         public StatsContext(DbContextOptions options) : base(options) { }
 
         public DbSet<NetflixViewedItem> NetflixViewedItems { get; set; }
+
+        public DbSet<LeaderboardItem> LeaderboardItems { get; set; }
     }
 }
