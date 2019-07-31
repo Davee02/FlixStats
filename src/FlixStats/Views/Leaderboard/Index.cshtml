@@ -1,5 +1,4 @@
-﻿
-@using FlixStats.Helper
+﻿@using FlixStats.Helper
 @model FlixStats.Models.ViewModels.LeaderboardViewModel
 @{
     ViewData["Title"] = "Leaderboard";
@@ -25,7 +24,7 @@
             <tr>
                 <td>@(i + Model.PageIndex * Model.PageSize).</td>
                 <td>@item.Username</td>
-                <td>@Time.FromMinutes(item.TotalPlaybackTime)</td>
+                <td>@Time.FromSeconds(item.TotalPlaybackTime)</td>
                 <td>
                     <img src="@Model.GetCountryFlagUrl(item.UserCountry)" alt="Country flag for @item.UserCountry" title="@item.UserCountry"/>
                 </td>

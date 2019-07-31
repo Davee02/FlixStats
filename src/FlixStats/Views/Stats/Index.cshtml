@@ -119,5 +119,10 @@
             $.post(`/stats/ajax/keepResults/@Model.Identifier`);
         });
 
+        $("#btn-add-leaderboard").click(() => {
+            $("#btn-add-leaderboard").hide();
+            $.post(`/stats/ajax/addToLeaderboard/@Model.Identifier?username=EidgenossFabio&countryCode=ch`);
+        });
+
     </script>
 }

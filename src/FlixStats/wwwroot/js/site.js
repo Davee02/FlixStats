@@ -2,7 +2,7 @@
     $('[data-toggle="popover"]').popover();
 });
 
-$(document).ready(function () {
+$(document).ready(() => {
     const securityToken = $('[name=__RequestVerificationToken]').val();
     $(document).ajaxSend((event, request, opt) => {
         if (opt.hasContent && securityToken) {   // handle all verbs with content
@@ -14,4 +14,9 @@ $(document).ready(function () {
             }
         }
     });
+});
+
+$(document).ready(() => {
+    $('li.active').removeClass('active');
+    $('a[href="' + location.pathname + '"]').closest('li').addClass('active');
 });

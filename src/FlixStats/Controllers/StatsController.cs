@@ -9,25 +9,28 @@ using FlixStats.Models.InputModels;
 using FlixStats.Models.ViewModels;
 using FlixStats.Services.Abstractions;
 using FlixStats.Stats;
-using FlixStats.Stats.Model;
 using Microsoft.AspNetCore.Mvc;
+using NetflixViewedItem = FlixStats.Stats.Model.NetflixViewedItem;
 
 namespace FlixStats.Controllers
 {
     public class StatsController : Controller
     {
         private readonly INetflixViewedItemRepository _netflixViewedItemRepository;
+        private readonly ILeaderboardRepository _leaderboardRepository;
         private readonly IMapper _mapper;
         private readonly INetflixStatsCreator _netflixStatsCreator;
         private readonly IEnumerable<INetflixViewedItemsFileExporter> _netlNetflixViewedItemsFileExporters;
 
         public StatsController(
             INetflixViewedItemRepository netflixViewedItemRepository,
+            ILeaderboardRepository leaderboardRepository,
             IMapper mapper,
             INetflixStatsCreator netflixStatsCreator,
             IEnumerable<INetflixViewedItemsFileExporter> netlNetflixViewedItemsFileExporters)
         {
             _netflixViewedItemRepository = netflixViewedItemRepository;
+            _leaderboardRepository = leaderboardRepository;
             _mapper = mapper;
             _netflixStatsCreator = netflixStatsCreator;
             _netlNetflixViewedItemsFileExporters = netlNetflixViewedItemsFileExporters;
@@ -72,7 +75,7 @@ namespace FlixStats.Controllers
             return PartialView("Partials/_PlaybacksPartial", _netflixStatsCreator.GetNetflixPlaybacksViewModel(playbacks));
         }
 
-       
+
         [Route("stats/export/{identifier:guid}")]
         public async Task<IActionResult> Export(ExportInputModel model)
         {
@@ -110,6 +113,19 @@ namespace FlixStats.Controllers
             return Ok();
         }
 
+        [Route("stats/ajax/addToLeaderboard/{identifier:guid}")]
+        [AjaxOnly]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddToLeaderboard(Guid identifier, LeaderboardInputModel inputModel)
+        {
+            await _leaderboardRepository.CreateItemAsync(
+                inputModel.Username,
+                inputModel.CountryCode,
+                await _netflixViewedItemRepository.GetTotalPlaybackTimeAsync(identifier));
+
+            return Ok();
+        }
 
         public IActionResult NoResults()
         {

@@ -72,5 +72,12 @@ namespace FlixStats.Data.Repositories
             Context.UpdateRange(toBeChanged);
             await Context.SaveChangesAsync();
         }
+
+        public async Task<int> GetTotalPlaybackTimeAsync(Guid guid)
+        {
+            return await Context.NetflixViewedItems
+                .Where(x => x.Identifier == guid)
+                .SumAsync(x => x.PlaybackBookmark);
+        }
     }
 }

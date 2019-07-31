@@ -1,16 +1,26 @@
-﻿<!DOCTYPE html>
+﻿@using FlixStats.Helper
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <meta name="description" content="FlixStats - Displaying your Netflix usage in interesting charts.">
+
     <meta property="og:title" content="FlixStats">
-    <meta property="og:description" content="Displaying your Netflix usage in interesting charts.">
-    <meta property="og:image" content="@Url.Content("~/img/flixstats_logo_transparent.png")">
-    <meta property="og:url" content="http://euro-travel-example.com/index.htm">
-    <meta name="twitter:card" content="@Url.Content("~/img/flixstats_logo_transparent.png")">
+    <meta property="og:site_name" content="FlixStats">
+    <meta property="og:description" content="FlixStats - This website is displaying your Netflix usage in interesting charts and numbers.">
+    <meta property="og:image" content="@Url.AbsoluteContent("~/img/flixstats_logo_transparent.png")">
+    <meta property="og:url" content="@Url.AbsoluteContent("~/")">
+
+    <meta property="twitter:title" content="FlixStats">
+    <meta property="twitter:description" content="FlixStats - This website is displaying your Netflix usage in interesting charts and numbers.">
+    <meta property="twitter:image" content="@Url.AbsoluteContent("~/img/flixstats_logo_transparent.png")">
+    <meta property="twitter:url" content="@Url.AbsoluteContent("~/")">
 
     <title>@ViewData["Title"] - FlixStats</title>
+
+    <link rel="canonical" href="@Url.AbsoluteContent("~/")" />
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
@@ -45,6 +55,9 @@
                 <li class="nav-item">
                     <a class="nav-link" asp-controller="Leaderboard" asp-action="Index">Leaderboard</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Faq" asp-action="Index">FAQ</a>
+                </li>
             </ul>
         </div>
 
@@ -62,7 +75,7 @@
             </div>
             <div class="float-right">
                 <a href="https://github.com/Davee02/NetflixStatizier">
-                    <img src="~/img/github_logo.png" alt="The GitHub Octocat (logo)" height="20"/>
+                    <img src="~/img/github_logo.png" alt="The GitHub Octocat (logo)" height="20" />
                 </a>
             </div>
         </footer>

@@ -17,5 +17,7 @@ namespace FlixStats.Data.Repositories.Abstractions
         Task<int> DeleteOldResultsAsync();
 
         Task SetKeepResultsStateAsync(Guid guid);
+
+        Task<int> GetTotalPlaybackTimeAsync(Guid guid);
     }
 }
