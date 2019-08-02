@@ -18,7 +18,7 @@ namespace FlixStats.Controllers
 
         public async Task<IActionResult> Index(int pageIndex = 0)
         {
-            const int pageSize = 5;
+            const int pageSize = 10;
 
             var viewModel = new LeaderboardViewModel
             {

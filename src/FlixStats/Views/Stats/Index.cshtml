@@ -5,7 +5,7 @@
 }
 
 <div class="main-content">
-    
+
     <p class="text-center lead">The data which you can view on this page was loaded at @Model.QueryDateTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
 
     @if (!Model.ResultsAreKept)
@@ -19,29 +19,29 @@
     }
 
     <!-- Tabstrip -->
-<ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="nav-item">
-        <a class="nav-link active" href="#overview" id="overviewt-tab" role="tab" data-toggle="tab">Overview</a>
-    </li>
-    <li role="presentation" class="nav-item">
-        <a class="nav-link" href="#per-serie" id="per-serie-tab" role="tab" data-toggle="tab">Per serie</a>
-    </li>
-    <li role="presentation" class="nav-item">
-        <a class="nav-link" href="#per-day" id="per-day-tab" role="tab" data-toggle="tab">Per day</a>
-    </li>
-    <li role="presentation" class="nav-item">
-        <a class="nav-link" href="#per-daytime" id="per-daytime-tab" role="tab" data-toggle="tab">Per daytime</a>
-    </li>
-    <li role="presentation" class="nav-item">
-        <a class="nav-link" href="#per-weekday" id="per-weekday-tab" role="tab" data-toggle="tab">Per weekday</a>
-    </li>
-    <li role="presentation" class="nav-item">
-        <a class="nav-link" href="#per-country" id="per-country-tab" role="tab" data-toggle="tab">Per country</a>
-    </li>
-    <li role="presentation" class="nav-item">
-        <a class="nav-link" href="#share-export" id="share-export-tab" role="tab" data-toggle="tab">Share / export</a>
-    </li>
-</ul>
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="nav-item">
+            <a class="nav-link active" href="#overview" id="overviewt-tab" role="tab" data-toggle="tab">Overview</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#per-serie" id="per-serie-tab" role="tab" data-toggle="tab">Per serie</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#per-day" id="per-day-tab" role="tab" data-toggle="tab">Per day</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#per-daytime" id="per-daytime-tab" role="tab" data-toggle="tab">Per daytime</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#per-weekday" id="per-weekday-tab" role="tab" data-toggle="tab">Per weekday</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#per-country" id="per-country-tab" role="tab" data-toggle="tab">Per country</a>
+        </li>
+        <li role="presentation" class="nav-item">
+            <a class="nav-link" href="#share-export" id="share-export-tab" role="tab" data-toggle="tab">Share / export</a>
+        </li>
+    </ul>
 
     <!-- Tab panes -->
     <div class="tab-content">
@@ -64,7 +64,7 @@
         <div role="tabpanel" class="tab-pane fade" id="per-weekday">
             <partial name="Partials/_PerWeekDayTimePartial" model="@Model" />
         </div>
-        
+
         <div role="tabpanel" class="tab-pane fade" id="per-country">
             <partial name="Partials/_PerCountryPartial" model="@Model" />
         </div>
@@ -78,6 +78,7 @@
 
 @section Scripts
 {
+    <partial name="_ValidationScriptsPartial" />
     <partial name="_ChartScriptsPartial" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share-kit/1.0.15/js/social-share-kit.js"></script>
     <script>
@@ -96,9 +97,10 @@
                 const clickedElementindex = activeBars[0]["_index"];
                 const label = timePerDateBarChart.data.labels[clickedElementindex];
 
-                $.get(`/stats/ajax/playbacks/@Model.Identifier?forDate=${label}`, data => {
-                    $('#per-day-sub').html(data);
-                });
+                $.get(`/stats/ajax/playbacks/@Model.Identifier?forDate=${label}`,
+                    data => {
+                        $('#per-day-sub').html(data);
+                    });
             }
         });
 
@@ -120,8 +122,11 @@
         });
 
         $("#btn-add-leaderboard").click(() => {
-            $("#btn-add-leaderboard").hide();
-            $.post(`/stats/ajax/addToLeaderboard/@Model.Identifier?username=EidgenossFabio&countryCode=ch`);
+            if ($("#leaderboard-form").valid()) {
+                $.post(`/stats/ajax/addToLeaderboard/@Model.Identifier`, $("#leaderboard-form").serialize());
+                $("#btn-add-leaderboard").hide();
+                $("#publish-leaderboard-modal").modal('hide');
+            }
         });
 
     </script>

@@ -119,6 +119,9 @@ namespace FlixStats.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddToLeaderboard(Guid identifier, LeaderboardInputModel inputModel)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             await _leaderboardRepository.CreateItemAsync(
                 inputModel.Username,
                 inputModel.CountryCode,
