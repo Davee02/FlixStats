@@ -29,6 +29,7 @@
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" />
 
     <link href="@Url.Content("~/css/site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/glyphicon.css")" rel="stylesheet" type="text/css" />
 
     <!-- Social Share Kit CSS -->
     <link rel="stylesheet" href="@Url.Content("~/css/social-share-kit.css")" type="text/css" />
@@ -65,6 +66,7 @@
 
     <div class="container body-content">
         @RenderBody()
+        <a id="back-to-top" href="#" class="btn btn-primary btn-lg back-to-top" role="button" title="Click to return on the top page" data-toggle="tooltip" data-placement="left"><span class="glyphicon glyphicon-chevron-up"></span></a>
         <hr />
         <footer>
             <div class="float-left">
