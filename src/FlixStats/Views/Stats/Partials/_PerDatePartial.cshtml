@@ -6,6 +6,8 @@
 
 <button class="btn btn-primary" id="per-date-reset-zoom">Reset zoom</button>
 
-<canvas id="timePerDateBarChart" height="@(Model.ViewedHoursPerDayChart.Data.Labels.Count * 3.5)" role="img">
-    <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
-</canvas>
+<div class="chart-container" style="height: @(Model.ViewedHoursPerDayChart.Data.Labels.Count * 10)px">
+    <canvas id="timePerDateBarChart" role="img">
+        <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
+    </canvas>
+</div>

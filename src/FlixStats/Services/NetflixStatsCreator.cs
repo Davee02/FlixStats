@@ -94,6 +94,7 @@ namespace FlixStats.Services
             chart.Options = new ZoomOptions
             {
                 Responsive = true,
+                MaintainAspectRatio = false,
                 Title = new Title { Text = "Hours watched per serie", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
@@ -134,6 +135,7 @@ namespace FlixStats.Services
             chart.Options = new ZoomOptions
             {
                 Responsive = true,
+                MaintainAspectRatio = false,
                 Title = new Title { Text = "Hours watched per day", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Zoom = new Zoom
@@ -180,6 +182,7 @@ namespace FlixStats.Services
             chart.Options = new PieOptions
             {
                 Responsive = true,
+                MaintainAspectRatio = false,
                 Title = new Title { Text = "Watched per country (in percentage)", Display = true },
                 ResponsiveAnimationDuration = 500
             };
@@ -207,6 +210,7 @@ namespace FlixStats.Services
             chart.Options = new RadarOptions
             {
                 Responsive = true,
+                MaintainAspectRatio = false,
                 Title = new Title { Text = "Hours watched per time of day", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Tooltips = new ToolTip { Enabled = false }
@@ -235,6 +239,7 @@ namespace FlixStats.Services
             chart.Options = new Options
             {
                 Responsive = true,
+                MaintainAspectRatio = false,
                 Title = new Title { Text = "Hours watched per weekday", Display = true },
                 ResponsiveAnimationDuration = 500,
                 Scales = new Scales

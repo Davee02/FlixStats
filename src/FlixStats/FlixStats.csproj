@@ -6,15 +6,7 @@
     <UserSecretsId>e5097fae-d646-4c5b-99f7-673f9605a099</UserSecretsId>
     <Platforms>AnyCPU;x86</Platforms>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Content Remove="Views\Stats\Partials\_LeaderboardPartial.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Views\Stats\Partials\_LeaderboardPartial.cshtml" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="6.1.1" />
     <PackageReference Include="ChartJSCore" Version="1.5.2" />

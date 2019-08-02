@@ -32,7 +32,7 @@ namespace FlixStats.Stats
             _netflixProfile = profile;
 
             _httpClient = new HttpClient(messageHandler ?? new HttpClientHandler());
-            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("FlixStats");
+            _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");
             _httpClient.BaseAddress = new Uri("https://www.netflix.com");
         }
 
