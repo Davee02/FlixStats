@@ -80,6 +80,13 @@ namespace FlixStats
                         options.MinificationSettings.RemoveHttpsProtocolFromAttributes = true;
                     })
                 .AddHttpCompression();
+
+            services.AddHsts(options =>
+            {
+                options.IncludeSubDomains = true;
+                options.Preload = true;
+                options.MaxAge = TimeSpan.FromDays(365);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,13 +98,23 @@ namespace FlixStats
             }
             else
             {
+                app.UseWebMarkupMin();
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
-            app.UseWebMarkupMin();
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                OnPrepareResponse = ctx =>
+                {
+                    if (env.IsDevelopment())
+                    {
+                        const int cachePeriod = 604800;
+                        ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
+                    }
+                }
+            });
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

@@ -1,4 +1,5 @@
 ﻿@model FlixStats.Models.ViewModels.NetflixStatsViewModel
+@using Microsoft.AspNetCore.Http.Extensions
 
 <div class="container">
     <div class="row">
@@ -19,11 +20,11 @@
             <button type="button" class="btn btn-secondary" id="btn-save-results">Keep results</button>
         }
     </div>
-    
-    <partial name="Partials/_LeaderboardPartial" model="@new FlixStats.Models.InputModels.LeaderboardInputModel()"/>
+
+    <partial name="Partials/_LeaderboardPartial" model="@new FlixStats.Models.InputModels.LeaderboardInputModel()" />
 
     <div class="row mt-3">
-        <div class="ssk-group" data-url="https://FlixStats.com" data-text="Look at my Netflix usage!" data-title="FlixStats">
+        <div class="ssk-group" data-url="@Context.Request.GetDisplayUrl()" data-text="Look at my Netflix usage!" data-title="FlixStats">
             <a href="" class="ssk ssk-facebook"></a>
             <a href="" class="ssk ssk-twitter"></a>
             <a href="" class="ssk ssk-pinterest"></a>

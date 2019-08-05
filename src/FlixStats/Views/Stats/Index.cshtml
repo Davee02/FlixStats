@@ -78,8 +78,8 @@
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial" />
-    <partial name="_ChartScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ChartScriptsPartial"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/social-share-kit/1.0.15/js/social-share-kit.js"></script>
     <script>
         SocialShareKit.init();
@@ -126,6 +126,19 @@
                 $.post(`/stats/ajax/addToLeaderboard/@Model.Identifier`, $("#leaderboard-form").serialize());
                 $("#btn-add-leaderboard").hide();
                 $("#publish-leaderboard-modal").modal('hide');
+            }
+        });
+
+        $(document).ready(() => {
+            if ($(window).width() < 768) {
+                // disable zoom on charts when used on a small touch-device
+                timePerDateBarChart.options.zoom.enabled = false;
+                timePerDateBarChart.options.pan.enabled = false;
+                timePerDateBarChart.update();
+
+                timePerSerieBarChart.options.zoom.enabled = false;
+                timePerSerieBarChart.options.pan.enabled = false;
+                timePerSerieBarChart.update();
             }
         });
 

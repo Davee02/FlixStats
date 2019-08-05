@@ -47,7 +47,7 @@ namespace FlixStats.Controllers
                 ProfileName = model.NetflixProfileName
             });
 
-            List<Stats.Model.NetflixViewedItem> viewedItems;
+            List<NetflixViewedItem> viewedItems;
             try
             {
                 viewedItems = (await historyLoader.LoadNetflixViewedItemsAsync()).ToList();
@@ -69,6 +69,7 @@ namespace FlixStats.Controllers
 
             return RedirectToAction("Overview", "Stats", new { id = identificationGuid });
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

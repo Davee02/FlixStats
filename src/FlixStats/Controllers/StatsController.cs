@@ -44,7 +44,7 @@ namespace FlixStats.Controllers
 
 
         [Route("stats/overview/{identifier:guid}")]
-        public async Task<IActionResult> GetPlaybacksForIdentifier(Guid identifier)
+        public async Task<IActionResult> Overview(Guid identifier)
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
             if (!viewedItems?.Any() ?? false)
