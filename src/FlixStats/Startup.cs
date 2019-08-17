@@ -49,6 +49,7 @@ namespace FlixStats
 
             services.AddTransient<INetflixViewedItemRepository, NetflixViewedItemRepository>();
             services.AddTransient<ILeaderboardRepository, LeaderboardRepository>();
+            services.AddTransient<IQueryResultRepository, QueryResultRepository>();
 
             services.AddTransient<INetflixStatsCreator, NetflixStatsCreator>();
 
@@ -66,19 +67,8 @@ namespace FlixStats
 
             services.AddQuartz(typeof(DeleteOldResultsJob));
 
-            services.AddWebMarkupMin(
-                    options =>
-                    {
-                        options.AllowMinificationInDevelopmentEnvironment = true;
-                        options.AllowCompressionInDevelopmentEnvironment = true;
-                    })
-                .AddHtmlMinification(
-                    options =>
-                    {
-                        options.MinificationSettings.RemoveRedundantAttributes = true;
-                        options.MinificationSettings.RemoveHttpProtocolFromAttributes = true;
-                        options.MinificationSettings.RemoveHttpsProtocolFromAttributes = true;
-                    })
+            services.AddWebMarkupMin()
+                .AddHtmlMinification()
                 .AddHttpCompression();
 
             services.AddHsts(options =>

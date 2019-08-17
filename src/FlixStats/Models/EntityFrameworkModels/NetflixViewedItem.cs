@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using FlixStats.Stats.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlixStats.Models.EntityFrameworkModels
 {
@@ -10,8 +11,6 @@ namespace FlixStats.Models.EntityFrameworkModels
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
-
-        public Guid Identifier { get; set; }
 
         public string Title { get; set; }
 
@@ -43,8 +42,6 @@ namespace FlixStats.Models.EntityFrameworkModels
 
         public int EstRating { get; set; }
 
-        public DateTime SavedDateTime { get; set; }
-
-        public bool KeepResult { get; set; }
+        public QueryResult Query { get; set; }
     }
 }

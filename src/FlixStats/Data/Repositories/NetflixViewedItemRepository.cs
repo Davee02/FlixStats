@@ -19,65 +19,66 @@ namespace FlixStats.Data.Repositories
 
         public async Task<IEnumerable<NetflixViewedItem>> GetByGuidAsync(Guid guid)
         {
-            return await Context.NetflixViewedItems
-                .Where(x => x.Identifier == guid)
-                .ToListAsync();
+            return (await Context.QueryResults
+                    .Include(x => x.NetflixViewedItems)
+                    .FirstOrDefaultAsync(x => x.Identifier == guid))
+                ?.NetflixViewedItems;
         }
 
         public async Task<IEnumerable<NetflixViewedItem>> GetByGuidForDayAsync(Guid guid, DateTime date)
         {
-            return await Context.NetflixViewedItems
-                .Where(x => x.Identifier == guid && x.PlaybackDateTime.Date == date.Date)
-                .ToListAsync();
+            return (await Context.QueryResults
+                    .Include(x => x.NetflixViewedItems)
+                    .FirstOrDefaultAsync(x => x.Identifier == guid))
+                ?.NetflixViewedItems
+                .Where(x => x.PlaybackDateTime.Date == date.Date);
         }
 
         public async Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities)
         {
-            var identificationGuid = Guid.NewGuid();
-            var createdDateTime = DateTime.Now;
-
-            foreach (var entity in entities)
+            var queryResult = new QueryResult
             {
-                entity.Identifier = identificationGuid;
-                entity.SavedDateTime = createdDateTime;
-                entity.KeepResult = false;
-            }
+                Identifier = Guid.NewGuid(),
+                KeepResults = false,
+                QueryDateTime = DateTime.Now,
+                NetflixViewedItems = entities.ToList()
+            };
 
-            await Context.AddRangeAsync(entities);
+            await Context.QueryResults.AddAsync(queryResult);
             await Context.SaveChangesAsync();
 
-            return identificationGuid;
+            return queryResult.Identifier;
         }
 
         public async Task<int> DeleteOldResultsAsync()
         {
-            var toBeDeleted = await Context.NetflixViewedItems
-                .Where(x => !x.KeepResult && x.SavedDateTime < DateTime.Now.AddHours(-12))
+            var toBeDeleted = await Context.QueryResults
+                .Where(x => !x.KeepResults && x.QueryDateTime < DateTime.Now.AddHours(-12))
                 .ToListAsync();
 
-            Context.NetflixViewedItems.RemoveRange(toBeDeleted);
+            Context.QueryResults.RemoveRange(toBeDeleted);
 
             return await Context.SaveChangesAsync();
         }
 
         public async Task SetKeepResultsStateAsync(Guid guid)
         {
-            var toBeChanged = await GetByGuidAsync(guid);
+            var toBeChanged = await Context.QueryResults
+                .FirstOrDefaultAsync(x => x.Identifier == guid);
 
-            foreach (var entity in toBeChanged)
-            {
-                entity.KeepResult = true;
-            }
+            toBeChanged.KeepResults = true;
 
-            Context.UpdateRange(toBeChanged);
+            Context.Update(toBeChanged);
             await Context.SaveChangesAsync();
         }
 
         public async Task<int> GetTotalPlaybackTimeAsync(Guid guid)
         {
-            return await Context.NetflixViewedItems
-                .Where(x => x.Identifier == guid)
-                .SumAsync(x => x.PlaybackBookmark);
+            return (await Context.QueryResults
+                    .Include(x => x.NetflixViewedItems)
+                    .FirstOrDefaultAsync(x => x.Identifier == guid))
+                .NetflixViewedItems
+                .Sum(x => x.PlaybackBookmark);
         }
     }
 }

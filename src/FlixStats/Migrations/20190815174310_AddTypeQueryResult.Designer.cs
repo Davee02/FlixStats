@@ -4,14 +4,16 @@ using FlixStats.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace FlixStats.Migrations
 {
     [DbContext(typeof(StatsContext))]
-    partial class StatsContextModelSnapshot : ModelSnapshot
+    [Migration("20190815174310_AddTypeQueryResult")]
+    partial class AddTypeQueryResult
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,7 +79,7 @@ namespace FlixStats.Migrations
                     b.Property<DateTime>("PlaybackDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<long?>("QueryId")
+                    b.Property<long?>("QueryResultId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("SeasonDescriptor")
@@ -100,7 +102,7 @@ namespace FlixStats.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QueryId");
+                    b.HasIndex("QueryResultId");
 
                     b.ToTable("NetflixViewedItems");
                 });
@@ -128,10 +130,9 @@ namespace FlixStats.Migrations
 
             modelBuilder.Entity("FlixStats.Models.EntityFrameworkModels.NetflixViewedItem", b =>
                 {
-                    b.HasOne("FlixStats.Models.EntityFrameworkModels.QueryResult", "Query")
+                    b.HasOne("FlixStats.Models.EntityFrameworkModels.QueryResult", null)
                         .WithMany("NetflixViewedItems")
-                        .HasForeignKey("QueryId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("QueryResultId");
                 });
 #pragma warning restore 612, 618
         }

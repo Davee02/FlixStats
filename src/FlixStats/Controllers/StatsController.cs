@@ -18,6 +18,7 @@ namespace FlixStats.Controllers
     {
         private readonly INetflixViewedItemRepository _netflixViewedItemRepository;
         private readonly ILeaderboardRepository _leaderboardRepository;
+        private readonly IQueryResultRepository _queryResultRepository;
         private readonly IMapper _mapper;
         private readonly INetflixStatsCreator _netflixStatsCreator;
         private readonly IEnumerable<INetflixViewedItemsFileExporter> _netlNetflixViewedItemsFileExporters;
@@ -25,12 +26,14 @@ namespace FlixStats.Controllers
         public StatsController(
             INetflixViewedItemRepository netflixViewedItemRepository,
             ILeaderboardRepository leaderboardRepository,
+            IQueryResultRepository queryResultRepository,
             IMapper mapper,
             INetflixStatsCreator netflixStatsCreator,
             IEnumerable<INetflixViewedItemsFileExporter> netlNetflixViewedItemsFileExporters)
         {
             _netflixViewedItemRepository = netflixViewedItemRepository;
             _leaderboardRepository = leaderboardRepository;
+            _queryResultRepository = queryResultRepository;
             _mapper = mapper;
             _netflixStatsCreator = netflixStatsCreator;
             _netlNetflixViewedItemsFileExporters = netlNetflixViewedItemsFileExporters;
@@ -47,7 +50,7 @@ namespace FlixStats.Controllers
         public async Task<IActionResult> Overview(Guid identifier)
         {
             var viewedItems = await _netflixViewedItemRepository.GetByGuidAsync(identifier);
-            if (!viewedItems?.Any() ?? false)
+            if (!viewedItems?.Any() ?? true)
                 return RedirectToAction("NoResults");
 
             var playbacks =
@@ -56,8 +59,10 @@ namespace FlixStats.Controllers
 
             var viewModel = _netflixStatsCreator.GetNetflixStatsViewModel(playbacks);
             viewModel.Identifier = identifier;
-            viewModel.ResultsAreKept = viewedItems.FirstOrDefault().KeepResult;
-            viewModel.QueryDateTime = viewedItems.FirstOrDefault().SavedDateTime;
+
+            var queryResult = await _queryResultRepository.GetByGuidWithoutViewedItemsAsync(identifier);
+            viewModel.ResultsAreKept = queryResult.KeepResults;
+            viewModel.QueryDateTime = queryResult.QueryDateTime;
 
             return View("Index", viewModel);
         }
@@ -82,7 +87,7 @@ namespace FlixStats.Controllers
             var viewedItems = (await _netflixViewedItemRepository.GetByGuidAsync(model.Identifier))
                 ?.OrderByDescending(x => x.PlaybackDateTime);
 
-            if (!viewedItems?.Any() ?? false)
+            if (!viewedItems?.Any() ?? true)
                 return RedirectToAction("NoResults");
 
             var fileExporter =
