@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using FluffySpoon.AspNet.LetsEncrypt;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace FlixStats
@@ -13,6 +14,9 @@ namespace FlixStats
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseUrls("https://*:5001", "http://*:5000");
+                .UseUrls("https://flixstats.com", "http://flixstats.com", "https://www.flixstats.com", "http://www.flixstats.com")
+                .UseKestrel(kestrelOptions => kestrelOptions.ConfigureHttpsDefaults(
+                    httpsOptions => httpsOptions.ServerCertificateSelector =
+                        (c, s) => LetsEncryptRenewalService.Certificate));
     }
 }
