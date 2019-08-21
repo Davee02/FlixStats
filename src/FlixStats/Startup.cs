@@ -7,7 +7,6 @@ using FlixStats.Services;
 using FlixStats.Services.Abstractions;
 using FlixStats.Services.Schedule;
 using FlixStats.Services.Schedule.Jobs;
-using FluffySpoon.AspNet.LetsEncrypt;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -79,7 +78,6 @@ namespace FlixStats
                 options.MaxAge = TimeSpan.FromDays(365);
             });
 
-            services.AddLetsEncrypt();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -91,7 +89,6 @@ namespace FlixStats
             }
             else
             {
-                app.UseFluffySpoonLetsEncryptChallengeApprovalMiddleware();
                 app.UseHttpsRedirection();
                 app.UseWebMarkupMin();
                 app.UseExceptionHandler("/Home/Error");
