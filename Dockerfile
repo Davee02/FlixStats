@@ -1,13 +1,19 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build-env
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
 WORKDIR /app
+EXPOSE 5000
 
-# Copy everything else and build
-COPY . ./
-RUN dotnet restore
-RUN dotnet publish -c Release -o out
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
+WORKDIR /src
+COPY ["src/FlixStats/FlixStats.csproj", "src/FlixStats/"]
+RUN dotnet restore "src/FlixStats/FlixStats.csproj"
+COPY . .
+WORKDIR "/src/src/FlixStats"
+RUN dotnet build "FlixStats.csproj" -c Release -o /app
 
-# Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0
+FROM build AS publish
+RUN dotnet publish "FlixStats.csproj" -c Release -o /app
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
+COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "FlixStats.dll"]
