@@ -95,17 +95,7 @@ namespace FlixStats
                 app.UseHsts();
             }
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                OnPrepareResponse = ctx =>
-                {
-                    if (env.IsDevelopment())
-                    {
-                        const int cachePeriod = 604800;
-                        ctx.Context.Response.Headers.Append("Cache-Control", $"public, max-age={cachePeriod}");
-                    }
-                }
-            });
+            app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
@@ -115,7 +105,16 @@ namespace FlixStats
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            InitializeDatabase(app);
             app.UseQuartz();
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<StatsContext>().Database.Migrate();
+            }
         }
     }
 }

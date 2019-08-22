@@ -35,5 +35,5 @@
   <ItemGroup>
     <ProjectReference Include="..\FlixStats.Stats\FlixStats.Stats.csproj" />
   </ItemGroup>
-
+  
 </Project>
