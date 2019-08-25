@@ -17,17 +17,21 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebMarkupMin.AspNetCore3;
+using FluffySpoon.AspNet.LetsEncrypt;
 
 namespace FlixStats
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _environment;
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
-            Configuration = configuration;
+            _configuration = configuration;
+            _environment = environment;
         }
 
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -45,7 +49,7 @@ namespace FlixStats
                 .AddMvcOptions(options => options.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
 
             services.AddDbContext<StatsContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
             services.AddTransient<INetflixViewedItemRepository, NetflixViewedItemRepository>();
             services.AddTransient<ILeaderboardRepository, LeaderboardRepository>();
@@ -78,17 +82,22 @@ namespace FlixStats
                 options.MaxAge = TimeSpan.FromDays(365);
             });
 
+            if (_environment.IsProduction())
+            {
+                services.AddLetsEncrypt();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
-            if (env.IsDevelopment())
+            if (_environment.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
             else
             {
+                app.UseFluffySpoonLetsEncryptChallengeApprovalMiddleware();
                 app.UseHttpsRedirection();
                 app.UseWebMarkupMin();
                 app.UseExceptionHandler("/Home/Error");
@@ -109,7 +118,7 @@ namespace FlixStats
             app.UseQuartz();
         }
 
-        private void InitializeDatabase(IApplicationBuilder app)
+        private static void InitializeDatabase(IApplicationBuilder app)
         {
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
