@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 services:
     web:
         build: .
@@ -9,6 +9,8 @@ services:
             - db
         environment:
           ASPNETCORE_ENVIRONMENT: "Production"
+        volumes:
+            - /root/flixstats/cert:/app/letsencrypt
     db:
         image: "mcr.microsoft.com/mssql/server"
         environment:

@@ -82,9 +82,9 @@ namespace FlixStats
                 options.MaxAge = TimeSpan.FromDays(365);
             });
 
-            if (_environment.IsProduction())
+            if (!_environment.IsDevelopment())
             {
-                services.AddLetsEncrypt();
+                services.AddLetsEncrypt(_environment);
             }
         }
 
