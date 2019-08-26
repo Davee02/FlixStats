@@ -124,8 +124,8 @@
         $("#btn-add-leaderboard").click(() => {
             if ($("#leaderboard-form").valid()) {
                 $.post(`/stats/ajax/addToLeaderboard/@Model.Identifier`, $("#leaderboard-form").serialize());
-                $("#btn-add-leaderboard").hide();
                 $("#publish-leaderboard-modal").modal('hide');
+                $("#btn-publish-leaderboard").hide();
             }
         });
 

@@ -72,6 +72,17 @@ namespace FlixStats.Data.Repositories
             await Context.SaveChangesAsync();
         }
 
+        public async Task SetPublishedToLeaderboardStateAsync(Guid guid)
+        {
+            var toBeChanged = await Context.QueryResults
+                .FirstOrDefaultAsync(x => x.Identifier == guid);
+
+            toBeChanged.IsPublishedToLeaderboard = true;
+
+            Context.Update(toBeChanged);
+            await Context.SaveChangesAsync();
+        }
+
         public async Task<int> GetTotalPlaybackTimeAsync(Guid guid)
         {
             return (await Context.QueryResults

@@ -39,6 +39,8 @@ namespace FlixStats.Models.ViewModels
 
         public bool ResultsAreKept { get; set; }
 
+        public bool IsPublishedToLeaderboard { get; set; }
+
         public DateTime QueryDateTime { get; set; }
     }
 }

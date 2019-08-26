@@ -18,5 +18,7 @@ namespace FlixStats.Models.EntityFrameworkModels
         public DateTime QueryDateTime { get; set; }
 
         public bool KeepResults { get; set; }
+
+        public bool IsPublishedToLeaderboard { get; set; }
     }
 }

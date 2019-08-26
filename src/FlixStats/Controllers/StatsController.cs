@@ -62,6 +62,7 @@ namespace FlixStats.Controllers
 
             var queryResult = await _queryResultRepository.GetByGuidWithoutViewedItemsAsync(identifier);
             viewModel.ResultsAreKept = queryResult.KeepResults;
+            viewModel.IsPublishedToLeaderboard = queryResult.IsPublishedToLeaderboard;
             viewModel.QueryDateTime = queryResult.QueryDateTime;
 
             return View("Index", viewModel);
@@ -131,6 +132,7 @@ namespace FlixStats.Controllers
                 inputModel.Username,
                 inputModel.CountryCode,
                 await _netflixViewedItemRepository.GetTotalPlaybackTimeAsync(identifier));
+            await _netflixViewedItemRepository.SetPublishedToLeaderboardStateAsync(identifier);
 
             return Ok();
         }

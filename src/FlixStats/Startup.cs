@@ -3,9 +3,9 @@ using AutoMapper;
 using FlixStats.Data;
 using FlixStats.Data.Repositories;
 using FlixStats.Data.Repositories.Abstractions;
+using FlixStats.Helper;
 using FlixStats.Services;
 using FlixStats.Services.Abstractions;
-using FlixStats.Services.Schedule;
 using FlixStats.Services.Schedule.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -114,16 +114,9 @@ namespace FlixStats
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            InitializeDatabase(app);
+            app.InitializeDatabase();
             app.UseQuartz();
         }
-
-        private static void InitializeDatabase(IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<StatsContext>().Database.Migrate();
-            }
-        }
+     
     }
 }
