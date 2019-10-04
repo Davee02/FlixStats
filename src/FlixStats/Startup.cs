@@ -63,12 +63,6 @@ namespace FlixStats
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.Add(
-                new ServiceDescriptor(
-                    typeof(IActionResultExecutor<JsonResult>),
-                    Type.GetType("Microsoft.AspNetCore.Mvc.Infrastructure.SystemTextJsonResultExecutor, Microsoft.AspNetCore.Mvc.Core"),
-                    ServiceLifetime.Singleton));
-
             services.AddQuartz(typeof(DeleteOldResultsJob));
 
             services.AddWebMarkupMin()

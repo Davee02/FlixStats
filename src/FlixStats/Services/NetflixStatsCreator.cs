@@ -34,6 +34,7 @@ namespace FlixStats.Services
 
             var viewedHoursPerSerie = statsCalculator.GetViewedMinutesPerSerie()
                 .OrderByDescending(x => x.Value)
+                .DistinctBy(x => x.Key.Title)
                 .ToDictionary(x => $"{x.Key.Title ?? "Movies"}", y => (double)Math.Round(y.Value / 60, 2));
 
             var viewedHoursPerDay = statsCalculator.GetViewedMinutesPerDay()
