@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using CsvHelper;
-using CsvHelper.Configuration;
 using FlixStats.Models.ImportExportModels;
 using FlixStats.Services.Abstractions;
 
@@ -17,7 +17,7 @@ namespace FlixStats.Services
         {
             var stream = new MemoryStream();
             var streamWriter = new StreamWriter(stream, Encoding.UTF8);
-            var csvWriter = new CsvWriter(streamWriter, new Configuration { SanitizeForInjection = true });
+            var csvWriter = new CsvWriter(streamWriter, CultureInfo.InvariantCulture);
 
             csvWriter.WriteRecords(ViewedItems);
             csvWriter.Flush();

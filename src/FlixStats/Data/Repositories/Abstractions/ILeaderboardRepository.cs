@@ -5,7 +5,7 @@ using FlixStats.Models.EntityFrameworkModels;
 
 namespace FlixStats.Data.Repositories.Abstractions
 {
-    public interface ILeaderboardRepository : IGenericInterface<LeaderboardItem>
+    public interface ILeaderboardRepository : IGenericRepository<LeaderboardItem>
     {
         IOrderedQueryable<LeaderboardItem> GetAllOrdered();
 

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FlixStats.Data.Repositories
 {
     public class QueryResultRepository : 
-        GenericEntityInterface<QueryResult, StatsContext>,
+        GenericEntityRepository<QueryResult, StatsContext>,
         IQueryResultRepository
     {
         public QueryResultRepository(StatsContext context) : base(context)

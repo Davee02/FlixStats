@@ -8,7 +8,7 @@ using FlixStats.Models.EntityFrameworkModels;
 namespace FlixStats.Data.Repositories
 {
     public class LeaderboardRepository :
-        GenericEntityInterface<LeaderboardItem, StatsContext>,
+        GenericEntityRepository<LeaderboardItem, StatsContext>,
         ILeaderboardRepository
     {
         public LeaderboardRepository(StatsContext context) : base(context)

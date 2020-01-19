@@ -11,13 +11,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using DaHo.Library.AspNetCore.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebMarkupMin.AspNetCore3;
 using FluffySpoon.AspNet.LetsEncrypt;
+using DaHo.Library.AspNetCore;
 
 namespace FlixStats
 {
@@ -91,7 +92,7 @@ namespace FlixStats
             }
             else
             {
-                app.UseFluffySpoonLetsEncryptChallengeApprovalMiddleware();
+                app.UseFluffySpoonLetsEncrypt();
                 app.UseHttpsRedirection();
                 app.UseWebMarkupMin();
                 app.UseExceptionHandler("/Home/Error");
@@ -108,7 +109,7 @@ namespace FlixStats
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            app.InitializeDatabase();
+            app.MigrateDatabase<StatsContext>();
             app.UseQuartz();
         }
      

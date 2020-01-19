@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Certes;
-using FlixStats.Data;
 using FlixStats.Services.Schedule;
 using FlixStats.Services.Schedule.Jobs;
 using FluffySpoon.AspNet.LetsEncrypt;
+using FluffySpoon.AspNet.LetsEncrypt.Certes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using Quartz.Impl;
@@ -23,7 +18,7 @@ namespace FlixStats.Helper
     {
         public static void AddLetsEncrypt(this IServiceCollection services, IWebHostEnvironment hostEnvironment)
         {
-            services.AddFluffySpoonLetsEncryptRenewalService(new LetsEncryptOptions
+            services.AddFluffySpoonLetsEncrypt(new LetsEncryptOptions
             {
                 Email = "davidhodel6@gmail.com",
                 UseStaging = false,
@@ -47,13 +42,6 @@ namespace FlixStats.Helper
             services.AddFluffySpoonLetsEncryptMemoryChallengePersistence();
         }
 
-        public static void InitializeDatabase(this IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<StatsContext>().Database.Migrate();
-            }
-        } 
 
         public static void AddQuartz(this IServiceCollection services, Type jobType)
         {

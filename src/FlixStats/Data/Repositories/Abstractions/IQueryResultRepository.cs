@@ -5,7 +5,7 @@ using FlixStats.Models.EntityFrameworkModels;
 
 namespace FlixStats.Data.Repositories.Abstractions
 {
-    public interface IQueryResultRepository : IGenericInterface<QueryResult>
+    public interface IQueryResultRepository : IGenericRepository<QueryResult>
     {
         Task<QueryResult> GetByGuidWithoutViewedItemsAsync(Guid guid);
     }

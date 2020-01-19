@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace FlixStats.Data.Repositories
 {
     public class NetflixViewedItemRepository :
-        GenericEntityInterface<NetflixViewedItem, StatsContext>,
+        GenericEntityRepository<NetflixViewedItem, StatsContext>,
         INetflixViewedItemRepository
     {
         public NetflixViewedItemRepository(StatsContext context) : base(context)

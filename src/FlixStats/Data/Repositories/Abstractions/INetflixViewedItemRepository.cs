@@ -6,7 +6,7 @@ using FlixStats.Models.EntityFrameworkModels;
 
 namespace FlixStats.Data.Repositories.Abstractions
 {
-    public interface INetflixViewedItemRepository : IGenericInterface<NetflixViewedItem>
+    public interface INetflixViewedItemRepository : IGenericRepository<NetflixViewedItem>
     {
         Task<IEnumerable<NetflixViewedItem>> GetByGuidAsync(Guid guid);
 
