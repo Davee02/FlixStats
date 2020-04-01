@@ -12,7 +12,8 @@
     "FlixStats": {
       "commandName": "Project",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "https://*:5101;http://*:5100"
       }
     }
   }

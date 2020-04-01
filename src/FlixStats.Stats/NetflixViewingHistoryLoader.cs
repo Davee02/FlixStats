@@ -21,6 +21,7 @@ namespace FlixStats.Stats
         private readonly HttpClient _httpClient;
 
         public NetflixViewingHistoryLoader(NetflixProfile profile, HttpMessageHandler messageHandler = null)
+            : this(messageHandler)
         {
             if (string.IsNullOrEmpty(profile.AccountEmail))
                 throw new ArgumentException("The netflix account email must not be empty", nameof(profile.AccountEmail));
@@ -30,16 +31,21 @@ namespace FlixStats.Stats
                 throw new ArgumentException("The netflix profile-name must not be empty", nameof(profile.ProfileName));
 
             _netflixProfile = profile;
+        }
 
+        public NetflixViewingHistoryLoader(HttpMessageHandler messageHandler = null)
+        {
             _httpClient = new HttpClient(messageHandler ?? new HttpClientHandler());
             _httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");
             _httpClient.BaseAddress = new Uri("https://www.netflix.com");
         }
 
-
         public async Task<IEnumerable<NetflixViewedItem>> LoadNetflixViewedItemsAsync()
         {
-            await LogInToNetflixAndSetCookies();
+            if(_netflixProfile != null)
+            {
+                await LogInToNetflixAndSetCookies();
+            }
 
             var historyJson = await GetViewingHistoryJsonAsync();
             var apiBaseUrl = GetViewingActivityBaseUrl(historyJson);
@@ -49,7 +55,6 @@ namespace FlixStats.Stats
             return viewedElements.SelectMany(x => x.ViewedItems);
         }
 
-
         private async Task LogInToNetflixAndSetCookies()
         {
             var authToken = await GetAuthToken();
@@ -58,7 +63,7 @@ namespace FlixStats.Stats
             SearchForErrorBoxesAndThrowIfNecessary(profileSelectionHtmlDocument);
 
             var profileButton = profileSelectionHtmlDocument.QuerySelectorAll(PROFILE_BUTTON_SELECTOR)
-                .FirstOrDefault(x => string.Equals( HttpUtility.HtmlDecode(x.InnerText.Trim()), _netflixProfile.ProfileName, StringComparison.OrdinalIgnoreCase));
+                .FirstOrDefault(x => string.Equals(HttpUtility.HtmlDecode(x.InnerText.Trim()), _netflixProfile.ProfileName, StringComparison.OrdinalIgnoreCase));
 
             if (profileButton == null)
                 throw new NetflixProfileNotFoundException($"No profile with the name '{_netflixProfile.ProfileName}' exists in this account")
@@ -119,8 +124,8 @@ namespace FlixStats.Stats
 
         private async Task<string> GetViewingHistoryJsonAsync()
         {
-            var htmlWeb = new HtmlWeb();
-            var htmlDocument = await htmlWeb.LoadFromWebAsync($"{_httpClient.BaseAddress.AbsoluteUri}/viewingactivity");
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(await _httpClient.GetStringAsync("viewingactivity"));
             var jsonNodeText = htmlDocument.DocumentNode.SelectSingleNode("/html/body/div[2]/script[1]").InnerText;
 
             jsonNodeText = jsonNodeText

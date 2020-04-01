@@ -22,7 +22,7 @@ namespace FlixStats.Helper
             {
                 Email = "davidhodel6@gmail.com",
                 UseStaging = false,
-                Domains = new[] { "flixstats.com" },
+                Domains = new[] { "www.flixstats.com" },
                 TimeUntilExpiryBeforeRenewal = TimeSpan.FromDays(30),
                 CertificateSigningRequest = new CsrInfo
                 {

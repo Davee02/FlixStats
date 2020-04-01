@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using FlixStats.Helper;
+using DaHo.Library.Utilities;
 
 namespace FlixStats.Models.ViewModels
 {

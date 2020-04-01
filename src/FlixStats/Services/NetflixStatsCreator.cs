@@ -10,7 +10,7 @@ using FlixStats.Services.Abstractions;
 using FlixStats.Stats;
 using FlixStats.Stats.Model;
 using Enums = ChartJSCore.Models.Enums;
-using Time = FlixStats.Helper.Time;
+using Time = DaHo.Library.Utilities.Time;
 
 namespace FlixStats.Services
 {
@@ -85,7 +85,7 @@ namespace FlixStats.Services
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
-                Data = new List<double>(timePerSerie.Values),
+                Data = new List<double?>(timePerSerie.Values.Select(x => (double?)x)),
                 BorderWidth = new List<int> { 1 },
                 BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
                 Type = Enums.ChartType.HorizontalBar
@@ -126,7 +126,7 @@ namespace FlixStats.Services
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
-                Data = new List<double>(timePerDay.Values),
+                Data = new List<double?>(timePerDay.Values.Select(x => (double?)x)),
                 BorderWidth = new List<int> { 1 },
                 BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
                 Type = Enums.ChartType.HorizontalBar,
@@ -167,7 +167,7 @@ namespace FlixStats.Services
             var dataset = new PieDataset
             {
                 Label = "# hours watched",
-                Data = new List<double>(percentagePerCountry.Values),
+                Data = new List<double?>(percentagePerCountry.Values.Select(x => (double?)x)),
                 BorderWidth = 1,
                 BackgroundColor = new List<ChartColor>(),
                 Type = Enums.ChartType.Doughnut,
@@ -201,7 +201,7 @@ namespace FlixStats.Services
             {
 
                 Label = "# hours watched",
-                Data = new List<double>(timePerTimeOfDay.Values),
+                Data = new List<double?>(timePerTimeOfDay.Values.Select(x => (double?)x)),
                 BorderWidth = 1,
                 BackgroundColor = ChartColor.FromRgba(229, 9, 20, 0.8),
                 Type = Enums.ChartType.Radar
@@ -230,7 +230,7 @@ namespace FlixStats.Services
             var dataset = new BarDataset
             {
                 Label = "# hours watched",
-                Data = new List<double>(timePerWeekday.Values),
+                Data = new List<double?>(timePerWeekday.Values.Select(x => (double?)x)),
                 BorderWidth = new List<int> { 1 },
                 BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(229, 9, 20, 0.8) },
                 Type = Enums.ChartType.Bar,

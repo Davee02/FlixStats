@@ -1,7 +1,7 @@
 ﻿using System;
 using ChartJSCore.Models;
 using FlixStats.Stats.Model;
-using Time = FlixStats.Helper.Time;
+using Time = DaHo.Library.Utilities.Time;
 
 namespace FlixStats.Models.ViewModels
 {

@@ -20,7 +20,8 @@
             L = 1156,
             U = 1612,
             Q = 1528,
-            N = 1781
+            N = 1781,
+            RR = 2778
         }
 
         public enum EpisodeType

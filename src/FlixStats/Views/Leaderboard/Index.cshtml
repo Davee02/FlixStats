@@ -1,4 +1,4 @@
-﻿@using FlixStats.Helper
+﻿@using DaHo.Library.Utilities;
 @model FlixStats.Models.ViewModels.LeaderboardViewModel
 @{
     ViewData["Title"] = "Leaderboard";
@@ -26,7 +26,7 @@
                 <td>@item.Username</td>
                 <td>@Time.FromSeconds(item.TotalPlaybackTime)</td>
                 <td>
-                    <img src="@Model.GetCountryFlagUrl(item.UserCountry)" alt="Country flag for @item.UserCountry" title="@item.UserCountry"/>
+                    <img src="@Model.GetCountryFlagUrl(item.UserCountry)" alt="Country flag for @item.UserCountry" title="@item.UserCountry" />
                 </td>
             </tr>
         }
