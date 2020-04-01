@@ -1,7 +1,5 @@
 ﻿@model FlixStats.Models.ViewModels.NetflixStatsViewModel
 
-<button class="btn btn-primary" id="per-serie-reset-zoom">Reset zoom</button>
-
 <div class="chart-container" style="height: @(Model.ViewedHoursPerDayChart.Data.Labels.Count * 5)px">
     <canvas id="timePerSerieBarChart" role="img">
         <p>Your browser sadly does not support the canvas element. This means no charts can be displayed :(</p>
