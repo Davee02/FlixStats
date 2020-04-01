@@ -12,7 +12,7 @@ namespace FlixStats.Data.Repositories.Abstractions
 
         Task<IEnumerable<NetflixViewedItem>> GetByGuidForDayAsync(Guid guid, DateTime date);
 
-        Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities);
+        Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities, string forProfile);
 
         Task<int> DeleteOldResultsAsync();
 

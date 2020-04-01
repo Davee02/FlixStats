@@ -42,7 +42,6 @@ namespace FlixStats.Helper
             services.AddFluffySpoonLetsEncryptMemoryChallengePersistence();
         }
 
-
         public static void AddQuartz(this IServiceCollection services, Type jobType)
         {
             services.Add(new ServiceDescriptor(typeof(IJob), jobType, ServiceLifetime.Transient));

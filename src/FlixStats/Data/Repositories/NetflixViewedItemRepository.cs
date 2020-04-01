@@ -34,14 +34,15 @@ namespace FlixStats.Data.Repositories
                 .Where(x => x.PlaybackDateTime.Date == date.Date);
         }
 
-        public async Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities)
+        public async Task<Guid> CreateManyWithGuidAsync(IEnumerable<NetflixViewedItem> entities, string forProfile)
         {
             var queryResult = new QueryResult
             {
                 Identifier = Guid.NewGuid(),
                 KeepResults = false,
                 QueryDateTime = DateTime.Now,
-                NetflixViewedItems = entities.ToList()
+                NetflixViewedItems = entities.ToList(),
+                ForProfile = forProfile
             };
 
             await Context.QueryResults.AddAsync(queryResult);

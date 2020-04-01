@@ -6,7 +6,7 @@
 
 <div class="main-content">
 
-    <p class="text-center lead">The data which you can view on this page was loaded at @Model.QueryDateTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+    <p class="text-center lead">Loaded at @Model.QueryDateTime.ToString("yyyy-MM-dd HH:mm:ss") for profil '@Model.ForProfile'</p>
 
     @if (!Model.ResultsAreKept)
     {
@@ -104,14 +104,6 @@
             }
         });
 
-        $("#per-serie-reset-zoom").click(() => {
-            timePerSerieBarChart.resetZoom();
-        });
-
-        $("#per-date-reset-zoom").click(() => {
-            timePerDateBarChart.resetZoom();
-        });
-
         $("#share-section-link").click(() => {
             $("#share-export-tab").tab("show");
         });
@@ -128,19 +120,5 @@
                 $("#btn-publish-leaderboard").hide();
             }
         });
-
-        $(document).ready(() => {
-            if ($(window).width() < 768) {
-                // disable zoom on charts when used on a small touch-device
-                timePerDateBarChart.options.zoom.enabled = false;
-                timePerDateBarChart.options.pan.enabled = false;
-                timePerDateBarChart.update();
-
-                timePerSerieBarChart.options.zoom.enabled = false;
-                timePerSerieBarChart.options.pan.enabled = false;
-                timePerSerieBarChart.update();
-            }
-        });
-
     </script>
 }

@@ -64,6 +64,7 @@ namespace FlixStats.Controllers
             viewModel.ResultsAreKept = queryResult.KeepResults;
             viewModel.IsPublishedToLeaderboard = queryResult.IsPublishedToLeaderboard;
             viewModel.QueryDateTime = queryResult.QueryDateTime;
+            viewModel.ForProfile = queryResult.ForProfile;
 
             return View("Index", viewModel);
         }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ChartJSCore.Helpers;
 using ChartJSCore.Models;
-using ChartJSCore.Plugins.Zoom;
 using DaHo.Library.Utilities;
 using FlixStats.Models.ViewModels;
 using FlixStats.Services.Abstractions;
@@ -92,25 +91,12 @@ namespace FlixStats.Services
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
-            chart.Options = new ZoomOptions
+            chart.Options = new Options
             {
                 Responsive = true,
                 MaintainAspectRatio = false,
                 Title = new Title { Text = "Hours watched per serie", Display = true },
-                ResponsiveAnimationDuration = 500,
-                Zoom = new Zoom
-                {
-                    Enabled = true,
-                    Mode = "xy",
-                    Speed = 0.1,
-                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
-                },
-                Pan = new Pan
-                {
-                    Enabled = true,
-                    Mode = "xy",
-                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
-                }
+                ResponsiveAnimationDuration = 500
             };
 
             return chart;
@@ -133,25 +119,12 @@ namespace FlixStats.Services
             };
             data.Datasets = new List<Dataset> { dataset };
             chart.Data = data;
-            chart.Options = new ZoomOptions
+            chart.Options = new Options
             {
                 Responsive = true,
                 MaintainAspectRatio = false,
                 Title = new Title { Text = "Hours watched per day", Display = true },
-                ResponsiveAnimationDuration = 500,
-                Zoom = new Zoom
-                {
-                    Enabled = true,
-                    Mode = "xy",
-                    Speed = 0.1,
-                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
-                },
-                Pan = new Pan
-                {
-                    Enabled = true,
-                    Mode = "xy",
-                    RangeMin = new ChartJSCore.Plugins.Zoom.Range { X = 0 }
-                }
+                ResponsiveAnimationDuration = 500
             };
 
             return chart;

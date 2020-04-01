@@ -42,5 +42,7 @@ namespace FlixStats.Models.ViewModels
         public bool IsPublishedToLeaderboard { get; set; }
 
         public DateTime QueryDateTime { get; set; }
+
+        public string ForProfile { get; set; }
     }
 }

@@ -18,7 +18,6 @@ namespace FlixStats.Controllers
         private readonly IMapper _mapper;
         private readonly INetflixViewedItemRepository _netflixViewedItemRepository;
 
-
         public HomeController(
             INetflixViewedItemRepository netflixViewedItemRepository,
             IMapper mapper)
@@ -26,7 +25,6 @@ namespace FlixStats.Controllers
             _netflixViewedItemRepository = netflixViewedItemRepository;
             _mapper = mapper;
         }
-
 
         public IActionResult Index()
         {
@@ -65,7 +63,7 @@ namespace FlixStats.Controllers
 
             var mappedItems = _mapper.Map<List<Models.EntityFrameworkModels.NetflixViewedItem>>(viewedItems);
 
-            var identificationGuid = await _netflixViewedItemRepository.CreateManyWithGuidAsync(mappedItems);
+            var identificationGuid = await _netflixViewedItemRepository.CreateManyWithGuidAsync(mappedItems, model.NetflixProfileName);
 
             return RedirectToAction("Overview", "Stats", new { id = identificationGuid });
         }

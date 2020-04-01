@@ -20,5 +20,7 @@ namespace FlixStats.Models.EntityFrameworkModels
         public bool KeepResults { get; set; }
 
         public bool IsPublishedToLeaderboard { get; set; }
+
+        public string ForProfile { get; set; }
     }
 }
