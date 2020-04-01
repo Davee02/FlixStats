@@ -1,18 +1,21 @@
 version: "3.7"
 services:
     web:
-        build: .
+        image: "dahoch.azurecr.io/flixstats"
         ports:
-            - "80:80"
-            - "443:443"
+            - "5100:5000"
+            - "5101:5001"
         depends_on:
             - db
         environment:
           ASPNETCORE_ENVIRONMENT: "Production"
+          ASPNETCORE_URLS: "http://+:5100;https://+:5101"
         volumes:
             - /root/flixstats/cert:/app/letsencrypt
+        restart: always
     db:
         image: "mcr.microsoft.com/mssql/server"
         environment:
             SA_PASSWORD: "Error404!"
             ACCEPT_EULA: "Y"
+        restart: always

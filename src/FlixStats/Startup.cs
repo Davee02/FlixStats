@@ -40,13 +40,13 @@ namespace FlixStats
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
+                options.CheckConsentNeeded = _ => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
             services.AddMvc(options => options.EnableEndpointRouting = false)
                 .AddRazorRuntimeCompilation()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                .SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddMvcOptions(options => options.ModelMetadataDetailsProviders.Add(new HumanizerMetadataProvider()));
 
             services.AddDbContext<StatsContext>(options =>
@@ -112,6 +112,5 @@ namespace FlixStats
             app.MigrateDatabase<StatsContext>();
             app.UseQuartz();
         }
-     
     }
 }

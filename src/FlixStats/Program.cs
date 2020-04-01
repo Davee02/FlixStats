@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using System;
 
 namespace FlixStats
 {
@@ -12,11 +13,12 @@ namespace FlixStats
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
-            var builder = WebHost.CreateDefaultBuilder(args)
-                .UseKestrel()
-                .UseStartup<Startup>();
+            var urls = Environment.GetEnvironmentVariable("ASPNETCORE_URLS").Split(';');
 
-            return builder;
+            return WebHost.CreateDefaultBuilder()
+                .UseKestrel()
+                .UseUrls(urls)
+                .UseStartup<Startup>();
         }
     }
 }
