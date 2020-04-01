@@ -1,9 +1,8 @@
 ﻿using System;
-using FlixStats.Stats.Abstractions;
 
 namespace FlixStats.Stats.Model
 {
-    public class NetflixPlayback : IPlayback<NetflixEpisode, NetflixSerie>
+    public class NetflixPlayback
     {
         public Enums.DeviceType PlaybackDevice { get; set; }
 
@@ -17,8 +16,7 @@ namespace FlixStats.Stats.Model
 
         public int PlaybackDuration { get; set; }
 
-
-        public int CompareTo(IPlayback<IEpisode<ISerie>, ISerie> other)
+        public int CompareTo(NetflixPlayback other)
         {
             return other.Sort.CompareTo(this.Sort);
         }

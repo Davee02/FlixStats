@@ -1,18 +1,12 @@
 ﻿using System;
-using FlixStats.Stats.Abstractions;
 
 namespace FlixStats.Stats.Model
 {
-    public class NetflixSerie : ISerie, IEquatable<NetflixSerie>
+    public class NetflixSerie : IEquatable<NetflixSerie>
     {
         public int IdentificationNumber { get; set; }
 
         public string Title { get; set; }
-
-        public bool Equals(ISerie other)
-        {
-            return string.Equals(Title, other.Title);
-        }
 
         public override int GetHashCode()
         {

@@ -42,7 +42,7 @@ namespace FlixStats.Stats
 
         public async Task<IEnumerable<NetflixViewedItem>> LoadNetflixViewedItemsAsync()
         {
-            if(_netflixProfile != null)
+            if (_netflixProfile != null)
             {
                 await LogInToNetflixAndSetCookies();
             }
@@ -86,16 +86,16 @@ namespace FlixStats.Stats
 
         private async Task<HtmlDocument> GetProfileSelectionHtmlDocument(string authToken)
         {
-            var formContent = new FormUrlEncodedContent(new[]
+            var formContent = new FormUrlEncodedContent(new Dictionary<string, string>
             {
-                new KeyValuePair<string, string>("userLoginId", _netflixProfile.AccountEmail),
-                new KeyValuePair<string, string>("password", _netflixProfile.AccountPassword),
-                new KeyValuePair<string, string>("authURL", authToken),
-                new KeyValuePair<string, string>("rememberMe", "false"),
-                new KeyValuePair<string, string>("flow", "websiteSignUp"),
-                new KeyValuePair<string, string>("mode", "login"),
-                new KeyValuePair<string, string>("action", "loginAction"),
-                new KeyValuePair<string, string>("withFields", "rememberMe,nextPage,userLoginId,password"),
+                { "userLoginId", _netflixProfile.AccountEmail },
+                { "password", _netflixProfile.AccountPassword },
+                { "authURL", authToken },
+                { "rememberMe", "false" },
+                { "flow", "websiteSignUp" },
+                { "mode", "login" },
+                { "action", "loginAction" },
+                { "withFields", "rememberMe,nextPage,userLoginId,password" }
             });
 
             var response = await _httpClient.PostAsync("login", formContent);

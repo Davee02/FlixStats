@@ -6,7 +6,7 @@ using FlixStats.Stats.Model;
 
 namespace FlixStats.Stats
 {
-    public class NetflixStatsCalculator : IStatsCalculator<NetflixPlayback, NetflixSerie, NetflixEpisode>
+    public class NetflixStatsCalculator : IStatsCalculator
     {
         private readonly List<NetflixPlayback> _allViewedElements;
         private readonly List<NetflixPlayback> _allViewedMovies;

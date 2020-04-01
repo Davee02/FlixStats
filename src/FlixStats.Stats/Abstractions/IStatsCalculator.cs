@@ -1,13 +1,11 @@
-﻿using System;
+﻿using FlixStats.Stats.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace FlixStats.Stats.Abstractions
 {
-    public interface IStatsCalculator<out TPlayback, TSerie, TEpisode> 
-        where TSerie : ISerie 
-        where TEpisode : IEpisode<TSerie>
-        where TPlayback : IPlayback<TEpisode, TSerie>
+    public interface IStatsCalculator
     {
         decimal GetTotalViewedMinutes();
 
@@ -15,21 +13,21 @@ namespace FlixStats.Stats.Abstractions
 
         decimal GetSeriesEpisodesViewedMinutes();
 
-        TPlayback GetFirstWatchedMovie();
+        NetflixPlayback GetFirstWatchedMovie();
 
-        TPlayback GetFirstWatchedSeriesEpisode();
+        NetflixPlayback GetFirstWatchedSeriesEpisode();
 
         int GetMoviesViewedCount();
 
         int GetSeriesEpisodesViewedCount();
 
-        IEnumerable<IGrouping<TSerie, TPlayback>> GetPlaybacksPerSerie();
+        IEnumerable<IGrouping<NetflixSerie, NetflixPlayback>> GetPlaybacksPerSerie();
 
-        IEnumerable<IGrouping<DateTime, TPlayback>> GetPlaybacksPerDay();
+        IEnumerable<IGrouping<DateTime, NetflixPlayback>> GetPlaybacksPerDay();
 
-        IEnumerable<IGrouping<string, TPlayback>> GetPlaybacksPerCountry();
+        IEnumerable<IGrouping<string, NetflixPlayback>> GetPlaybacksPerCountry();
 
-        IDictionary<TSerie, decimal> GetViewedMinutesPerSerie();
+        IDictionary<NetflixSerie, decimal> GetViewedMinutesPerSerie();
 
         IDictionary<DateTime, decimal> GetViewedMinutesPerDay();
 

@@ -1,5 +1,4 @@
 ﻿using DaHo.Library.Utilities;
-using FlixStats.Helper;
 using FlixStats.Models.EntityFrameworkModels;
 using FlixStats.Stats;
 using Microsoft.AspNetCore.Mvc;

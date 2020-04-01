@@ -1,8 +1,6 @@
-﻿using FlixStats.Stats.Abstractions;
-
-namespace FlixStats.Stats.Model
+﻿namespace FlixStats.Stats.Model
 {
-    public class NetflixEpisode : IEpisode<NetflixSerie>
+    public class NetflixEpisode
     {
         public string Title { get; set; }
 
@@ -16,7 +14,7 @@ namespace FlixStats.Stats.Model
 
         public Enums.EpisodeType EpisodeType { get; set; }
 
-        public int CompareTo(IEpisode<ISerie> other)
+        public int CompareTo(NetflixEpisode other)
         {
             return other.Sort.CompareTo(this.Sort);
         }
