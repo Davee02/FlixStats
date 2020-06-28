@@ -71,7 +71,7 @@ namespace FlixStats.Stats
                     ProfileName = _netflixProfile.ProfileName
                 };
 
-            await _httpClient.GetStringAsync($"{profileButton.Attributes["href"].Value}");
+            await _httpClient.GetAsync($"{profileButton.Attributes["href"].Value}"); // Set the cookies for the selected profile
         }
 
         private async Task<string> GetAuthToken()
@@ -153,7 +153,7 @@ namespace FlixStats.Stats
             NetflixViewingHistoryPart currentViewingHistoryPartElement;
             do
             {
-                var jsonString = await _httpClient.GetStringAsync($"{apiBaseUrl}?pg={counter}&pgsize=500");
+                var jsonString = await _httpClient.GetStringAsync($"{apiBaseUrl}?pg={counter}&pgsize=1000");
                 currentViewingHistoryPartElement = JsonConvert.DeserializeObject<NetflixViewingHistoryPart>(jsonString);
                 counter++;
 

@@ -18,7 +18,9 @@ namespace FlixStats.Stats.Helper
         {
             if (reader.Value == null)
                 return null;
-            return _epochStart.AddMilliseconds((long)reader.Value);
+            return _epochStart
+                .AddMilliseconds((long)reader.Value)
+                .ToLocalTime();
         }
     }
 }
